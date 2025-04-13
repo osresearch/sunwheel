@@ -256,16 +256,16 @@ def make_sine(radius):
 
 
 # Outer rules for 0-360 degrees with negative markers
-d.append(make_rule(460, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
-d.append(make_labels(460, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red"))
+d.append(make_rule(450, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
+d.append(make_labels(450, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
 # outer rule for 24-hour clock
-d.append(make_rule(480, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
+d.append(make_rule(470, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
 
-d.append(make_rule(440, 360/60, 360/120, 360/600))
+d.append(make_rule(430, 360/60, 360/120, 360/600))
 d.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
-d.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red"))
+d.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
 d.append(make_height_of_eye(h_e_radius))
 
@@ -279,7 +279,8 @@ d.append(make_refraction(h_e_radius))
 # sin scale
 #d.append(make_sine(500))
 
-d.append(draw.Circle(0,0, 10))
+d.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
+d.append(draw.Circle(0,0, 415, fill="none", stroke="black", stroke_width=1))
 
 d.save_svg('rule.svg')
 
