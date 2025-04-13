@@ -112,22 +112,50 @@ def make_height_of_eye(radius):
 def refraction(H_a):
 	return 1/tan(radians(H_a + 7.31 / (H_a + 4.4))) * -6
 
+# Combined refraction, semidiameter and parallax table
+# from https://www.thenauticalalmanac.com/Increments_and_Corrections/Altitude_Correction_Tables.pdf
+# There are four arcs to define:
+# - Upper/Lower limb of the sun
+# - Oct-Mar / Apr-Sep
+# The semidiameter for oct-march is 32.3/2 = 16.15
+# and for apr-sep 31.8/2 = 15.90
+# instead we can have four starting lines and one refraction table
 def make_refraction(radius):
-	g = draw.Group(transform="rotate(0)")
-	majors = frange(5,20,1) + frange(20,45,5) + frange(50,90.1,10)
-	minors1 = frange(5,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
-	minors2 = frange(5,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
+	sd_1 = 16.2
+	sd_2 = 15.9
+	sd_1_offset = sd_1 * 6
+	sd_2_offset = sd_1_offset - sd_2 * 6
+	g = draw.Group()
+	majors = frange(3,20,1) + frange(20,45,5) + frange(50,90.1,10)
+	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
+	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
 
-	g.append(make_ticks(radius, [refraction(a) for a in majors], 8, stroke_width=0.3))
-	g.append(make_ticks(radius, [refraction(a) for a in minors1], 4, stroke_width=0.2))
-	g.append(make_ticks(radius, [refraction(a) for a in minors2], 2, stroke_width=0.1))
+	g.append(make_ticks(radius, [sd_1_offset + refraction(a) for a in majors], 8, stroke_width=0.3))
+	g.append(make_ticks(radius, [sd_1_offset + refraction(a) for a in minors1], 4, stroke_width=0.2))
+	g.append(make_ticks(radius, [sd_1_offset + refraction(a) for a in minors2], 2, stroke_width=0.1))
 	g.append(make_tick_labels(
 		radius,
-		[[refraction(a), "%.0f" % (a)] for a in majors],
+		[[sd_1_offset + refraction(a), "%.0f" % (a)] for a in majors],
 		size=8.5,
 		pos=(-10,+3),
 		text_anchor="end",
 	))
+
+	labels = [
+		[sd_1_offset, "Stars"],
+		[0, "Oct-Mar" ],
+		[sd_2_offset, "Apr-Sep\n(Lower)" ],
+
+		[2*sd_1_offset, "Oct-Mar" ],
+		[2*sd_1_offset+sd_2_offset, "Apr-Sep\n(Upper)" ],
+	]
+
+	g.append(make_ticks(radius-30, [_[0] for _ in labels], 8, stroke="red"))
+	g.append(make_tick_labels(radius-30, labels,
+		pos=(-9,2),
+		text_anchor="end",
+	))
+	#g.append(make_ticks(radius-30, [sd_1*6], 8, stroke="red"))
 	return g
 
 # Parallax table from https://thenauticalalmanac.com/DRIPS.pdf
@@ -197,20 +225,21 @@ def make_semidiameter(radius):
 	))
 	return g
 
+
 def make_sine(radius):
 	g = draw.Group()
 	labels = []
 	minor1 = []
 	minor2 = []
-	for a in frange(-1,1.01,0.1):
-		labels.append([degrees(asin(a)), "%.1f" % (a)])
-		labels.append([180-degrees(asin(a)), "%.1f" % (a)])
-	for a in frange(-1,1.01,0.05):
-		minor1.append(degrees(asin(a)))
-		minor1.append(180-degrees(asin(a)))
-	for a in frange(-1,1.01,0.01):
-		minor2.append(degrees(asin(a)))
-		minor2.append(180-degrees(asin(a)))
+	for a in frange(0,1,0.1):
+		labels.append([degrees(asin(a)*4), "%.1f" % (a)])
+		#labels.append([180-degrees(asin(a)), "%.1f" % (a)])
+	for a in frange(0,1.01,0.05):
+		minor1.append(degrees(asin(a))*4)
+		#minor1.append(180-degrees(asin(a)))
+	for a in frange(0,1.01,0.01):
+		minor2.append(degrees(asin(a))*4)
+		#minor2.append(180-degrees(asin(a)))
 
 	g.append(draw.Circle(
 		0, 0, radius,
@@ -239,12 +268,18 @@ d.append(make_rule(400, 360/60, 360/120, 360/600))
 d.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red"))
 
 d.append(make_height_of_eye(h_e_radius))
-d.append(make_refraction(h_e_radius-30))
-d.append(make_parallax(h_e_radius))
-d.append(make_semidiameter(h_e_radius))
+
+# The refraction, parallax and semi diameter can all be done with
+# the one Altitude Correction Table (ACT)
+d.append(make_refraction(h_e_radius))
+#d.append(make_parallax(h_e_radius))
+#d.append(make_semidiameter(h_e_radius))
+#d.append(make_act(h_e_radius)
 
 # sin scale
-d.append(make_sine(500))
+#d.append(make_sine(500))
+
+d.append(draw.Circle(0,0, 10))
 
 d.save_svg('rule.svg')
 
