@@ -66,7 +66,7 @@ def frange(start, end, step):
 		items.append(start+i*step)
 	return items
 
-def make_rule(radius, major, minor1, minor2, start=0, end=360):
+def make_rule(radius, major, minor1, minor2, fmt=deg2sec, start=0, end=360):
 	g = draw.Group()
 	g.append(draw.Circle(
 		0, 0, radius,
@@ -77,7 +77,7 @@ def make_rule(radius, major, minor1, minor2, start=0, end=360):
 	g.append(make_ticks(radius, frange(start, end, minor2), 2, stroke_width=0.1))
 	g.append(make_ticks(radius, frange(start, end, minor1), 4, stroke_width=0.2))
 	g.append(make_ticks(radius, frange(start, end, major),  8, stroke_width=0.4))
-	g.append(make_labels(radius, major, start, end, deg2sec))
+	g.append(make_labels(radius, major, start, end, fmt))
 	return g
 
 
@@ -110,7 +110,7 @@ def make_height_of_eye(radius):
 d.append(make_height_of_eye(h_e_radius))
 
 
-# Refraction for normal conditions
+# Refraction for normal conditions (10C 1010hPa)
 def refraction(H_a):
 	return 1/tan(radians(H_a + 7.31 / (H_a + 4.4))) * -6
 
@@ -118,7 +118,7 @@ def make_refraction(radius):
 	g = draw.Group(transform="rotate(-60)")
 	majors = frange(5,20,1) + frange(20,45,5) + frange(50,90.1,10)
 	minors1 = frange(5,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
-	minors2 = frange(5,10,0.1) + frange(10,20,0.25) + frange(20,35,0.5) + frange(40,60,1) + frange(60,90,2.5)
+	minors2 = frange(5,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
 
 	g.append(make_ticks(radius, [refraction(a) for a in majors], 8, stroke_width=0.3))
 	g.append(make_ticks(radius, [refraction(a) for a in minors1], 4, stroke_width=0.2))
@@ -135,7 +135,11 @@ def make_refraction(radius):
 d.append(make_refraction(h_e_radius))
 
 
-d.append(make_rule(430, 360/60, 360/120, 360/600))
+# Outer rules for 0-360 degrees and 24-hour clock
+d.append(make_rule(460, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
+d.append(make_rule(480, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
+
+d.append(make_rule(440, 360/60, 360/120, 360/600))
 d.append(make_rule(400, 360/60, 360/120, 360/600))
 
 d.save_svg('rule.svg')
