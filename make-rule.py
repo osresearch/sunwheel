@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Generates the slide rule elements using SVG
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians
+from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos
 import drawsvg as draw
 
 d = draw.Drawing(1000,1000, origin='center')
@@ -34,11 +34,10 @@ def make_labels(radius, step, start, end, fmter, pos=(1,9), text_angle=+90, fill
 		m += step
 	return g
 
-def make_tick_labels(radius, labels, size=10, align="right", pos=(0,0), **style):
+def make_tick_labels(radius, labels, size=10, align="right", text_angle=0, pos=(0,0), **style):
 	g = draw.Group()
 	length = 10
 	thick = 0.2
-	text_angle = 0
 	for (angle,label) in labels:
 		g.append(draw.Text(label, size, pos[0], pos[1],
 			align=align,
@@ -198,6 +197,34 @@ def make_semidiameter(radius):
 	))
 	return g
 
+def make_sine(radius):
+	g = draw.Group()
+	labels = []
+	minor1 = []
+	minor2 = []
+	for a in frange(-1,1.01,0.1):
+		labels.append([degrees(asin(a)), "%.1f" % (a)])
+		labels.append([180-degrees(asin(a)), "%.1f" % (a)])
+	for a in frange(-1,1.01,0.05):
+		minor1.append(degrees(asin(a)))
+		minor1.append(180-degrees(asin(a)))
+	for a in frange(-1,1.01,0.01):
+		minor2.append(degrees(asin(a)))
+		minor2.append(180-degrees(asin(a)))
+
+	g.append(draw.Circle(
+		0, 0, radius,
+		fill='none',
+		stroke='black',
+		stroke_width=0.1,
+	))
+
+	g.append(make_ticks(radius, minor2, 2, stroke_width=0.1))
+	g.append(make_ticks(radius, minor1, 4, stroke_width=0.2))
+	g.append(make_ticks(radius, [_[0] for _ in labels], 8, stroke_width=0.4))
+	g.append(make_tick_labels(radius, labels, text_angle=90, pos=(1,9)))
+	return g
+
 
 # Outer rules for 0-360 degrees with negative markers
 d.append(make_rule(460, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
@@ -215,6 +242,9 @@ d.append(make_height_of_eye(h_e_radius))
 d.append(make_refraction(h_e_radius-30))
 d.append(make_parallax(h_e_radius))
 d.append(make_semidiameter(h_e_radius))
+
+# sin scale
+d.append(make_sine(500))
 
 d.save_svg('rule.svg')
 
