@@ -125,7 +125,7 @@ def make_refraction(radius):
 	sd_2 = 15.9
 	sd_1_offset = sd_1 * 6
 	sd_2_offset = sd_1_offset - sd_2 * 6
-	g = draw.Group()
+	g = draw.Group(transform="rotate(+15)")
 	majors = frange(3,20,1) + frange(20,45,5) + frange(50,90.1,10)
 	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
 	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
@@ -225,6 +225,22 @@ def make_semidiameter(radius):
 	))
 	return g
 
+def make_d_lines(radius):
+	g = draw.Group()
+	for d in frange(0.1, 1.1, 0.1):
+		ticks = []
+		for t in frange(10, 60, 10):
+			ticks.append(t * d * 6 / 60)
+			ticks.append(-t * d * 6 / 60)
+		g.append(make_ticks(radius - 50 * d, ticks, 1, stroke_width=0.1))
+	labels = []
+	for t in frange(10, 60, 10):
+		labels.append([+t*6/60, "+%.0f" % (t)])
+		labels.append([-t*6/60, "-%.0f" % (t)])
+
+	g.append(make_tick_labels(radius - 50, labels, size=5, text_anchor="end", pos=(-5,2)))
+
+	return g
 
 def make_sine(radius):
 	g = draw.Group()
@@ -284,6 +300,8 @@ inner.append(make_refraction(h_e_radius))
 
 # sin scale
 #d.append(make_sine(500))
+
+inner.append(make_d_lines(400))
 
 d.append(inner)
 
