@@ -68,7 +68,7 @@ def frange(start, end, step):
 		items.append(start+i*step)
 	return items
 
-def make_rule(radius, major, minor1, minor2, fmt=deg2sec, start=0, end=360):
+def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360):
 	g = draw.Group()
 	g.append(draw.Circle(
 		0, 0, radius,
@@ -76,10 +76,12 @@ def make_rule(radius, major, minor1, minor2, fmt=deg2sec, start=0, end=360):
 		stroke='black',
 		stroke_width=0.1,
 	))
+	if minor3 is not None:
+		g.append(make_ticks(radius, frange(start, end, minor3), 1, stroke_width=0.1))
 	g.append(make_ticks(radius, frange(start, end, minor2), 2, stroke_width=0.1))
 	g.append(make_ticks(radius, frange(start, end, minor1), 4, stroke_width=0.2))
 	g.append(make_ticks(radius, frange(start, end, major),  8, stroke_width=0.4))
-	g.append(make_labels(radius, major, start, end, fmt))
+	g.append(make_labels(radius, major, start, end, fmt, pos=pos))
 	return g
 
 
@@ -307,6 +309,18 @@ def make_d_lines(radius):
 # convert gha increment into degrees and minutes
 def make_gha_scale(radius):
 	g = draw.Group()
+	g.append(make_rule(radius, 360/20, 360/(20*6),
+		360/(20*12),
+		minor3=360/(20*60),
+		fmt=lambda x: "%02d:00\n%d\n%d" % (x//18, 20+x//18, 40+x//18),
+		pos=(0,-4),
+	))
+
+	g.append(make_rule(radius-20, 360/30, 360/(60*5), 360/(60*10),
+		fmt=lambda x: "%02d°%02.0f'\n%02d\n%02d" % (x//72, (x % 72) * 30/36, 5+x//72, 10+x//72),
+		pos=(1,+12)
+	))
+	#g.append(make_labels(radius, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
 	return g
 
 # Sine is one quadrant for increased accuracy
@@ -371,6 +385,7 @@ front = draw.Group(transform="translate(-500 0)")
 
 
 outer = draw.Group()
+# Minutes
 outer.append(make_rule(430, 360/60, 360/120, 360/600))
 outer.append(make_labels(430, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 front.append(outer)
@@ -393,7 +408,6 @@ inner.append(make_refraction(h_e_radius))
 #d.append(make_sine(500))
 
 inner.append(make_d_lines(405))
-inner.append(make_gha_scale(350))
 
 front.append(inner)
 
@@ -427,6 +441,7 @@ back.append(make_rule(390, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
 back.append(make_labels(390, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
 back.append(make_sine(370))
 
+back.append(make_gha_scale(340))
 
 
 d.append(front)
