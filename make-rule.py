@@ -4,7 +4,7 @@
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos
 import drawsvg as draw
 
-d = draw.Drawing(1000,1000, origin='center')
+d = draw.Drawing(2000,1000, origin='center')
 h_e_radius = 380
 
 def make_ticks(radius, ticks, length, stroke='black', **style):
@@ -343,18 +343,17 @@ def make_sine(radius):
 	return g
 
 
+####
+#### Front side
+####
 # Outer rules for 0-360 degrees with negative markers
+front = draw.Group(transform="translate(-500 0)")
+
+
 outer = draw.Group()
-outer.append(make_rule(450, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
-outer.append(make_labels(450, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
-
-# outer rule for 24-hour clock
-outer.append(make_rule(470, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
-
 outer.append(make_rule(430, 360/60, 360/120, 360/600))
 outer.append(make_labels(430, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
-d.append(outer)
-
+front.append(outer)
 
 inner = draw.Group()
 inner.append(make_rule(400, 360/60, 360/120, 360/600))
@@ -376,15 +375,38 @@ inner.append(make_refraction(h_e_radius))
 inner.append(make_d_lines(405))
 inner.append(make_gha_scale(350))
 
-d.append(inner)
+front.append(inner)
 
-d.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
-d.append(draw.Circle(0,0, 415, fill="none", stroke="black", stroke_width=1))
+# Cut lines
+front.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
+front.append(draw.Circle(0,0, 415, fill="none", stroke="black", stroke_width=1))
+front.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 pointer = draw.Group()
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
-d.append(pointer)
+front.append(pointer)
 
+
+####
+#### Reverse side
+####
+back = draw.Group(transform="translate(500 0)")
+back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
+back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
+outer = draw.Group()
+
+# outer rule for 24-hour clock
+outer.append(make_rule(420, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
+outer.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
+outer.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
+
+
+back.append(outer)
+
+
+
+d.append(front)
+d.append(back)
 d.save_svg('rule.svg')
 
