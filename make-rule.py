@@ -77,9 +77,9 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 		stroke_width=0.1,
 	))
 	if minor3 is not None:
-		g.append(make_ticks(radius, frange(start, end, minor3), 1, stroke_width=0.1))
-	g.append(make_ticks(radius, frange(start, end, minor2), 2, stroke_width=0.1))
-	g.append(make_ticks(radius, frange(start, end, minor1), 4, stroke_width=0.2))
+		g.append(make_ticks(radius, frange(start, end, minor3), 2, stroke_width=0.1))
+	g.append(make_ticks(radius, frange(start, end, minor2), 3, stroke_width=0.1))
+	g.append(make_ticks(radius, frange(start, end, minor1), 5, stroke_width=0.2))
 	g.append(make_ticks(radius, frange(start, end, major),  8, stroke_width=0.4))
 	g.append(make_labels(radius, major, start, end, fmt, pos=pos))
 	return g
@@ -90,7 +90,7 @@ def height_of_eye(H_e):
 	return 1.76 * sqrt(H_e) * -6
 
 def make_height_of_eye(radius):
-	g = draw.Group(transform="rotate(60)")
+	g = draw.Group(transform="rotate(-120)")
 	major = [height_of_eye(H_e) for H_e in frange(0,20.1,1)]
 	minor1 = [height_of_eye(H_e) for H_e in frange(0,20,0.5)]
 	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
@@ -139,7 +139,7 @@ def refraction(H_a):
 def make_refraction(radius):
 	sd_1 = 16.2
 	sd_2 = 15.9
-	g = draw.Group(transform="rotate(+0)")
+	g = draw.Group(transform="rotate(-180)")
 	majors = frange(3,20,1) + frange(20,45,5) + frange(50,90.1,10)
 	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
 	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
@@ -164,13 +164,22 @@ def make_refraction(radius):
 		[sd_2*6, "Apr-Sep" ],
 	]
 
-	#g.append(make_ticks(radius, [_[0] for _ in labels], 8, stroke="red"))
-	g.append(make_tick_labels(radius, labels,
-		pos=(-9,2),
-		text_anchor="end",
-		length=8,
-		stroke="red",
+	g.append(make_tick_labels(
+		radius-25,
+		[
+			[+sd_1*6-4, "Upper"],
+			[-sd_1*6-2, "Lower"],
+		],
+		text_anchor="center",
+		size=8,
 	))
+	#g.append(make_ticks(radius, [_[0] for _ in labels], 8, stroke="red"))
+#	g.append(make_tick_labels(radius, labels,
+#		pos=(-9,2),
+#		text_anchor="end",
+#		length=8,
+#		stroke="red",
+#	))
 	#g.append(make_ticks(radius-30, [sd_1*6], 8, stroke="red"))
 	return g
 
@@ -205,43 +214,51 @@ def make_parallax(radius):
 # Sun semi diameter for upper or lower
 # from https://thenauticalalmanac.com/DRIPS.pdf
 def make_semidiameter(radius):
-	g = draw.Group(transform="rotate(-0)")
+	g = draw.Group(transform="rotate(-180)")
 	ticks1 = [
 		[16.29*6, "Jan"],
-		[16.26*6, "Feb"],
-		[16.17*6, "Mar"],
+		[16.26*6, ""],
+		[16.17*6, ""],
 		[16.03*6, "Apr"],
-		[15.90*6, "May"],
-		[15.80*6, "Jun"],
+		[15.90*6, ""],
+		[15.80*6, ""],
 		[15.75*6, "Jul"],
 	]
 	minor1 = [16.28*6, 16.21*6, 16.10*6, 15.96*6, 15.84*6, 15.77*6]
 	ticks2 = [
 		[15.78*6, "Aug"],
-		[15.87*6, "Sep"],
+		[15.87*6, ""],
 		[16.00*6, "Oct"],
-		[16.14*6, "Nov"],
+		[16.14*6, ""],
 		[16.24*6, "Dec"],
 	]
 	minor2 = [15.76*6, 15.82*6, 15.94*6, 16.07*6, 16.20*6, 16.27*6]
-	g.append(make_ticks(radius, [0], 8, stroke_width=1, stroke="red"))
-	g.append(make_ticks(radius-10, [_[0] for _ in ticks1], 6, stroke_width=0.3))
-	g.append(make_ticks(radius-10, minor1, 3, stroke_width=0.2))
-	g.append(make_tick_labels(radius, ticks1,
-		size=6,
-		text_anchor="start",
-		pos=(0,+4),
-	))
-	#g.append(make_ticks(radius-20, [_[0] for _ in ticks2], 6, stroke_width=0.3))
-	g.append(make_ticks(radius-20, minor2, 3, stroke_width=0.2))
-	g.append(make_tick_labels(radius-20, ticks2,
-		size=6,
-		text_anchor="end",
-		pos=(-10,0),
-		stroke="black",
-		length=6,
-		stroke_width=0.3,
-	))
+	#g.append(make_ticks(radius, [0], 8, stroke_width=1, stroke="red"))
+
+	for scale in [1,-1]:
+		ticks1 = [[_[0]*scale, _[1]] for _ in ticks1]
+		ticks2 = [[_[0]*scale, _[1]] for _ in ticks2]
+		minor1 = [_*scale for _ in minor1]
+		minor2 = [_*scale for _ in minor2]
+
+		g.append(make_ticks(radius-10, [_[0] for _ in ticks1], 5, stroke_width=0.3))
+		g.append(make_ticks(radius-10, minor1, 3, stroke_width=0.2))
+		g.append(make_tick_labels(radius, ticks1,
+			size=6,
+			text_anchor="start",
+			pos=(-2,+2),
+		))
+
+		g.append(make_ticks(radius-25, [_[0] for _ in ticks2], 5, stroke_width=0.3))
+		g.append(make_ticks(radius-25, minor2, 3, stroke_width=0.2))
+		g.append(make_tick_labels(radius-20, ticks2,
+			size=6,
+			text_anchor="end",
+			pos=(-12,0),
+			#stroke="black",
+			#length=3,
+			#stroke_width=0.3,
+		))
 	return g
 
 # This is the scale to adjust the minutes of the declination based on
@@ -249,33 +266,57 @@ def make_semidiameter(radius):
 # TODO: handle +/- 12 hours of the day?
 # TODO: add lines to help with alignment
 def make_d_lines(radius):
-	g = draw.Group(transform="rotate(-180)")
-	inner_step = 200
+	g = draw.Group(transform="rotate(+0)")
+	inner_step = 320
+
+	# horizontal lines for the different values of d
 	for d in frange(0.1, 1.1, 0.1):
 		points = []
-		for t in frange(-12, 12.1, 0.1):
-			r = radius - inner_step * d
+		for t in frange(-12, 12.1, 1):
+			r = radius - inner_step * (1-d)
 			a = radians(t * d * 6)
 			points.append(r*cos(a))
 			points.append(r*sin(a))
+
 		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.1))
 
-	labels = []
-	for t in range(0,25):
-		labels.append([(t-12)*6+0.7, "%02d:00" % (t)])
+		if d > 0.9:
+			continue
 
-	g.append(make_tick_labels(radius - inner_step, labels, size=6, text_anchor="end", pos=(-5,2)))
+		tr = (radius - (1-d) * inner_step)
+		ta = radians(6.0 * d * 6)
+		tx = tr * cos(ta)
+		ty = tr * sin(ta)
+#		g.append(draw.Text("%.1f" % (d), 10, -6, +8,
+#			fill="black",
+#			stroke="none",
+#			transform="translate(%.3f %.3f) rotate(0)" % (tx,ty),
+#		))
+#		g.append(draw.Text("-%.1f" % (d), 10, -6, -2,
+#			fill="red",
+#			stroke="none",
+#			transform="translate(%.3f %.3f) rotate(0)" % (tx,-ty),
+#		))
 
-	labels = []
-	for t in range(0,25):
-		labels.append([(12-t)*6-0.7, "%02d:00" % (t)])
-	g.append(make_tick_labels(radius - inner_step, labels, size=6, text_anchor="end", pos=(-5,2), text_style="italic", fill="red"))
+		# mark for the scales, following the 6 lines
+		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
+			fill="black",
+			stroke="none",
+			text_anchor="end",
+			transform="translate(%.3f %.3f) rotate(-90)" % (tx,ty),
+		))
+		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
+			fill="black",
+			stroke="none",
+			text_anchor="start",
+			transform="translate(%.3f %.3f) rotate(-90)" % (tx,-ty),
+		))
 
 	# quarter hour marks
 	for t in frange(-12,12.01,0.25):
 		points = []
-		for d in frange(0.3, 1.01, 0.1):
-			r = radius - inner_step * d
+		for d in frange(0.5, 1.01, 0.1):
+			r = radius - inner_step * (1-d)
 			a = radians(t * d * 6)
 			points.append(r*cos(a))
 			points.append(r*sin(a))
@@ -284,8 +325,8 @@ def make_d_lines(radius):
 	# half hour marks
 	for t in frange(-12,12.1,0.5):
 		points = []
-		for d in frange(0.1, 1.1, 0.1):
-			r = radius - inner_step * d
+		for d in frange(0.2, 1.1, 0.1):
+			r = radius - inner_step * (1-d)
 			a = radians(t * d * 6)
 			points.append(r*cos(a))
 			points.append(r*sin(a))
@@ -295,29 +336,60 @@ def make_d_lines(radius):
 	for t in frange(-12,12.1,1):
 		points = []
 		for d in frange(0.1, 1.1, 0.1):
-			r = radius - inner_step * d
+			r = radius - inner_step * (1-d)
 			a = radians(t * d * 6)
 			points.append(r*cos(a))
 			points.append(r*sin(a))
-		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.4))
+		stroke = "black"
+		width = 0.5
+		if t == -6 or t == 6 or t == 0:
+			stroke = "red"
+			width = 1
+		g.append(draw.Lines(*points, fill="none", stroke=stroke, stroke_width=width))
 
-	# and one to help line up on the 12:00
-	g.append(draw.Lines(radius, 0, radius-inner_step, 0, stroke="red", stroke_width=0.5));
+		if t == -12 or t == +12:
+			continue
+		d = 0.95
+		tr = radius - inner_step * (1-d)
+		ta = radians(t * d * 6)
+		tx = tr * cos(ta)
+		ty = tr * sin(ta)
+		ta = degrees(ta) * 1.8
+		g.append(draw.Text("%02d:00" % (t + 12), 8, 0, -2,
+			text_anchor="middle",
+			fill="black",
+			transform="translate(%.3f %3.f) rotate(%.3f)" % (tx,ty,ta),
+		))
+		g.append(draw.Text("%02d:00" % (12 - t), 8, 0, +7,
+			text_anchor="middle",
+			fill="red",
+			font_style="italic",
+			transform="translate(%.3f %3.f) rotate(%.3f)" % (tx,ty,ta),
+		))
+
+	#g.append(draw.Lines(radius, 0, radius-inner_step, 0, stroke="red", stroke_width=0.5));
 
 	return g
 
 # convert gha increment into degrees and minutes
+# This is equvilant to https://www.thenauticalalmanac.com/Increments_and_Corrections/Increments_and_Corrections_Sun_only.pdf
 def make_gha_scale(radius):
 	g = draw.Group()
-	g.append(make_rule(radius, 360/20, 360/(20*6),
-		360/(20*12),
-		minor3=360/(20*60),
-		fmt=lambda x: "%02d:00\n%d\n%d" % (x//18, 20+x//18, 40+x//18),
-		pos=(0,-4),
+	g.append(make_rule(radius,
+		360/20,		# 20 minutes around the circle
+		360/(20*2),	# every 30 seconds per minute
+		360/(20*6),	# every 10 seconds
+		minor3=360/(20*60), # every second
+		fmt=lambda x: "%02d:00\n%d / %d" % (x//18, 20+x//18, 40+x//18),
+		pos=(1,-2),
 	))
 
-	g.append(make_rule(radius-20, 360/30, 360/(60*5), 360/(60*10),
-		fmt=lambda x: "%02d°%02.0f'\n%02d\n%02d" % (x//72, (x % 72) * 30/36, 5+x//72, 10+x//72),
+	g.append(make_rule(radius-15,
+		360/(5*4),		# 5 degrees around, marks every 15 seconds 
+		360/(5*4*3),		# subdivide into 5/10/15 seconds
+		360/(5*4*15),		# every second
+		minor3=360/(5*4*15*2),	# every half second
+		fmt=lambda x: "%02d°%02.0f'\n%02d° / %02d°" % (x//72, (x % 72) * 30/36, 5+x//72, 10+x//72),
 		pos=(1,+12)
 	))
 	#g.append(make_labels(radius, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
@@ -401,13 +473,13 @@ inner.append(make_height_of_eye(h_e_radius))
 # the one Altitude Correction Table (ACT)
 inner.append(make_refraction(h_e_radius))
 #d.append(make_parallax(h_e_radius))
-#d.append(make_semidiameter(h_e_radius))
+inner.append(make_semidiameter(h_e_radius))
 #d.append(make_act(h_e_radius)
 
 # sin scale
 #d.append(make_sine(500))
 
-inner.append(make_d_lines(405))
+inner.append(make_d_lines(390))
 
 front.append(inner)
 
