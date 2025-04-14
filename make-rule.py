@@ -309,20 +309,31 @@ def make_gha_scale(radius):
 	g = draw.Group()
 	return g
 
+# Sine is one quadrant for increased accuracy
 def make_sine(radius):
 	g = draw.Group()
 	labels = []
 	minor1 = []
 	minor2 = []
-	for a in frange(0,1,0.1):
-		labels.append([degrees(asin(a)*4), "%.1f" % (a)])
-		#labels.append([180-degrees(asin(a)), "%.1f" % (a)])
+	minor3 = []
+	for a in frange(0,0.9,0.05):
+		labels.append([degrees(asin(a)*4), "%.2f" % (a)])
+	for a in frange(0.90,0.951,0.01):
+		labels.append([degrees(asin(a)*4), "%.2f" % (a)])
+	for a in frange(0.955,0.99999,0.005):
+		labels.append([degrees(asin(a)*4), "%.3f" % (a)])
+
 	for a in frange(0,1.01,0.05):
 		minor1.append(degrees(asin(a))*4)
 		#minor1.append(180-degrees(asin(a)))
 	for a in frange(0,1.01,0.01):
 		minor2.append(degrees(asin(a))*4)
 		#minor2.append(180-degrees(asin(a)))
+	for a in frange(0,1.001,0.005):
+		minor3.append(degrees(asin(a))*4)
+		#minor2.append(180-degrees(asin(a)))
+	for a in frange(0.9,1.0001,0.001):
+		minor3.append(degrees(asin(a))*4)
 
 	g.append(draw.Circle(
 		0, 0, radius,
@@ -331,14 +342,23 @@ def make_sine(radius):
 		stroke_width=0.1,
 	))
 
-	g.append(make_ticks(radius, minor2, 2, stroke_width=0.1))
-	g.append(make_ticks(radius, minor1, 4, stroke_width=0.2))
+	g.append(make_ticks(radius, minor3, 2, stroke_width=0.1))
+	g.append(make_ticks(radius, minor2, 4, stroke_width=0.2))
+	g.append(make_ticks(radius, minor1, 6, stroke_width=0.4))
 	g.append(make_tick_labels(radius, labels,
 		text_angle=90,
 		pos=(1,9),
 		length=8,
 		stroke_width=0.4,
 		stroke="black",
+	))
+
+	# add a fake label for 1.0 at the far end
+	g.append(make_tick_labels(radius,
+		[[359, "1.00"]],
+		text_angle=90,
+		pos=(1,9),
+		text_anchor="end",
 	))
 	return g
 
@@ -389,20 +409,23 @@ front.append(pointer)
 
 
 ####
-#### Reverse side
+#### Reverse side (no rotating parts)
 ####
 back = draw.Group(transform="translate(500 0)")
 back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
 back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
-outer = draw.Group()
 
-# outer rule for 24-hour clock
-outer.append(make_rule(420, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
-outer.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
-outer.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
+# rule for 360 degree circle with reverse angles as well
+back.append(make_rule(420, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
+back.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
+# 24-hour clock
+back.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
 
-back.append(outer)
+# 90 degree circle and sine/cosine tables
+back.append(make_rule(390, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
+back.append(make_labels(390, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
+back.append(make_sine(370))
 
 
 
