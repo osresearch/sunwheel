@@ -34,14 +34,14 @@ def make_labels(radius, step, start, end, fmter, pos=(1,9), text_angle=+90, fill
 		m += step
 	return g
 
-def make_tick_labels(radius, labels, size=10, align="right", text_angle=0, pos=(0,0), **style):
+def make_tick_labels(radius, labels, size=10, align="right", text_angle=0, pos=(0,0), fill="black", **style):
 	g = draw.Group()
 	length = 10
 	thick = 0.2
 	for (angle,label) in labels:
 		g.append(draw.Text(label, size, pos[0], pos[1],
 			align=align,
-			fill='black',
+			fill=fill,
 			stroke='none',
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (angle, radius, text_angle),
 			**style,
@@ -225,21 +225,55 @@ def make_semidiameter(radius):
 	))
 	return g
 
+# This is the scale to adjust the minutes of the declination based on
+# the number of minutes past the hour (using the d value from the almanac)
+# TODO: handle +/- 12 hours of the day?
+# TODO: add lines to help with alignment
 def make_d_lines(radius):
-	g = draw.Group()
+	g = draw.Group(transform="rotate(-90)")
+	inner_step = 100
 	for d in frange(0.1, 1.1, 0.1):
-		ticks = []
-		for t in frange(10, 60, 10):
-			ticks.append(t * d * 6 / 60)
-			ticks.append(-t * d * 6 / 60)
-		g.append(make_ticks(radius - 50 * d, ticks, 1, stroke_width=0.1))
+		points = []
+		for t in frange(-12, 12.1, 0.1):
+			r = radius - inner_step * d
+			a = radians(t * d * 6)
+			points.append(r*cos(a))
+			points.append(r*sin(a))
+		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.1))
+
 	labels = []
-	for t in frange(10, 60, 10):
-		labels.append([+t*6/60, "+%.0f" % (t)])
-		labels.append([-t*6/60, "-%.0f" % (t)])
+	for t in range(1,24):
+		labels.append([(t-12)*6+0.5, "%02d:00" % (t)])
 
-	g.append(make_tick_labels(radius - 50, labels, size=5, text_anchor="end", pos=(-5,2)))
+	g.append(make_tick_labels(radius - inner_step, labels, size=5, text_anchor="end", pos=(-5,2)))
 
+	labels = []
+	for t in range(1,24):
+		labels.append([(12-t)*6-0.5, "%02d:00" % (t)])
+	g.append(make_tick_labels(radius - inner_step, labels, size=5, text_anchor="end", pos=(-5,2), text_style="italic", fill="red"))
+
+	for t in frange(-12,12.1,0.5):
+		points = []
+		for d in frange(0.1, 1.1, 0.1):
+			r = radius - inner_step * d
+			a = radians(t * d * 6)
+			points.append(r*cos(a))
+			points.append(r*sin(a))
+		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.1))
+	for t in frange(-12,12.1,1):
+		points = []
+		for d in frange(0.1, 1.1, 0.1):
+			r = radius - inner_step * d
+			a = radians(t * d * 6)
+			points.append(r*cos(a))
+			points.append(r*sin(a))
+		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.3))
+
+	return g
+
+# convert gha increment into degrees and minutes
+def make_gha_scale(radius):
+	g = draw.Group()
 	return g
 
 def make_sine(radius):
@@ -301,7 +335,8 @@ inner.append(make_refraction(h_e_radius))
 # sin scale
 #d.append(make_sine(500))
 
-inner.append(make_d_lines(400))
+inner.append(make_d_lines(390))
+inner.append(make_gha_scale(350))
 
 d.append(inner)
 
