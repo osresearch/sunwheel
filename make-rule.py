@@ -96,21 +96,21 @@ def make_height_of_eye(radius):
 	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
 	minor2 += [height_of_eye(H_e) for H_e in frange(5,10,0.25)]
 
-	g.append(make_ticks(radius, minor2, 2, stroke_width=0.1))
-	g.append(make_ticks(radius, minor1, 4, stroke_width=0.2))
-	g.append(make_ticks(radius, major,  8, stroke_width=0.3))
+	g.append(make_ticks(radius-10, minor2, 4, stroke_width=0.1))
+	g.append(make_ticks(radius-10, minor1, 8, stroke_width=0.2))
+	g.append(make_ticks(radius-10, major,  15, stroke_width=0.3))
 
 	labels = [[height_of_eye(h_e), "%.0f" % (h_e)] for h_e in
 		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 17, 20]]
 
 	g.append(make_tick_labels(
-		radius,
+		radius-10,
 		labels,
 		pos=(-10,+3),
 		text_anchor="end",
 	))
 	g.append(make_tick_labels(
-		radius,
+		radius-10,
 		[[0, "Eye"]],
 		pos=(-10,+3),
 		text_anchor="end",
@@ -122,10 +122,20 @@ def make_height_of_eye(radius):
 	return g
 
 
+def make_arcs(pts, func, fill="none", stroke="black", stroke_width=1, **style):
+	points = []
+	for t in pts:
+		(r,a) = func(t)
+		points.append(r*cos(radians(a)))
+		points.append(r*sin(radians(a)))
+	return draw.Lines(*points, fill=fill, stroke=stroke, stroke_width=stroke_width, **style)
 
 # Refraction for normal conditions (10C 1010hPa)
-def refraction(H_a):
-	return 1/tan(radians(H_a + 7.31 / (H_a + 4.4))) * -6
+# R = (n_air - 1) cot(theta)
+def refraction(H_a, p=1010, t=10):
+	r = 1/tan(radians(H_a + 7.31 / (H_a + 4.4)))
+	f = p / (273+t) * 283/1010
+	return f * r * -6
 
 # Combined refraction, semidiameter and parallax table
 # from https://www.thenauticalalmanac.com/Increments_and_Corrections/Altitude_Correction_Tables.pdf
@@ -144,15 +154,35 @@ def make_refraction(radius):
 	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
 	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
 
-	g.append(make_ticks(radius, [ refraction(a) for a in majors], 8, stroke_width=0.3))
-	g.append(make_ticks(radius, [ refraction(a) for a in minors1], 4, stroke_width=0.2))
-	g.append(make_ticks(radius, [ refraction(a) for a in minors2], 2, stroke_width=0.1))
+	t_scale = 5
+	for h_a in majors:
+		g.append(make_arcs(frange(0,30.1,1), lambda t: (radius-10-t*t_scale, refraction(h_a,1010,t)), stroke_width=0.4))
+	for h_a in minors1:
+		g.append(make_arcs(frange(0,30.1,1), lambda t: (radius-10-t*t_scale, refraction(h_a,1010,t)), stroke_width=0.2))
+	for h_a in minors2:
+		g.append(make_arcs(frange(0,30.1,1), lambda t: (radius-10-t*t_scale, refraction(h_a,1010,t)), stroke_width=0.1))
+
+	for t in [0,5,10,15,20,25,30]:
+		r = radius - 10 - t*t_scale
+		g.append(make_arcs(minors2,
+			lambda a: (r, refraction(a,1010,t)),
+			stroke_width= 0.8 if (t % 10 == 0) else 0.1,
+		))
+
+		if t % 10 != 0:
+			continue
+		g.append(draw.Text("%d°C" % (t),
+			8.5, -8, -6,
+			transform="rotate(%f) translate(%f)" % (refraction(3,1010,t), r),
+			text_anchor="center",
+		))
+
 	g.append(make_tick_labels(
 		radius,
-		[[refraction(a), "%.0f" % (a)] for a in majors],
+		[[refraction(a,1010,0), "%.0f" % (a)] for a in majors],
 		size=8.5,
-		pos=(-10,+3),
-		text_anchor="end",
+		pos=(-5,+3),
+		text_anchor="start",
 	))
 
 	labels = [
@@ -271,32 +301,15 @@ def make_d_lines(radius):
 
 	# horizontal lines for the different values of d
 	for d in frange(0.1, 1.1, 0.1):
-		points = []
-		for t in frange(-12, 12.1, 1):
-			r = radius - inner_step * (1-d)
-			a = radians(t * d * 6)
-			points.append(r*cos(a))
-			points.append(r*sin(a))
-
-		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.1))
+		r = radius - inner_step * (1-d)
+		g.append(make_arcs(frange(-12, 12.1, 1), lambda t: (r, t*d*6), stroke_width=0.1))
 
 		if d > 0.9:
 			continue
 
-		tr = (radius - (1-d) * inner_step)
 		ta = radians(6.0 * d * 6)
-		tx = tr * cos(ta)
-		ty = tr * sin(ta)
-#		g.append(draw.Text("%.1f" % (d), 10, -6, +8,
-#			fill="black",
-#			stroke="none",
-#			transform="translate(%.3f %.3f) rotate(0)" % (tx,ty),
-#		))
-#		g.append(draw.Text("-%.1f" % (d), 10, -6, -2,
-#			fill="red",
-#			stroke="none",
-#			transform="translate(%.3f %.3f) rotate(0)" % (tx,-ty),
-#		))
+		tx = r * cos(ta)
+		ty = r * sin(ta)
 
 		# mark for the scales, following the 6 lines
 		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
@@ -312,40 +325,27 @@ def make_d_lines(radius):
 			transform="translate(%.3f %.3f) rotate(-90)" % (tx,-ty),
 		))
 
-	# quarter hour marks
+	# quarter hour marks (only half way in)
 	for t in frange(-12,12.01,0.25):
-		points = []
-		for d in frange(0.5, 1.01, 0.1):
-			r = radius - inner_step * (1-d)
-			a = radians(t * d * 6)
-			points.append(r*cos(a))
-			points.append(r*sin(a))
-		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.1))
+		g.append(make_arcs(frange(0.5, 1.01, 0.1),
+			lambda d: (radius-inner_step*(1-d), t*d*6),
+			stroke_width=0.1))
 
-	# half hour marks
+	# half hour marks (almost all the way in)
 	for t in frange(-12,12.1,0.5):
-		points = []
-		for d in frange(0.2, 1.1, 0.1):
-			r = radius - inner_step * (1-d)
-			a = radians(t * d * 6)
-			points.append(r*cos(a))
-			points.append(r*sin(a))
-		g.append(draw.Lines(*points, fill="none", stroke="black", stroke_width=0.2))
+		g.append(make_arcs(frange(0.2, 1.1, 0.1),
+			lambda d: (radius-inner_step*(1-d), t*d*6),
+			stroke_width=0.2))
 
 	# full hour marks
 	for t in frange(-12,12.1,1):
-		points = []
-		for d in frange(0.1, 1.1, 0.1):
-			r = radius - inner_step * (1-d)
-			a = radians(t * d * 6)
-			points.append(r*cos(a))
-			points.append(r*sin(a))
-		stroke = "black"
-		width = 0.5
 		if t == -6 or t == 6 or t == 0:
 			stroke = "red"
 			width = 1
-		g.append(draw.Lines(*points, fill="none", stroke=stroke, stroke_width=width))
+		else:
+			stroke = "black"
+			width = 0.5
+		g.append(make_arcs(frange(0.1, 1.1, 0.1), lambda d: (radius-inner_step*(1-d), t*d*6), stroke=stroke, stroke_width=width))
 
 		if t == -12 or t == +12:
 			continue
