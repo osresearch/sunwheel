@@ -132,6 +132,7 @@ def make_arcs(pts, func, fill="none", stroke="black", stroke_width=1, **style):
 
 # Refraction for normal conditions (10C 1010hPa)
 # R = (n_air - 1) cot(theta)
+# adjustment for non standard presure and temperature
 def refraction(H_a, p=1010, t=10):
 	r = 1/tan(radians(H_a + 7.31 / (H_a + 4.4)))
 	f = p / (273+t) * 283/1010
@@ -145,7 +146,7 @@ def refraction(H_a, p=1010, t=10):
 # The semidiameter for oct-march is 32.3/2 = 16.15
 # and for apr-sep 31.8/2 = 15.90
 # instead we can have four starting lines and one refraction table
-# TODO: add all twelve months, make better symbols
+# TODO:  make better symbols
 def make_refraction(radius):
 	sd_1 = 16.2
 	sd_2 = 15.9
@@ -154,16 +155,17 @@ def make_refraction(radius):
 	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
 	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
 
-	t_scale = 5
-	for h_a in majors:
-		g.append(make_arcs(frange(0,30.1,1), lambda t: (radius-10-t*t_scale, refraction(h_a,1010,t)), stroke_width=0.4))
-	for h_a in minors1:
-		g.append(make_arcs(frange(0,30.1,1), lambda t: (radius-10-t*t_scale, refraction(h_a,1010,t)), stroke_width=0.2))
-	for h_a in minors2:
-		g.append(make_arcs(frange(0,30.1,1), lambda t: (radius-10-t*t_scale, refraction(h_a,1010,t)), stroke_width=0.1))
+	t_scale = lambda t: radius - 60 - t * 5
 
-	for t in [0,5,10,15,20,25,30]:
-		r = radius - 10 - t*t_scale
+	for h_a in majors:
+		g.append(make_arcs(frange(-10,30.1,1), lambda t: (t_scale(t), refraction(h_a,1010,t)), stroke_width=0.4))
+	for h_a in minors1:
+		g.append(make_arcs(frange(-10,30.1,1), lambda t: (t_scale(t), refraction(h_a,1010,t)), stroke_width=0.2))
+	for h_a in minors2:
+		g.append(make_arcs(frange(-10,30.1,1), lambda t: (t_scale(t), refraction(h_a,1010,t)), stroke_width=0.1))
+
+	for t in [-10,-5,0,5,10,15,20,25,30]:
+		r = t_scale(t)
 		g.append(make_arcs(minors2,
 			lambda a: (r, refraction(a,1010,t)),
 			stroke_width= 0.8 if (t % 10 == 0) else 0.1,
@@ -172,8 +174,13 @@ def make_refraction(radius):
 		if t % 10 != 0:
 			continue
 		g.append(draw.Text("%d°C" % (t),
-			8.5, -8, -6,
+			8.5, -8, -2,
 			transform="rotate(%f) translate(%f)" % (refraction(3,1010,t), r),
+			text_anchor="center",
+		))
+		g.append(draw.Text("%d°C" % (t),
+			8.5, -8, +10,
+			transform="translate(%f)" % (r),
 			text_anchor="center",
 		))
 
@@ -295,14 +302,16 @@ def make_semidiameter(radius):
 # the number of minutes past the hour (using the d value from the almanac)
 # TODO: handle +/- 12 hours of the day?
 # TODO: add lines to help with alignment
-def make_d_lines(radius):
+def make_d_lines(outer_radius):
 	g = draw.Group(transform="rotate(+0)")
 	inner_step = 320
 
+	radius = lambda d: outer_radius - inner_step * (1-d)
+
 	# horizontal lines for the different values of d
 	for d in frange(0.1, 1.1, 0.1):
-		r = radius - inner_step * (1-d)
-		g.append(make_arcs(frange(-12, 12.1, 1), lambda t: (r, t*d*6), stroke_width=0.1))
+		r = radius(d)
+		g.append(make_arcs(frange(-12, 12.01, 0.1), lambda t: (r, t*d*6), stroke_width=0.1))
 
 		if d > 0.9:
 			continue
@@ -327,14 +336,14 @@ def make_d_lines(radius):
 
 	# quarter hour marks (only half way in)
 	for t in frange(-12,12.01,0.25):
-		g.append(make_arcs(frange(0.5, 1.01, 0.1),
-			lambda d: (radius-inner_step*(1-d), t*d*6),
+		g.append(make_arcs(frange(0.5, 1.01, 0.01),
+			lambda d: (radius(d), t*d*6),
 			stroke_width=0.1))
 
 	# half hour marks (almost all the way in)
 	for t in frange(-12,12.1,0.5):
-		g.append(make_arcs(frange(0.2, 1.1, 0.1),
-			lambda d: (radius-inner_step*(1-d), t*d*6),
+		g.append(make_arcs(frange(0.2, 1.01, 0.01),
+			lambda d: (radius(d), t*d*6),
 			stroke_width=0.2))
 
 	# full hour marks
@@ -345,12 +354,12 @@ def make_d_lines(radius):
 		else:
 			stroke = "black"
 			width = 0.5
-		g.append(make_arcs(frange(0.1, 1.1, 0.1), lambda d: (radius-inner_step*(1-d), t*d*6), stroke=stroke, stroke_width=width))
+		g.append(make_arcs(frange(0.1, 1.01, 0.01), lambda d: (radius(d), t*d*6), stroke=stroke, stroke_width=width))
 
 		if t == -12 or t == +12:
 			continue
 		d = 0.95
-		tr = radius - inner_step * (1-d)
+		tr = radius(d)
 		ta = radians(t * d * 6)
 		tx = tr * cos(ta)
 		ty = tr * sin(ta)
@@ -480,6 +489,28 @@ inner.append(make_semidiameter(h_e_radius))
 #d.append(make_sine(500))
 
 inner.append(make_d_lines(390))
+
+# Instructions for front side
+inner.append(draw.Text(
+"""
+True Altitude
+1. Point to zero on inner scale
+2. Outer scale to minutes of Sextant Altitude (H
+3. Point to index error on inner scale
+3. Inner scale to Eye
+4. Point to Height of Eye
+5. Inner scale to upper/lower limb and month
+6. Point to degrees of observed height and temperature
+7. Outer scale now shows minutes of True Altitude (Ho)
+
+Noon sight (
+1. Inner scale to declination minutes at noon from almanac
+2. Profit
+""", 10, -250, -250,
+stroke="none",
+fill="black"
+))
+
 
 front.append(inner)
 
