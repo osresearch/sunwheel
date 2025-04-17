@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # Generates the slide rule elements using SVG
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos
+from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e
 import drawsvg as draw
 
 d = draw.Drawing(2000,1000, origin='center')
 h_e_radius = 380
 
-def make_ticks(radius, ticks, length, stroke='black', **style):
+def make_ticks(radius, ticks, length, log_scale=None, stroke='black', **style):
 	g = draw.Group()
 	for angle in ticks:
+		if log_scale:
+			angle = log(angle) * 360 / log_scale
 		g.append(draw.Line(
 			-length,0,length,0,
 			fill='none',
@@ -34,10 +36,12 @@ def make_labels(radius, step, start, end, fmter, pos=(1,9), text_angle=+90, fill
 		m += step
 	return g
 
-def make_tick_labels(radius, labels, size=10, align="right", text_angle=0, pos=(0,0), fill="black", stroke=None, stroke_width=0.3, length=0, **style):
+def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", text_angle=0, pos=(0,0), fill="black", stroke=None, stroke_width=0.3, length=0, **style):
 	g = draw.Group()
 	length = 10
 	for (angle,label) in labels:
+		if log_scale:
+			angle = log(angle) * 360 / log_scale
 		g.append(draw.Text(label, size, pos[0], pos[1],
 			align=align,
 			fill=fill,
@@ -61,7 +65,7 @@ def make_tick_labels(radius, labels, size=10, align="right", text_angle=0, pos=(
 def deg2sec(m):
 	return "%.0f" % (m/6)
 
-def frange(start, end, step):
+def frange(start, end, step=1):
 	n_items = int(ceil((end - start) / step))
 	items = []
 	for i in range(n_items):
@@ -448,13 +452,140 @@ def make_sine(radius):
 		stroke="black",
 	))
 
-	# add a fake label for 1.0 at the far end
+	# add a fake label for 1.0 at the far end and some for special values
 	g.append(make_tick_labels(radius,
 		[[359, "1.00"]],
 		text_angle=90,
 		pos=(1,9),
 		text_anchor="end",
 	))
+
+	# and some known values
+	g.append(make_tick_labels(radius+5,
+		[[30*4, "1/2"], [60*4, "√3/2"], [45*4,"√2/2"]],
+		text_angle=90,
+		pos=(0,2),
+		text_anchor="middle",
+		length=1,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	return g
+
+def make_sqrt_scale(radius):
+	g = draw.Group()
+
+	g.append(draw.Circle(
+		0, 0, radius,
+		fill='none',
+		stroke='black',
+		stroke_width=0.1,
+	))
+	g.append(draw.Circle(
+		0, 0, radius-20,
+		fill='none',
+		stroke='black',
+		stroke_width=0.1,
+	))
+	major = frange(1,10)
+	minor1 = frange(1,10,0.5)
+	minor2 = frange(1,10,0.1)
+	minor3 = frange(1,10,0.05)
+
+	# the sqrt scale goes up to 10
+
+	g.append(make_ticks(radius-20,
+		minor3,
+		log_scale=log(10),
+		length=2,
+		stroke_width=0.1,
+		stroke="black",
+	))
+	g.append(make_ticks(radius-20,
+		minor2,
+		log_scale=log(10),
+		length=4,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	g.append(make_ticks(radius-20,
+		minor1,
+		log_scale=log(10),
+		length=8,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	g.append(make_tick_labels(radius-20,
+		[[_, "%d" % (_)] for _ in major],
+		12,
+		log_scale=log(10),
+		length=10,
+		stroke_width=0.4,
+		stroke="black",
+		text_angle=90,
+		pos=(2,-2),
+	))
+
+	extra_labels = [[_/10, ".%d" % (_ % 10)] for _ in frange(11,20) + [25,35]]
+	extra_labels += [[pi, "π"]]
+	extra_labels += [[e, "e"]]
+	g.append(make_tick_labels(radius-20,
+		extra_labels,
+		8,
+		log_scale=log(10),
+		text_angle=90,
+		pos=(2,-2),
+	))
+
+	# double the scales to go up to 100 for the outside
+	major = major + [10 * _ for _ in major]
+	minor1 = minor1 + [10 * _ for _ in minor1]
+	minor2 = minor2 + [10 * _ for _ in minor2]
+	minor3 = minor3 + [10 * _ for _ in minor3]
+	g.append(make_ticks(radius,
+		minor3,
+		log_scale=log(100),
+		length=2,
+		stroke_width=0.1,
+		stroke="black",
+	))
+	g.append(make_ticks(radius,
+		minor2,
+		log_scale=log(100),
+		length=4,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	g.append(make_ticks(radius,
+		minor1,
+		log_scale=log(100),
+		length=8,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	g.append(make_tick_labels(radius,
+		[[_, "%d" % _] for _ in major],
+		12,
+		log_scale=log(100),
+		length=10,
+		stroke_width=0.4,
+		stroke="black",
+		text_angle=90,
+		pos=(2,-2),
+	))
+
+	#extra_labels = [[_/10, ".%d" % (_ % 10)] for _ in frange(11,20) + [25,35]]
+	#extra_labels += [[pi, "π"]]
+	#extra_labels += [[e, "e"]]
+	g.append(make_tick_labels(radius,
+		extra_labels,
+		8,
+		log_scale=log(100),
+		text_angle=90,
+		pos=(2,-2),
+	))
+
+
 	return g
 
 
@@ -502,10 +633,6 @@ True Altitude
 5. Inner scale to upper/lower limb and month
 6. Point to degrees of observed height and temperature
 7. Outer scale now shows minutes of True Altitude (Ho)
-
-Noon sight (
-1. Inner scale to declination minutes at noon from almanac
-2. Profit
 """, 10, -250, -250,
 stroke="none",
 fill="black"
@@ -545,6 +672,7 @@ back.append(make_labels(390, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90),
 back.append(make_sine(370))
 
 back.append(make_gha_scale(340))
+back.append(make_sqrt_scale(280))
 
 
 d.append(front)
