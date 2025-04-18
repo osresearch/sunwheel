@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Generates the slide rule elements using SVG
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e
+from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan
 import drawsvg as draw
 
 d = draw.Drawing(2000,1000, origin='center')
@@ -408,6 +408,52 @@ def make_gha_scale(radius):
 	#g.append(make_labels(radius, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
 	return g
 
+# tangent goes off to infinity as it approaches 90
+# cotangent uses the red reverse scale since cot(theta) = tan(90-theta)
+def make_tangent_scale(radius):
+	g = draw.Group()
+
+	major = []
+	minor1 = []
+	minor2 = []
+	for a in frange(0, 2, 0.1):
+		major += [[degrees(atan(a))*4, "%.1f" % (a)]]
+	for a in frange(2, 10, 1) + frange(10,18,2) + [20,30,50,90]:
+		major += [[degrees(atan(a))*4, "%.0f" % (a)]]
+
+	for a in frange(2, 10, 0.5) + frange(10,30,1):
+		minor1 += [degrees(atan(a))*4]
+	for a in frange(0, 2, 0.01) + frange(2,5, 0.1) + frange(5, 10, 0.25) + frange(30,90,5):
+		minor2 += [degrees(atan(a))*4]
+
+	g.append(make_ticks(radius,
+		minor2,
+		length=2,
+		stroke_width=0.2,
+	))
+	g.append(make_ticks(radius,
+		minor1,
+		length=5,
+		stroke_width=0.2,
+	))
+	g.append(make_tick_labels(radius,
+		major,
+		10,
+		text_angle=90,
+		pos=(2,8),
+		stroke="black",
+		length=8,
+		stroke_width=0.4,
+	))
+	g.append(draw.Circle(
+		0, 0, radius,
+		fill='none',
+		stroke='black',
+		stroke_width=0.1,
+	))
+
+	return g
+
 # Sine is one quadrant for increased accuracy
 def make_sine(radius):
 	g = draw.Group()
@@ -470,6 +516,7 @@ def make_sine(radius):
 		stroke_width=0.2,
 		stroke="black",
 	))
+
 	return g
 
 def make_sqrt_scale(radius):
@@ -526,7 +573,7 @@ def make_sqrt_scale(radius):
 		pos=(2,-2),
 	))
 
-	extra_labels = [[_/10, ".%d" % (_ % 10)] for _ in frange(11,20) + [25,35]]
+	extra_labels = [[_/10, "%.1f" % (_/10)] for _ in frange(11,20) + [25,35]]
 	extra_labels += [[pi, "π"]]
 	extra_labels += [[e, "e"]]
 	g.append(make_tick_labels(radius-20,
@@ -612,13 +659,7 @@ inner.append(make_height_of_eye(h_e_radius))
 # The refraction, parallax and semi diameter can all be done with
 # the one Altitude Correction Table (ACT)
 inner.append(make_refraction(h_e_radius))
-#d.append(make_parallax(h_e_radius))
 inner.append(make_semidiameter(h_e_radius))
-#d.append(make_act(h_e_radius)
-
-# sin scale
-#d.append(make_sine(500))
-
 inner.append(make_d_lines(390))
 
 # Instructions for front side
@@ -667,12 +708,13 @@ back.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos
 back.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
 
 # 90 degree circle and sine/cosine tables
-back.append(make_rule(390, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
-back.append(make_labels(390, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
-back.append(make_sine(370))
+back.append(make_rule(380, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
+back.append(make_labels(380, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
+back.append(make_sine(360))
+back.append(make_tangent_scale(340))
 
-back.append(make_gha_scale(340))
-back.append(make_sqrt_scale(280))
+back.append(make_gha_scale(310))
+back.append(make_sqrt_scale(250))
 
 
 d.append(front)
