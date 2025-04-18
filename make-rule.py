@@ -38,7 +38,6 @@ def make_labels(radius, step, start, end, fmter, pos=(1,9), text_angle=+90, fill
 
 def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", text_angle=0, pos=(0,0), fill="black", stroke=None, stroke_width=0.3, length=0, **style):
 	g = draw.Group()
-	length = 10
 	for (angle,label) in labels:
 		if log_scale:
 			angle = log(angle) * 360 / log_scale
@@ -50,7 +49,7 @@ def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", tex
 			**style,
 		))
 
-		if stroke is None:
+		if length <= 0:
 			continue
 
 		g.append(draw.Line(
@@ -635,6 +634,54 @@ def make_sqrt_scale(radius):
 
 	return g
 
+def make_radians(radius):
+	g = draw.Group()
+	major = [[degrees(a), "%.1f" % (a)] for a in frange(0, 2*pi, 0.1)]
+
+	g.append(draw.Circle(
+		0, 0, radius,
+		fill='none',
+		stroke='black',
+		stroke_width=0.1,
+	))
+
+	# replace the one close to pi and other special values
+	extra_labels = [
+	 [degrees(  pi/6), "π/6"],	# 30
+	 [degrees(  pi/3), "π/3"],	# 60
+	 [degrees(  pi/2), "π/2"],	# 90
+	 [degrees(2*pi/3), "2π/3"],	# 120
+	 [degrees(5*pi/6), "5π/6"],	# 150
+	 [degrees(  pi  ), "π"],	# 180
+	 [degrees(7*pi/6), "7π/6"],	# 210
+	 [degrees(4*pi/3), "4π/3"],	# 240
+	 [degrees(3*pi/2), "3π/2"],	# 270
+	 [degrees(5*pi/3), "5π/3"],	# 300
+	 [degrees(11*pi/6), "11π/6"],	# 330
+	 [359, "2π"],	# 360
+	]
+
+	g.append(make_ticks(radius, [degrees(_) for _ in frange(0,2*pi,0.01)], 2, stroke_width=0.2))
+
+	g.append(make_ticks(radius, [degrees(_) for _ in frange(0,2*pi,0.05)], 5, stroke_width=0.2))
+
+	g.append(make_tick_labels(radius, major,
+		10,
+		text_angle=90,
+		pos=(2,8),
+		length=8,
+		stroke="black",
+		stroke_width=0.4,
+	))
+
+	g.append(make_tick_labels(radius, extra_labels,
+		10,
+		text_angle=90,
+		pos=(0,-2),
+		text_anchor="middle",
+	))
+		
+	return g
 
 ####
 #### Front side
@@ -703,18 +750,19 @@ back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 # rule for 360 degree circle with reverse angles as well
 back.append(make_rule(420, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
 back.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
+back.append(make_radians(400))
 
-# 24-hour clock
+# 24-hour clock on the outsde
 back.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
 
 # 90 degree circle and sine/cosine tables
-back.append(make_rule(380, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
-back.append(make_labels(380, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
-back.append(make_sine(360))
-back.append(make_tangent_scale(340))
+back.append(make_rule(370, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
+back.append(make_labels(370, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
+back.append(make_sine(352))
+back.append(make_tangent_scale(334))
 
-back.append(make_gha_scale(310))
-back.append(make_sqrt_scale(250))
+back.append(make_gha_scale(300))
+back.append(make_sqrt_scale(240))
 
 
 d.append(front)
