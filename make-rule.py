@@ -537,20 +537,28 @@ def make_sqrt_scale(radius):
 	minor1 = frange(1,10,0.5)
 	minor2 = frange(1,10,0.1)
 	minor3 = frange(1,10,0.05)
+	minor4 = frange(1,2, 0.01)
 
 	# the sqrt scale goes up to 10
 
 	g.append(make_ticks(radius-20,
-		minor3,
+		minor4,
 		log_scale=log(10),
 		length=2,
 		stroke_width=0.1,
 		stroke="black",
 	))
 	g.append(make_ticks(radius-20,
-		minor2,
+		minor3,
 		log_scale=log(10),
 		length=4,
+		stroke_width=0.1,
+		stroke="black",
+	))
+	g.append(make_ticks(radius-20,
+		minor2,
+		log_scale=log(10),
+		length=6,
 		stroke_width=0.2,
 		stroke="black",
 	))
@@ -563,7 +571,7 @@ def make_sqrt_scale(radius):
 	))
 	g.append(make_tick_labels(radius-20,
 		[[_, "%d" % (_)] for _ in major],
-		12,
+		10,
 		log_scale=log(10),
 		length=10,
 		stroke_width=0.4,
@@ -588,17 +596,25 @@ def make_sqrt_scale(radius):
 	minor1 = minor1 + [10 * _ for _ in minor1]
 	minor2 = minor2 + [10 * _ for _ in minor2]
 	minor3 = minor3 + [10 * _ for _ in minor3]
+	minor4 = minor4 + [10 * _ for _ in minor4]
 	g.append(make_ticks(radius,
-		minor3,
+		minor4,
 		log_scale=log(100),
 		length=2,
 		stroke_width=0.1,
 		stroke="black",
 	))
 	g.append(make_ticks(radius,
-		minor2,
+		minor3,
 		log_scale=log(100),
 		length=4,
+		stroke_width=0.1,
+		stroke="black",
+	))
+	g.append(make_ticks(radius,
+		minor2,
+		log_scale=log(100),
+		length=6,
 		stroke_width=0.2,
 		stroke="black",
 	))
@@ -611,7 +627,7 @@ def make_sqrt_scale(radius):
 	))
 	g.append(make_tick_labels(radius,
 		[[_, "%d" % _] for _ in major],
-		12,
+		10,
 		log_scale=log(100),
 		length=10,
 		stroke_width=0.4,
