@@ -21,7 +21,6 @@ if len(sys.argv) > 4:
 
 
 d = draw.Drawing(2000 if draw_back else 1000,1000, origin=(0,0))
-h_e_radius = 380
 
 def make_ticks(radius, ticks, length, log_scale=None, stroke='black', **style):
 	g = draw.Group()
@@ -99,7 +98,7 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 		g.append(make_ticks(radius, frange(start, end, minor3), 2, stroke_width=0.1))
 	g.append(make_ticks(radius, frange(start, end, minor2), 3, stroke_width=0.1))
 	g.append(make_ticks(radius, frange(start, end, minor1), 5, stroke_width=0.2))
-	g.append(make_ticks(radius, frange(start, end, major),  8, stroke_width=0.4))
+	g.append(make_ticks(radius, frange(start, end, major),  10, stroke_width=0.4))
 	g.append(make_labels(radius, major, start, end, fmt, pos=pos))
 	return g
 
@@ -715,6 +714,38 @@ def make_radians(radius):
 		
 	return g
 
+def make_minutes(radius, angle):
+	g = draw.Group(transform="rotate(%.3f)" % (angle))
+
+	# 0-60 minutes around the circle in black
+	g.append(make_rule(radius, 360/60, 360/120, 360/600, pos=(2,9)))
+
+	# red numbers going reverse around the circle
+	g.append(make_labels(radius, 6, 0, 360,
+		lambda x: "%.0f" % ((60-x/6) % 60),
+		pos=(-3,-2),
+		text_anchor="end",
+		fill="red",
+		font_style="italic",
+	))
+
+	# heavy red line to mark the zero and +/- for the crossing
+	g.append(draw.Line(radius-12, 0, radius+12, 0, stroke="red", stroke_width=3))
+
+#	g.append(draw.Text("+", 30,
+#		2, -radius,
+#		fill="black",
+#		transform="rotate(90)",
+#	))
+#	g.append(draw.Text("-", 30,
+#		-20, -radius+15,
+#		fill="black",
+#		transform="rotate(90)",
+#	))
+		
+
+	return g
+
 ####
 #### Front side
 ####
@@ -723,24 +754,23 @@ front = draw.Group(transform="translate(500 500)")
 
 
 outer = draw.Group(transform="rotate(%.3f)" % (outer_angle))
-
-# Minutes
-outer.append(make_rule(430, 360/60, 360/120, 360/600))
-outer.append(make_labels(430, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
-front.append(outer)
+outer.append(make_minutes(440, outer_angle))
 
 inner = draw.Group(transform="rotate(%.3f)" % (inner_angle))
-inner.append(make_rule(400, 360/60, 360/120, 360/600))
-# add an reverse scale for the inner ring
-inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
+inner.append(make_minutes(410, 0))
 
+#inner.append(make_rule(400, 360/60, 360/120, 360/600))
+# add an reverse scale for the inner ring
+#inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
+
+h_e_radius = 390
 inner.append(make_height_of_eye(h_e_radius))
 
 # The refraction, parallax and semi diameter can all be done with
 # the one Altitude Correction Table (ACT)
 inner.append(make_refraction(h_e_radius))
 inner.append(make_semidiameter(h_e_radius))
-inner.append(make_d_lines(390))
+inner.append(make_d_lines(h_e_radius+10))
 
 # Instructions for front side
 inner.append(draw.Text(
@@ -760,17 +790,18 @@ fill="black"
 ))
 
 
-front.append(inner)
-
 # Cut lines
-front.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
-front.append(draw.Circle(0,0, 415, fill="none", stroke="black", stroke_width=1))
-front.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
+inner.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
+outer.append(draw.Circle(0,0, 425, fill="none", stroke="black", stroke_width=1))
+outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle))
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 front.append(pointer)
+front.append(outer)
+front.append(inner)
+
 
 
 ####
