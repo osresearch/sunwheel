@@ -3,8 +3,24 @@
 
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan
 import drawsvg as draw
+import sys
 
-d = draw.Drawing(2000,1000, origin='center')
+pointer_angle = 0
+inner_angle = 0
+outer_angle = 0
+draw_back = True
+
+if len(sys.argv) > 1:
+	pointer_angle = float(sys.argv[1])
+if len(sys.argv) > 2:
+	inner_angle = float(sys.argv[2])
+if len(sys.argv) > 3:
+	outer_angle = float(sys.argv[3])
+if len(sys.argv) > 4:
+	draw_back = int(sys.argv[4])
+
+
+d = draw.Drawing(2000 if draw_back else 1000,1000, origin=(0,0))
 h_e_radius = 380
 
 def make_ticks(radius, ticks, length, log_scale=None, stroke='black', **style):
@@ -703,16 +719,17 @@ def make_radians(radius):
 #### Front side
 ####
 # Outer rules for 0-360 degrees with negative markers
-front = draw.Group(transform="translate(-500 0)")
+front = draw.Group(transform="translate(500 500)")
 
 
-outer = draw.Group()
+outer = draw.Group(transform="rotate(%.3f)" % (outer_angle))
+
 # Minutes
 outer.append(make_rule(430, 360/60, 360/120, 360/600))
 outer.append(make_labels(430, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 front.append(outer)
 
-inner = draw.Group()
+inner = draw.Group(transform="rotate(%.3f)" % (inner_angle))
 inner.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
 inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
@@ -750,7 +767,7 @@ front.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
 front.append(draw.Circle(0,0, 415, fill="none", stroke="black", stroke_width=1))
 front.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
-pointer = draw.Group()
+pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle))
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 front.append(pointer)
@@ -759,7 +776,7 @@ front.append(pointer)
 ####
 #### Reverse side (no rotating parts)
 ####
-back = draw.Group(transform="translate(500 0)")
+back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (-outer_angle))
 back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
 back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
@@ -783,5 +800,6 @@ back.append(make_sqrt_scale(240))
 
 d.append(front)
 d.append(back)
+
 d.save_svg('rule.svg')
 
