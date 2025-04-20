@@ -31,7 +31,7 @@
      inkscape:window-x="1240"
      inkscape:window-y="421"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g8" />
+     inkscape:current-layer="g28" />
   <defs
      id="defs1">
     <marker
@@ -176,19 +176,19 @@
           <path
              id="path1"
              style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
-             d="m 105.60209,37.407281 c 0.30603,0.452984 0.56962,0.937 0.78505,1.446341 0.21543,0.509343 0.38271,1.044009 0.49614,1.598294 0.11342,0.554284 0.17299,1.128187 0.17299,1.716003 0,0.587816 -0.0596,1.16172 -0.17299,1.716005 -0.11342,0.554285 -0.2807,1.088951 -0.49614,1.598292 -0.21543,0.509339 -0.47902,0.993355 -0.78505,1.446339"
-             sodipodi:nodetypes="csssssc" />
+             d="m 105.60209,37.407281 c 0.30603,0.452984 0.56962,0.937 0.78505,1.446341 0.21543,0.509343 0.38271,1.044009 0.49614,1.598294 0.11342,0.554284 0.17299,1.128187 0.17299,1.716003 0,0.587816 -0.0596,1.16172 -0.17299,1.716005 -0.11342,0.554285 -0.2807,1.088951 -0.49614,1.598292"
+             sodipodi:nodetypes="cssssc" />
           <path
              style="fill:none;stroke:#b3b3b3;stroke-width:0.1;stroke-opacity:0.981814"
              d="m 98.75169,42.167918 h 8.10184"
              id="path2"
              sodipodi:nodetypes="cc" />
           <circle
-             style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
-             id="path3"
-             cx="113.89514"
-             cy="45.6465"
-             r="1.621843" />
+             style="fill:#999999;stroke:none;stroke-width:0.0529144;stroke-opacity:0.981814"
+             id="circle9-4-5"
+             cx="113.85188"
+             cy="45.643471"
+             r="0.85818756" />
           <path
              style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
              d="m 113.77096,45.675203 -15.28369,-3.499948 7.98481,-3.409623 z"
@@ -280,11 +280,11 @@
              id="path8"
              sodipodi:nodetypes="cc" />
           <circle
-             style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
-             id="circle9"
-             cx="119.92511"
-             cy="38.952091"
-             r="1.621843" />
+             style="fill:#999999;stroke:none;stroke-width:0.0520046;stroke-opacity:0.981814"
+             id="circle9-4-7"
+             cx="120.14434"
+             cy="38.890503"
+             r="0.84343308" />
           <path
              style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
              d="m 120.14904,38.900463 -15.20336,3.274792 5.8426,-6.297973 z"
@@ -414,19 +414,19 @@
           <path
              id="circle8-7"
              style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
-             d="m 109.76064,35.107416 c 0.45298,0.30603 0.87493,0.654505 1.26015,1.039718 0.38521,0.385211 0.73369,0.807163 1.03972,1.260147 0.30603,0.452984 0.56961,0.937 0.78504,1.446341 0.21543,0.509343 0.38271,1.044009 0.49614,1.598294 0.11342,0.554284 0.17299,1.128187 0.17299,1.716003 0,0.587816 -0.0596,1.16172 -0.17299,1.716005 -0.11342,0.554285 -0.28071,1.088951 -0.49614,1.598292"
-             sodipodi:nodetypes="cssssssc" />
+             d="m 109.76064,35.107416 c 0.45298,0.30603 0.87493,0.654505 1.26015,1.039718 0.38521,0.385211 0.73369,0.807163 1.03972,1.260147 0.30603,0.452984 0.56961,0.937 0.78504,1.446341 0.21543,0.509343 0.38271,1.044009 0.49614,1.598294 0.11342,0.554284 0.17299,1.128187 0.17299,1.716003 0,0.587816 -0.0596,1.16172 -0.17299,1.716005"
+             sodipodi:nodetypes="csssssc" />
           <path
              style="fill:none;stroke:#b3b3b3;stroke-width:0.1;stroke-opacity:0.981814"
              d="m 104.90438,42.167918 h 8.40756"
              id="path8-4"
              sodipodi:nodetypes="cc" />
           <circle
-             style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
+             style="fill:#999999;stroke:none;stroke-width:0.0535347;stroke-opacity:0.981814"
              id="circle9-4"
-             cx="119.92511"
-             cy="33.586132"
-             r="1.621843" />
+             cx="119.74321"
+             cy="33.638103"
+             r="0.86824864" />
           <path
              style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
              d="m 119.74751,33.607508 -14.80183,8.567747 8.28831,-1.9541 z"
