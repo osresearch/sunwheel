@@ -36,12 +36,12 @@ def make_ticks(radius, ticks, length, log_scale=None, stroke='black', **style):
 		))
 	return g
 
-def make_labels(radius, step, start, end, fmter, pos=(1,9), text_angle=+90, fill="black", **style):
+def make_labels(radius, step, start, end, fmter, pos=(1,9), size=10, text_angle=+90, fill="black", **style):
 	g = draw.Group()
 	m = start
 	while m < end:
 		s = fmter(m) #"%.0f" % (m)
-		g.append(draw.Text(s, 10, pos[0], pos[1],
+		g.append(draw.Text(s, size, pos[0], pos[1],
 			#align="left",
 			fill=fill,
 			stroke='none',
@@ -118,6 +118,7 @@ def make_height_of_eye(radius):
 	g.append(make_ticks(radius-10, minor1, 8, stroke_width=0.2))
 	g.append(make_ticks(radius-10, major,  15, stroke_width=0.3))
 
+	# Meters
 	labels = [[height_of_eye(h_e), "%.0f" % (h_e)] for h_e in
 		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 17, 20]]
 
@@ -129,7 +130,34 @@ def make_height_of_eye(radius):
 	))
 	g.append(make_tick_labels(
 		radius-10,
-		[[0, "Eye"]],
+		[[0, "m"]],
+		pos=(-10,+3),
+		text_anchor="end",
+		stroke="red",
+		length=8,
+		stroke_width=0.4,
+	))
+
+	# Feet
+	ft_radius = radius - 50
+	ft_per_m = 3.281
+	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,65.1,5)]
+	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,65.1,1)]
+
+	labels = [[height_of_eye(h_e/ft_per_m), "%.0f" % (h_e)] for h_e in
+		[5,10,15,20,25,30,35,40,45,50,55,60,65]]
+
+	g.append(make_ticks(ft_radius, minor1,  8, stroke_width=0.2))
+	g.append(make_ticks(ft_radius, major,  15, stroke_width=0.3))
+	g.append(make_tick_labels(
+		ft_radius,
+		labels,
+		pos=(-10,+3),
+		text_anchor="end",
+	))
+	g.append(make_tick_labels(
+		ft_radius,
+		[[0, "ft"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		stroke="red",
@@ -196,7 +224,7 @@ def make_refraction(radius):
 			transform="rotate(%f) translate(%f)" % (refraction(3,1010,t), r),
 			text_anchor="center",
 		))
-		g.append(draw.Text("%d°C" % (t),
+		g.append(draw.Text("%d°F" % (t * 9/5 + 32),
 			8.5, -8, +10,
 			transform="translate(%f)" % (r),
 			text_anchor="center",
@@ -366,12 +394,14 @@ def make_d_lines(outer_radius):
 
 	# full hour marks
 	for t in frange(-12,12.1,1):
-		if t == -6 or t == 6 or t == 0:
+		stroke = "black"
+		width = 0.5
+
+		if t == 0:
+			width = 2
+		elif t == -6 or t == 6:
 			stroke = "red"
 			width = 1
-		else:
-			stroke = "black"
-			width = 0.5
 		g.append(make_arcs(frange(0.1, 1.01, 0.01), lambda d: (radius(d), t*d*6), stroke=stroke, stroke_width=width))
 
 		if t == -12 or t == +12:
@@ -717,20 +747,38 @@ def make_radians(radius):
 def make_minutes(radius, angle):
 	g = draw.Group(transform="rotate(%.3f)" % (angle))
 
+	major = frange(0,360,360/60)
+	minor1 = frange(0,360,360/120)
+	minor2 = frange(0,360,360/600)
+
+	g.append(make_ticks(radius, minor2, 8, stroke_width=0.2))
+	g.append(make_ticks(radius, minor1, 12, stroke_width=0.3))
+	g.append(make_ticks(radius, major, 20, stroke_width=0.5))
+	g.append(draw.Circle(0, 0, radius, fill="none", stroke="black", stroke_width=0.5))
+
 	# 0-60 minutes around the circle in black
-	g.append(make_rule(radius, 360/60, 360/120, 360/600, pos=(2,9)))
+	#g.append(make_rule(radius, 360/60, 360/120, 360/600, pos=(2,9)))
+	# black numbers going clockwise
+	g.append(make_labels(radius, 6, 0, 360,
+		lambda x: "%.0f" % ((x/6) % 60),
+		size=14,
+		pos=(2,12),
+		text_anchor="start",
+		fill="black",
+	))
 
 	# red numbers going reverse around the circle
 	g.append(make_labels(radius, 6, 0, 360,
 		lambda x: "%.0f" % ((60-x/6) % 60),
-		pos=(-3,-2),
+		pos=(-3,-5),
+		size=14,
 		text_anchor="end",
 		fill="red",
 		font_style="italic",
 	))
 
 	# heavy red line to mark the zero and +/- for the crossing
-	g.append(draw.Line(radius-12, 0, radius+12, 0, stroke="red", stroke_width=3))
+	g.append(draw.Line(radius-10, 0, radius+10, 0, stroke="red", stroke_width=3))
 
 #	g.append(draw.Text("+", 30,
 #		2, -radius,
@@ -754,16 +802,16 @@ front = draw.Group(transform="translate(500 500)")
 
 
 outer = draw.Group(transform="rotate(%.3f)" % (outer_angle))
-outer.append(make_minutes(440, outer_angle))
+outer.append(make_minutes(430, outer_angle))
 
 inner = draw.Group(transform="rotate(%.3f)" % (inner_angle))
-inner.append(make_minutes(410, 0))
+inner.append(make_minutes(390, 0))
 
 #inner.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
 #inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
-h_e_radius = 390
+h_e_radius = 360
 inner.append(make_height_of_eye(h_e_radius))
 
 # The refraction, parallax and semi diameter can all be done with
@@ -773,7 +821,8 @@ inner.append(make_semidiameter(h_e_radius))
 inner.append(make_d_lines(h_e_radius+10))
 
 # Instructions for front side
-inner.append(draw.Text(
+if False:
+  inner.append(draw.Text(
 """
 True Altitude
 1. Point to zero on inner scale
@@ -792,7 +841,7 @@ fill="black"
 
 # Cut lines
 inner.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
-outer.append(draw.Circle(0,0, 425, fill="none", stroke="black", stroke_width=1))
+outer.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle))
@@ -801,6 +850,8 @@ pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=
 front.append(pointer)
 front.append(outer)
 front.append(inner)
+
+inner.append(draw.Image(-100, -300, 250, 250, path="latitude.svg", embed=True))
 
 
 
@@ -833,4 +884,5 @@ d.append(front)
 d.append(back)
 
 d.save_svg('rule.svg')
+#d.save_png('rule.png')
 
