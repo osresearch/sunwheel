@@ -4,13 +4,27 @@
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan
 import drawsvg as draw
 import sys
+import re
 
 pointer_angle = 0
 inner_angle = 0
 outer_angle = 0
 draw_back = True
+output_file = "rule.svg"
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and sys.argv[1].endswith(".png"):
+	# special case for the makefiles where
+	# all the parameters are in the file name
+	output_file = sys.argv[1]
+	group = re.match(r".*-(.*),(.*),(.*)\.png", output_file)
+	if not group:
+		print("unable to parse file name", file=sys.stderr)
+		sys.exit(-1)
+	pointer_angle = float(group[1])*6
+	inner_angle = float(group[2])*6
+	outer_angle = float(group[3])*6
+	draw_back = 0
+elif len(sys.argv) > 1:
 	pointer_angle = float(sys.argv[1])
 if len(sys.argv) > 2:
 	inner_angle = float(sys.argv[2])
@@ -18,6 +32,9 @@ if len(sys.argv) > 3:
 	outer_angle = float(sys.argv[3])
 if len(sys.argv) > 4:
 	draw_back = int(sys.argv[4])
+
+if len(sys.argv) > 5:
+	output_file = sys.argv[5]
 
 
 d = draw.Drawing(2000 if draw_back else 1000,1000, origin=(0,0))
@@ -744,8 +761,8 @@ def make_radians(radius):
 		
 	return g
 
-def make_minutes(radius, angle):
-	g = draw.Group(transform="rotate(%.3f)" % (angle))
+def make_minutes(radius):
+	g = draw.Group()
 
 	major = frange(0,360,360/60)
 	minor1 = frange(0,360,360/120)
@@ -801,11 +818,11 @@ def make_minutes(radius, angle):
 front = draw.Group(transform="translate(500 500)")
 
 
-outer = draw.Group(transform="rotate(%.3f)" % (outer_angle))
-outer.append(make_minutes(430, outer_angle))
+outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer")
+outer.append(make_minutes(430))
 
-inner = draw.Group(transform="rotate(%.3f)" % (inner_angle))
-inner.append(make_minutes(390, 0))
+inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner")
+inner.append(make_minutes(390))
 
 #inner.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
@@ -844,21 +861,21 @@ inner.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
-pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle))
+pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle), id="pointer")
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 front.append(pointer)
 front.append(outer)
 front.append(inner)
 
-inner.append(draw.Image(-100, -300, 250, 250, path="latitude.svg", embed=True))
+inner.append(draw.Image(-120, -320, 300, 300, path="latitude.svg", embed=True))
 
 
 
 ####
 #### Reverse side (no rotating parts)
 ####
-back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (-outer_angle))
+back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
 back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
@@ -883,6 +900,9 @@ back.append(make_sqrt_scale(240))
 d.append(front)
 d.append(back)
 
-d.save_svg('rule.svg')
+if output_file.endswith(".png"):
+	d.save_png(output_file)
+else:
+	d.save_svg(output_file)
 #d.save_png('rule.png')
 
