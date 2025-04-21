@@ -251,7 +251,7 @@ def make_refraction(radius, angle):
 
 	g.append(make_tick_labels(
 		radius,
-		[[refraction(a,1010,0), "%.0f" % (a)] for a in majors],
+		[[refraction(a,1010,-9), "%.0f" % (a)] for a in majors],
 		size=8.5,
 		pos=(-5,+3),
 		text_anchor="start",
