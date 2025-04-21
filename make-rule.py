@@ -122,10 +122,10 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 
 # Height of eye is 1.76 sqrt(H_e) in meters
 def height_of_eye(H_e):
-	return 1.76 * sqrt(H_e) * -6
+	return 1.76 * sqrt(H_e) * 6
 
-def make_height_of_eye(radius):
-	g = draw.Group(transform="rotate(-120)")
+def make_height_of_eye(radius,angle):
+	g = draw.Group(transform="rotate(%.3f)" % (angle))
 	major = [height_of_eye(H_e) for H_e in frange(0,20.1,1)]
 	minor1 = [height_of_eye(H_e) for H_e in frange(0,20,0.5)]
 	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
@@ -147,12 +147,12 @@ def make_height_of_eye(radius):
 	))
 	g.append(make_tick_labels(
 		radius-10,
-		[[0, "m"]],
+		[[height_of_eye(21.5), "m"]],
 		pos=(-10,+3),
 		text_anchor="end",
-		stroke="red",
-		length=8,
-		stroke_width=0.4,
+		#stroke="red",
+		#length=8,
+		#stroke_width=0.4,
 	))
 
 	# Feet
@@ -174,12 +174,12 @@ def make_height_of_eye(radius):
 	))
 	g.append(make_tick_labels(
 		ft_radius,
-		[[0, "ft"]],
+		[[height_of_eye(21.5), "ft"]],
 		pos=(-10,+3),
 		text_anchor="end",
-		stroke="red",
-		length=8,
-		stroke_width=0.4,
+		#stroke="red",
+		#length=8,
+		#stroke_width=0.4,
 	))
 		
 	return g
@@ -210,10 +210,10 @@ def refraction(H_a, p=1010, t=10):
 # and for apr-sep 31.8/2 = 15.90
 # instead we can have four starting lines and one refraction table
 # TODO:  make better symbols
-def make_refraction(radius):
+def make_refraction(radius, angle):
 	sd_1 = 16.2
 	sd_2 = 15.9
-	g = draw.Group(transform="rotate(-180)")
+	g = draw.Group(transform="rotate(%.3f)" % (angle))
 	majors = frange(3,20,1) + frange(20,45,5) + frange(50,90.1,10)
 	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
 	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
@@ -236,12 +236,14 @@ def make_refraction(radius):
 
 		if t % 10 != 0:
 			continue
-		g.append(draw.Text("%d°C" % (t),
+		g.append(draw.Text(
+			"%d°F" % (t * 9/5 + 32),
 			8.5, -8, -2,
 			transform="rotate(%f) translate(%f)" % (refraction(3,1010,t), r),
 			text_anchor="center",
 		))
-		g.append(draw.Text("%d°F" % (t * 9/5 + 32),
+		g.append(draw.Text(
+			"%d°C" % (t),
 			8.5, -8, +10,
 			transform="translate(%f)" % (r),
 			text_anchor="center",
@@ -264,15 +266,16 @@ def make_refraction(radius):
 		[sd_2*6, "Apr-Sep" ],
 	]
 
-	g.append(make_tick_labels(
-		radius-25,
-		[
-			[+sd_1*6-4, "Upper"],
-			[-sd_1*6-2, "Lower"],
-		],
-		text_anchor="center",
-		size=8,
-	))
+#	g.append(make_tick_labels(
+#		radius-25,
+#		[
+#			[+sd_1*6-4, "Upper"],
+#			[-sd_1*6-2, "Lower"],
+#		],
+#		text_anchor="center",
+#		size=8,
+#	))
+
 	#g.append(make_ticks(radius, [_[0] for _ in labels], 8, stroke="red"))
 #	g.append(make_tick_labels(radius, labels,
 #		pos=(-9,2),
@@ -314,7 +317,7 @@ def make_parallax(radius):
 # Sun semi diameter for upper or lower
 # from https://thenauticalalmanac.com/DRIPS.pdf
 def make_semidiameter(radius):
-	g = draw.Group(transform="rotate(-180)")
+	g = draw.Group(transform="rotate(0)")
 	ticks1 = [
 		[16.29*6, "Jan"],
 		[16.26*6, ""],
@@ -335,7 +338,7 @@ def make_semidiameter(radius):
 	minor2 = [15.76*6, 15.82*6, 15.94*6, 16.07*6, 16.20*6, 16.27*6]
 	#g.append(make_ticks(radius, [0], 8, stroke_width=1, stroke="red"))
 
-	for scale in [1,-1]:
+	for scale in [-1]:
 		ticks1 = [[_[0]*scale, _[1]] for _ in ticks1]
 		ticks2 = [[_[0]*scale, _[1]] for _ in ticks2]
 		minor1 = [_*scale for _ in minor1]
@@ -829,31 +832,13 @@ inner.append(make_minutes(390))
 #inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
 h_e_radius = 360
-inner.append(make_height_of_eye(h_e_radius))
+inner.append(make_height_of_eye(h_e_radius, -160))
 
 # The refraction, parallax and semi diameter can all be done with
 # the one Altitude Correction Table (ACT)
-inner.append(make_refraction(h_e_radius))
+inner.append(make_refraction(h_e_radius, -160))
 inner.append(make_semidiameter(h_e_radius))
 inner.append(make_d_lines(h_e_radius+10))
-
-# Instructions for front side
-if False:
-  inner.append(draw.Text(
-"""
-True Altitude
-1. Point to zero on inner scale
-2. Outer scale to minutes of Sextant Altitude (H
-3. Point to index error on inner scale
-3. Inner scale to Eye
-4. Point to Height of Eye
-5. Inner scale to upper/lower limb and month
-6. Point to degrees of observed height and temperature
-7. Outer scale now shows minutes of True Altitude (Ho)
-""", 10, -250, -250,
-stroke="none",
-fill="black"
-))
 
 
 # Cut lines
@@ -868,7 +853,7 @@ front.append(pointer)
 front.append(outer)
 front.append(inner)
 
-inner.append(draw.Image(-120, -320, 300, 300, path="latitude.svg", embed=True))
+inner.append(draw.Image(-120, +50, 300, 300, path="latitude.svg", embed=True))
 
 
 

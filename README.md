@@ -68,6 +68,15 @@ var outer = 0;
 var pointer = 0;
 function set_rule(p,i,o) {
 	var sliderule = document.getElementById("sliderule").contentDocument;
+
+	// find the shortest way to rotate the inner one
+	// the outer and pointer must take the long way around
+	if (i - inner > 30)
+		i = i - 60;
+	else
+	if (i - inner < -30)
+		i = i + 60;
+
 	inner = i;
 	outer = o;
 	pointer = p;
@@ -97,13 +106,17 @@ Correcting sextant height measurement:
 <li onclick="set_rule(0,0,0)">Start with the pointer on the inner and outer at 0
 <li onclick="set_rule(0,0,3.4)">Rotate the outer dial to the minutes of the sextant height, 3.4'.
 <li onclick="set_rule(0.2,0,3.4)">Point to the index error 0.2 on the inner dial, read the corrected height of 3.6'.
-<li onclick="set_rule(0.0,40.0,3.6)"> Rotate the inner dial so that the zero for height of eye is under the pointer.
-<li onclick="set_rule(-4.3,40.0,3.6)">Rotate the pointer to the height of eye, 6m above sea level. Read the minutes of the correct sextant altitude from the outer dial, 59.3'.  Note that
-this has rotated *past* the zero mark on the outer dial, so we need to subtract one from
-our measurement.  The height corrected for the dip is now 34&deg; 59.3'.
-<li onclick="set_rule(0.0,14.0,-0.7)">Rotate the inner dial so that the lower limb and approximate current date (midway through April in this example) is under the pointer.
-<li onclick="set_rule(14.5,14.0,-0.7)">Rotate the pointer so that it lines up with the current temperature and height of the measurement (10C and 34&deg;).
-<li onclick="set_rule(0, 28.5, 13.8)">Note that the pointer has passed the zero mark in the positive direction, so the correct adjusted sextant height is <b>35&deg; 13.8'</b> after compensating for dip, refraction, temperature, sun semidiameter and the lower limb measurement.
+<li onclick="set_rule(0.0,37.6,3.6)"> Rotate the inner dial so that the 6m height of eye is under the pointer.
+<li onclick="set_rule(-5.8,37.6,3.6)">
+Rotate the pointer so that it lines up with the current temperature and height of the measurement (10C and 34&deg;).
+<li onclick="set_rule(0.0,37.6-5.8,-2.2)">
+Note that this has rotated *past* the zero mark on the outer dial, so we need to subtract one from
+our measurement.  The height corrected for the dip and refraction is now 34&deg; 57.8'.
+
+<li onclick="set_rule(0.0,-16.0,-2.2)">
+Rotate the pointer so that the lower limb and approximate current date (midway through April in this example) is under the pointer. This corresponds to a semi diameter of 16.0'.
+<li onclick="set_rule(16.0, -16.0, -2.2)">Set the pointer to the zero on the inside scale and note that the it passed the zero mark on the outside scale in the positive direction, so we need to add one to the degree value.
+<li onclick="set_rule(0.0, 0, 13.8)">Now the correct adjusted sextant height is <b>35&deg; 13.8'</b> after compensating for dip, refraction, temperature, sun semidiameter and the lower limb measurement.
 </ul>
 Computing latitude (same hemisphere, L > D):
 <ul>

@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="80mm"
-   height="80mm"
-   viewBox="0 0 80 80"
+   width="3000"
+   height="3000"
+   viewBox="0 0 793.75 793.75"
    version="1.1"
    id="svg1"
    sodipodi:docname="latitude.svg"
@@ -23,15 +23,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="4.4639525"
-     inkscape:cx="145.61087"
-     inkscape:cy="138.33033"
+     inkscape:zoom="0.48833333"
+     inkscape:cx="1498.9761"
+     inkscape:cy="1500"
      inkscape:window-width="2575"
      inkscape:window-height="1729"
      inkscape:window-x="1240"
      inkscape:window-y="421"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g28" />
+     inkscape:current-layer="g24" />
   <defs
      id="defs1">
     <marker
@@ -158,24 +158,25 @@
        id="g24"
        transform="matrix(1.7163158,0,0,1.7163158,-69.078151,-24.070536)">
       <g
-         id="g8">
+         id="g8"
+         transform="matrix(10.637775,0,0,10.637775,-1082.4191,-262.0556)">
         <text
            xml:space="preserve"
-           style="font-size:2.46652px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
-           x="139.16504"
-           y="42.606308"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+           x="146.20995"
+           y="32.489613"
            id="text8"><tspan
              sodipodi:role="line"
              id="tspan8"
-             style="font-size:2.46652px;stroke-width:0.264583"
-             x="139.16504"
-             y="42.606308">L=90 - (H+D)</tspan></text>
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="146.20995"
+             y="32.489613">L=90 - (H+D)</tspan></text>
         <g
            id="g28"
-           transform="matrix(1.3445222,0,0,1.3445222,-35.29145,-13.430539)">
+           transform="matrix(1.3445222,0,0,1.3445222,-12.360936,-21.92588)">
           <path
              id="path1"
-             style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
+             style="fill:none;stroke:#000000;stroke-width:0.273441;stroke-dasharray:none;stroke-opacity:0.981814"
              d="m 105.60209,37.407281 c 0.30603,0.452984 0.56962,0.937 0.78505,1.446341 0.21543,0.509343 0.38271,1.044009 0.49614,1.598294 0.11342,0.554284 0.17299,1.128187 0.17299,1.716003 0,0.587816 -0.0596,1.16172 -0.17299,1.716005 -0.11342,0.554285 -0.2807,1.088951 -0.49614,1.598292"
              sodipodi:nodetypes="cssssc" />
           <path
@@ -251,25 +252,25 @@
         </g>
         <text
            xml:space="preserve"
-           style="font-size:2.05544px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.154158"
-           x="130.25336"
-           y="45.314575"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;stroke-width:0.154158"
+           x="122.9667"
+           y="30.8794"
            id="text24-7-9"><tspan
              sodipodi:role="line"
              id="tspan24-0-2"
-             style="font-size:2.05544px;text-align:center;text-anchor:middle;stroke-width:0.154158"
-             x="130.25336"
-             y="45.314575">Contrary Name</tspan></text>
+             style="font-size:1.64435px;text-align:center;text-anchor:middle;stroke-width:0.154158"
+             x="122.9667"
+             y="30.8794">Contrary</tspan></text>
       </g>
       <g
          id="g13"
-         transform="translate(-0.17266954,14.728622)">
+         transform="matrix(10.637775,0,0,10.637775,-1074.3901,-118.31304)">
         <g
            id="g29"
-           transform="matrix(1.3680425,0,0,1.3680425,-46.227325,-12.496167)">
+           transform="matrix(1.3680425,0,0,1.3680425,-24.747235,-19.057609)">
           <path
              id="circle8"
-             style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
+             style="fill:none;stroke:#000000;stroke-width:0.270444;stroke-dasharray:none;stroke-opacity:0.981814"
              d="m 108.16859,34.247191 c 0.50789,0.202216 0.99454,0.452526 1.45315,0.74657 0.45859,0.294045 0.88916,0.631828 1.28488,1.008994 0.39572,0.377166 0.7566,0.793715 1.07584,1.245288 0.31925,0.451576 0.59687,0.938174 0.82607,1.455441 0.2292,0.517268 0.40997,1.065203 0.53552,1.639455 0.12555,0.574251 0.18991,1.147641 0.19753,1.713354 0.008,0.565719 -0.0416,1.123779 -0.14332,1.667379"
              sodipodi:nodetypes="cssssssc"
              inkscape:transform-center-x="-10.078004"
@@ -352,68 +353,58 @@
         </g>
         <text
            xml:space="preserve"
-           style="font-size:2.46652px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
-           x="138.1434"
-           y="40.060196"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+           x="145.32646"
+           y="38.188042"
            id="text13"><tspan
              sodipodi:role="line"
              id="tspan13"
-             style="font-size:2.46652px;stroke-width:0.264583"
-             x="138.1434"
-             y="40.060196">L=90 - (H-D)</tspan></text>
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="145.32646"
+             y="38.188042">L=90 - (H-D)</tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:2.05544px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;stroke-width:0.154158"
-           x="122.5849"
-           y="42.617962"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;stroke-width:0.154158"
+           x="119.89126"
+           y="33.15567"
            id="text24-7"><tspan
              sodipodi:role="line"
-             id="tspan24-0"
-             style="font-size:2.05544px;text-align:start;text-anchor:start;stroke-width:0.154158"
-             x="122.5849"
-             y="42.617962">Same Name</tspan><tspan
-             sodipodi:role="line"
-             style="font-size:2.05544px;text-align:start;text-anchor:start;stroke-width:0.154158"
-             x="122.5849"
-             y="45.187263"
-             id="tspan30">(L&gt;D)</tspan></text>
+             style="font-size:1.64435px;text-align:start;text-anchor:start;stroke-width:0.154158"
+             x="119.89126"
+             y="33.15567"
+             id="tspan30">L&gt;D</tspan></text>
       </g>
       <g
          id="g23"
-         transform="translate(0,26.907545)">
+         transform="matrix(10.637775,0,0,10.637775,-1073.3144,10.429396)">
         <text
            xml:space="preserve"
-           style="font-size:2.46652px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
-           x="139.09595"
-           y="39.668133"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+           x="144.79404"
+           y="41.193214"
            id="text23"><tspan
              sodipodi:role="line"
              id="tspan23"
-             style="font-size:2.46652px;stroke-width:0.264583"
-             x="139.09595"
-             y="39.668133">L=(H+D) - 90</tspan></text>
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="144.79404"
+             y="41.193214">L=(H+D) - 90</tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:2.05544px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;stroke-width:0.154158"
-           x="122.19241"
-           y="42.135216"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;stroke-width:0.154158"
+           x="120.39664"
+           y="39.09623"
            id="text24"><tspan
              sodipodi:role="line"
-             id="tspan24"
-             style="font-size:2.05544px;text-align:start;text-anchor:start;stroke-width:0.154158"
-             x="122.19241"
-             y="42.135216">Same Name</tspan><tspan
-             sodipodi:role="line"
-             style="font-size:2.05544px;text-align:start;text-anchor:start;stroke-width:0.154158"
-             x="122.19241"
-             y="44.704517"
-             id="tspan31">(D&gt;L)</tspan></text>
+             style="font-size:1.64435px;text-align:start;text-anchor:start;stroke-width:0.154158"
+             x="120.39664"
+             y="39.09623"
+             id="tspan31">D&gt;L</tspan></text>
         <g
            id="g29-4"
-           transform="matrix(1.3289422,0,0,1.3289422,-42.195301,-8.330521)">
+           transform="matrix(1.3289422,0,0,1.3289422,-20.128134,-12.992598)">
           <path
              id="circle8-7"
-             style="fill:none;stroke:#000000;stroke-width:0.1;stroke-opacity:0.981814"
+             style="fill:none;stroke:#000000;stroke-width:0.275332;stroke-dasharray:none;stroke-opacity:0.981814"
              d="m 109.76064,35.107416 c 0.45298,0.30603 0.87493,0.654505 1.26015,1.039718 0.38521,0.385211 0.73369,0.807163 1.03972,1.260147 0.30603,0.452984 0.56961,0.937 0.78504,1.446341 0.21543,0.509343 0.38271,1.044009 0.49614,1.598294 0.11342,0.554284 0.17299,1.128187 0.17299,1.716003 0,0.587816 -0.0596,1.16172 -0.17299,1.716005"
              sodipodi:nodetypes="csssssc" />
           <path
