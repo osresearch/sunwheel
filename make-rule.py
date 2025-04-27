@@ -3,9 +3,11 @@
 
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan
 import drawsvg as draw
+import datetime
 import sys
 import re
 
+year = 2020 # for equation of time
 pointer_angle = 0
 inner_angle = 0
 outer_angle = 0
@@ -370,7 +372,7 @@ def make_semidiameter(radius):
 # TODO: add lines to help with alignment
 def make_d_lines(outer_radius):
 	g = draw.Group(transform="rotate(+0)")
-	inner_step = 320
+	inner_step = 290
 
 	radius = lambda d: outer_radius - inner_step * (1-d)
 
@@ -379,7 +381,7 @@ def make_d_lines(outer_radius):
 		r = radius(d)
 		g.append(make_arcs(frange(-12, 12.01, 0.1), lambda t: (r, t*d*6), stroke_width=0.1))
 
-		if d > 0.9:
+		if d < 0.2 or d > 0.9:
 			continue
 
 		ta = radians(6.0 * d * 6)
@@ -814,6 +816,92 @@ def make_minutes(radius):
 
 	return g
 
+
+# minutes that the sun is ahead of noon
+def equation_of_time(d,y=year):
+	D = 6.24004077 + 0.01720197 * (365.25 * (y-2000) + d)
+	return -7.659 * sin(D) + 9.863 * sin(2*D + 3.5932)
+
+def julian(m,d,y=year):
+	return int(datetime.date(y,m,d).strftime("%j"))
+	
+
+def eq_time_radius(d):
+	if d < julian(2,11):
+		return 0
+	if d < julian(5,15):
+		return -45
+	if d < julian(7,30):
+		return -30
+	if d < julian(10,31):
+		return -15
+	return 0
+
+months = [
+	["Jan",31,(+6,-1)],
+	["Feb",28,(+6,-1)],
+	["Mar",31,(-6,+6)],
+	["Apr",30,(-6,+6)],
+	["May",31,(-7,+5)],
+	["Jun",30,(+6,-2)],
+	["Jul",31,(+5,-2)],
+	["Aug",31,(+8,+5)],
+	["Sep",30,(+6,+5)],
+	["Oct",31,(-6,+6)],
+	["Nov",30,(+8,-2)],
+	["Dec",31,(+6,-2)],
+]
+
+def make_equation_of_time(radius):
+	g = draw.Group()
+	pts = []
+	#r = lambda d: radius/2 + 30 * sin(2*pi*d/365 + 0.95)
+	r = lambda d: radius + eq_time_radius(d)
+	for d in range(0,366):
+		minutes = equation_of_time(d)
+
+		pts.append((r(d) * cos(radians(minutes*6))))
+		pts.append((r(d) * sin(radians(minutes*6))))
+	g.append(draw.Lines(*pts, stroke="black", stroke_width=0.2, fill="none"))
+
+	d = 0
+	for (name,d_in_month,label_pos) in months:
+		minutes = equation_of_time(d)
+
+		g.append(draw.Line(-5,0,+5,0,
+			stroke="black",
+			stroke_width=0.5,
+			fill="none",
+			transform="rotate(%.3f) translate(%.3f)" % (minutes*6, r(d)),
+		))
+
+		for d_of_month in range(1,d_in_month):
+			d_minutes = equation_of_time(d + d_of_month)
+			g.append(draw.Line(-1,0,+1,0,
+				stroke="black",
+				stroke_width=0.1,
+				fill="none",
+				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+			))
+		for d_of_month in range(7,d_in_month,7):
+			d_minutes = equation_of_time(d + d_of_month)
+			g.append(draw.Line(-3,0,+3,0,
+				stroke="black",
+				stroke_width=0.2,
+				fill="none",
+				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+			))
+
+		g.append(draw.Text(name, 7, *label_pos,
+			fill="black",
+			text_anchor="middle",
+			transform="rotate(%.3f) translate(%.3f)" % (minutes*6, r(d)),
+		))
+		d += d_in_month
+			
+
+	return g
+
 ####
 #### Front side
 ####
@@ -832,14 +920,15 @@ inner.append(make_minutes(390))
 #inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
 h_e_radius = 360
-inner.append(make_height_of_eye(h_e_radius, -160))
+inner.append(make_height_of_eye(h_e_radius, -180))
 
 # The refraction, parallax and semi diameter can all be done with
 # the one Altitude Correction Table (ACT)
-inner.append(make_refraction(h_e_radius, -160))
+inner.append(make_refraction(h_e_radius, -180))
 inner.append(make_semidiameter(h_e_radius))
 inner.append(make_d_lines(h_e_radius+10))
 
+inner.append(make_equation_of_time(100))
 
 # Cut lines
 inner.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
@@ -853,7 +942,7 @@ front.append(pointer)
 front.append(outer)
 front.append(inner)
 
-inner.append(draw.Image(-120, +50, 300, 300, path="latitude.svg", embed=True))
+inner.append(draw.Image(-200, -300, 250, 250, path="latitude.svg", embed=True))
 
 
 
