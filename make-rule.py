@@ -585,136 +585,132 @@ def make_sine(radius):
 
 	return g
 
-def make_sqrt_scale(radius):
+def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
+	log_scale=log(10),
+	extra_labels=None,
+	fmt=lambda x: "%d" % (x),
+):
 	g = draw.Group()
-
+	g.append(draw.Text(label, 8, -3, -2,
+		font_style="heavy",
+		fill="blue",
+		stroke="none",
+		text_anchor="end",
+		transform="translate(%d) rotate(+90)" % (radius),
+	))
 	g.append(draw.Circle(
 		0, 0, radius,
 		fill='none',
 		stroke='black',
 		stroke_width=0.1,
 	))
-	g.append(draw.Circle(
-		0, 0, radius-20,
-		fill='none',
-		stroke='black',
+	g.append(make_ticks(radius,
+		minor4,
+		log_scale=log_scale,
+		length=2,
 		stroke_width=0.1,
+		stroke="black",
 	))
+	g.append(make_ticks(radius,
+		minor3,
+		log_scale=log_scale,
+		length=4,
+		stroke_width=0.1,
+		stroke="black",
+	))
+	g.append(make_ticks(radius,
+		minor2,
+		log_scale=log_scale,
+		length=6,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	g.append(make_ticks(radius,
+		minor1,
+		log_scale=log_scale,
+		length=8,
+		stroke_width=0.2,
+		stroke="black",
+	))
+	g.append(make_tick_labels(radius,
+		[[_, fmt(_)] for _ in major],
+		10,
+		log_scale=log_scale,
+		length=10,
+		stroke_width=0.4,
+		stroke="black",
+		text_angle=90,
+		pos=(2,-2),
+	))
+
+	if extra_labels:
+		g.append(make_tick_labels(radius,
+			extra_labels,
+			8,
+			log_scale=log_scale,
+			text_angle=90,
+			pos=(2,-2),
+			length=7,
+			stroke="black",
+			stroke_width=0.1,
+		))
+
+	return g
+#
+# This makes three scales:
+# X^2, X, and 1/X
+# You can also compute:
+# sqrt(Y) by going X^2 -> X
+# 1/sqrt(Y) by going X^2 -> 1/X
+#
+def make_sqrt_scale(radius):
+	g = draw.Group()
+
 	major = frange(1,10)
 	minor1 = frange(1,10,0.5)
 	minor2 = frange(1,10,0.1)
 	minor3 = frange(1,10,0.05)
 	minor4 = frange(1,2, 0.01)
 
-	# the sqrt scale goes up to 10
+	extra_points = frange(11,20) + [25,35,45]
 
-	g.append(make_ticks(radius-20,
-		minor4,
-		log_scale=log(10),
-		length=2,
-		stroke_width=0.1,
-		stroke="black",
-	))
-	g.append(make_ticks(radius-20,
-		minor3,
-		log_scale=log(10),
-		length=4,
-		stroke_width=0.1,
-		stroke="black",
-	))
-	g.append(make_ticks(radius-20,
-		minor2,
-		log_scale=log(10),
-		length=6,
-		stroke_width=0.2,
-		stroke="black",
-	))
-	g.append(make_ticks(radius-20,
-		minor1,
-		log_scale=log(10),
-		length=8,
-		stroke_width=0.2,
-		stroke="black",
-	))
-	g.append(make_tick_labels(radius-20,
-		[[_, "%d" % (_)] for _ in major],
-		10,
-		log_scale=log(10),
-		length=10,
-		stroke_width=0.4,
-		stroke="black",
-		text_angle=90,
-		pos=(2,-2),
-	))
-
-	extra_labels = [[_/10, "%.1f" % (_/10)] for _ in frange(11,20) + [25,35]]
+	extra_labels = [[_/10, "%.1f" % (_/10)] for _ in extra_points]
 	extra_labels += [[pi, "π"]]
 	extra_labels += [[e, "e"]]
-	g.append(make_tick_labels(radius-20,
-		extra_labels,
-		8,
-		log_scale=log(10),
-		text_angle=90,
-		pos=(2,-2),
-	))
 
-	# double the scales to go up to 100 for the outside
-	major = major + [10 * _ for _ in major]
-	minor1 = minor1 + [10 * _ for _ in minor1]
-	minor2 = minor2 + [10 * _ for _ in minor2]
-	minor3 = minor3 + [10 * _ for _ in minor3]
-	minor4 = minor4 + [10 * _ for _ in minor4]
-	g.append(make_ticks(radius,
-		minor4,
-		log_scale=log(100),
-		length=2,
-		stroke_width=0.1,
-		stroke="black",
-	))
-	g.append(make_ticks(radius,
-		minor3,
-		log_scale=log(100),
-		length=4,
-		stroke_width=0.1,
-		stroke="black",
-	))
-	g.append(make_ticks(radius,
-		minor2,
-		log_scale=log(100),
-		length=6,
-		stroke_width=0.2,
-		stroke="black",
-	))
-	g.append(make_ticks(radius,
+	# the X scale goes up to 10
+	g.append(make_logscale(radius-20, "X",
+		major,
 		minor1,
-		log_scale=log(100),
-		length=8,
-		stroke_width=0.2,
-		stroke="black",
-	))
-	g.append(make_tick_labels(radius,
-		[[_, "%d" % _] for _ in major],
-		10,
-		log_scale=log(100),
-		length=10,
-		stroke_width=0.4,
-		stroke="black",
-		text_angle=90,
-		pos=(2,-2),
+		minor2,
+		minor3,
+		minor4,
+		log_scale=log(10),
+		extra_labels=extra_labels,
 	))
 
-	#extra_labels = [[_/10, ".%d" % (_ % 10)] for _ in frange(11,20) + [25,35]]
-	#extra_labels += [[pi, "π"]]
-	#extra_labels += [[e, "e"]]
-	g.append(make_tick_labels(radius,
-		extra_labels,
-		8,
-		log_scale=log(100),
-		text_angle=90,
-		pos=(2,-2),
+	# Draw the scales in reverse to make the 1/X scale
+	g.append(make_logscale(radius-40, "1/X",
+		major[1:] + [2,10],
+		minor1,
+		minor2,
+		minor3,
+		minor4,
+		log_scale=log(0.1),
+		fmt=lambda x: "%.01f" % (x/10),
+		extra_labels = [[_, "%.02f" % (_/100)] for _ in extra_points],
 	))
 
-
+	# double the scales to go up to 100 for the X^2 on the outside
+	g.append(make_logscale(radius, "X²",
+		major + [10 * _ for _ in major],
+		minor1 + [10 * _ for _ in minor1],
+		minor2 + [10 * _ for _ in minor2],
+		minor3 + [10 * _ for _ in minor3],
+		minor4 + [10 * _ for _ in minor4],
+		log_scale=log(100),
+		extra_labels=extra_labels + [[_, "%d" % (_)] for _ in extra_points],
+	))
 	return g
 
 def make_radians(radius):
@@ -828,14 +824,14 @@ def julian(m,d,y=year):
 
 def eq_time_radius(d):
 	if d < julian(2,11):
-		return 0
-	if d < julian(5,15):
 		return -45
+	if d < julian(5,15):
+		return -0
 	if d < julian(7,30):
-		return -30
-	if d < julian(10,31):
 		return -15
-	return 0
+	if d < julian(10,31):
+		return -30
+	return -45
 
 months = [
 	["Jan",31,(+6,-1)],
@@ -899,6 +895,87 @@ def make_equation_of_time(radius):
 		))
 		d += d_in_month
 			
+	return g
+
+
+def make_sin_sin_scale(radius):
+	g = draw.Group(id="sinsin")
+
+	# scale on the outside goes from 0 to 0.4 (sin(23))
+	max_scale = 0.42
+	output_angle = lambda x: 0 if x == 0 else radians(log(max_scale) * 360 / log(x))
+	#output_angle = lambda x: 0 if x == 0 else radians(x * 180 / max_scale)
+	output_radius = lambda l: radius - 150*sin(radians(l))
+	for o in frange(0.001,0.01,0.001):
+		g.append(draw.Text("%.3f" % (o),
+			5, 0, 0,
+			text_anchor="middle",
+			transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius),
+		))
+	for o in frange(0.01, 0.4, 0.01):
+		g.append(draw.Text("%.2f" % (o),
+			5, 0, 0,
+			text_anchor="middle",
+			#transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius - 100/ log(o) * log(max_scale)),
+			transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius),
+		))
+
+	for d in [0.1, 0.25, 0.5] + frange(1,25.1,1):
+		pts = []
+		for l in frange(1,90.1,1):
+			# compute the angle that provides correct output
+			# for sin(d)*sin(l)
+			o = sin(radians(d)) * sin(radians(l))
+			a = output_angle(o)
+			r = output_radius(l)
+
+			pts.append(r * cos(a))
+			pts.append(r * sin(a))
+
+		g.append(draw.Lines(*pts,
+			fill="none",
+			stroke="black",
+			stroke_width=0.1 if d % 5 != 0 else 0.5,
+		))
+
+		if d < 1:
+			continue
+		g.append(draw.Text("%.0f" % (d), 5, 0, 0,
+			text_anchor="middle",
+			transform="rotate(%.3f) translate(%.3f) rotate(-90)" % (degrees(output_angle(sin(radians(d)))), output_radius(90)),
+		))
+
+
+	for l in frange(0,90.1,5):
+		pts = []
+		for d in frange(0.01,25.01,0.01):
+			o = sin(radians(d)) * sin(radians(l))
+			a = output_angle(o)
+			r = output_radius(l)
+
+			pts.append(r * cos(a))
+			pts.append(r * sin(a))
+		g.append(draw.Lines(*pts,
+			fill="none",
+			stroke="black",
+			stroke_width=0.1,
+		))
+	for l in frange(0,90.1,10):
+		pts = []
+		for d in frange(0.01,25.01,0.01):
+			o = sin(radians(d)) * sin(radians(l))
+			a = output_angle(o)
+			r = output_radius(l)
+
+			pts.append(r * cos(a))
+			pts.append(r * sin(a))
+		g.append(draw.Lines(*pts,
+			fill="none",
+			stroke="black",
+			stroke_width=0.2,
+		))
+			#g.append(draw.Text("%.2f" % v, 7, radius, 0,
+				#transform="rotate(%.3f) translate(%.3f)" % ())
 
 	return g
 
@@ -950,6 +1027,7 @@ inner.append(draw.Image(-200, -300, 250, 250, path="latitude.svg", embed=True))
 #### Reverse side (no rotating parts)
 ####
 back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
+back.append(pointer)
 back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
 back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
@@ -969,7 +1047,7 @@ back.append(make_tangent_scale(334))
 
 back.append(make_gha_scale(300))
 back.append(make_sqrt_scale(240))
-
+#back.append(make_sin_sin_scale(200))
 
 d.append(front)
 d.append(back)
