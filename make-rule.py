@@ -524,15 +524,16 @@ def make_tangent_scale(radius):
 def make_sine(radius):
 	g = draw.Group()
 	labels = []
+	extra_labels = []
 	minor1 = []
 	minor2 = []
 	minor3 = []
-	for a in frange(0,0.9,0.05):
+	for a in frange(0,0.9001,0.05):
 		labels.append([degrees(asin(a)*4), "%.2f" % (a)])
-	for a in frange(0.90,0.951,0.01):
-		labels.append([degrees(asin(a)*4), "%.2f" % (a)])
+	for a in frange(0.91,0.951,0.01):
+		extra_labels.append([degrees(asin(a)*4), "%.2f" % (a)])
 	for a in frange(0.955,0.99999,0.005):
-		labels.append([degrees(asin(a)*4), "%.3f" % (a)])
+		extra_labels.append([degrees(asin(a)*4), "%.3f" % (a)])
 
 	for a in frange(0,1.01,0.05):
 		minor1.append(degrees(asin(a))*4)
@@ -559,7 +560,16 @@ def make_sine(radius):
 	g.append(make_tick_labels(radius, labels,
 		text_angle=90,
 		pos=(1,9),
+		size=10,
 		length=8,
+		stroke_width=0.4,
+		stroke="black",
+	))
+	g.append(make_tick_labels(radius, extra_labels,
+		size=8,
+		text_angle=90,
+		pos=(1,9),
+		length=7,
 		stroke_width=0.4,
 		stroke="black",
 	))
@@ -589,6 +599,9 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 	log_scale=log(10),
 	extra_labels=None,
 	fmt=lambda x: "%d" % (x),
+	text_anchor="start",
+	pos=(2,+10),
+	**kwargs
 ):
 	g = draw.Group()
 	g.append(draw.Text(label, 8, -3, -2,
@@ -640,7 +653,9 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 		stroke_width=0.4,
 		stroke="black",
 		text_angle=90,
-		pos=(2,-2),
+		text_anchor=text_anchor,
+		pos=pos,
+		**kwargs
 	))
 
 	if extra_labels:
@@ -649,10 +664,12 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 			8,
 			log_scale=log_scale,
 			text_angle=90,
-			pos=(2,-2),
 			length=7,
 			stroke="black",
 			stroke_width=0.1,
+			text_anchor=text_anchor,
+			pos=(pos[0],pos[1]-2),
+			**kwargs
 		))
 
 	return g
@@ -691,13 +708,15 @@ def make_sqrt_scale(radius):
 
 	# Draw the scales in reverse to make the 1/X scale
 	g.append(make_logscale(radius-40, "1/X",
-		major[1:] + [2,10],
+		major[2:] + [2,10],
 		minor1,
 		minor2,
 		minor3,
 		minor4,
 		log_scale=log(0.1),
 		fmt=lambda x: "%.01f" % (x/10),
+		text_anchor="end",  # left side of the line
+		pos=(-2,+10),
 		extra_labels = [[_, "%.02f" % (_/100)] for _ in extra_points],
 	))
 
