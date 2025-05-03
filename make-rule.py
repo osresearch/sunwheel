@@ -1052,11 +1052,16 @@ back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 # rule for 360 degree circle with reverse angles as well
 back.append(make_rule(420, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
-back.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
+back.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360),
+	pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
+))
 back.append(make_radians(400))
 
-# 24-hour clock on the outsde
+# 24-hour clock on the outsde and inverted in red
 back.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
+back.append(make_labels(440, 360/(24*2), 0, 360, lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
+	pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
+))
 
 # 90 degree circle and sine/cosine tables
 back.append(make_rule(370, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
