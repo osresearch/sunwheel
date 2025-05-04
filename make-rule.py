@@ -41,16 +41,40 @@ if len(sys.argv) > 5:
 
 d = draw.Drawing(2000 if draw_back else 1000,1000, origin=(0,0))
 
-def make_ticks(radius, ticks, length, log_scale=None, stroke='black', **style):
+def compute_position(radius, angle, length, log_scale=False, spiral=False):
+	length = 10 # always force same spiral in
+	if log_scale:
+		angle = log(angle) * 360 / log_scale
+	if spiral:
+		radius += (angle / 360) * length * 2.25
+	return (radius, angle)
+
+def compute_xy(r,a):
+	return (r * cos(radians(a)), r * sin(radians(a)))
+
+
+def draw_spiral(radius, pts, log_scale, stroke='black', stroke_width=0.1):
+	arcs = []
+	for angle in pts:
+		(r,a) = compute_position(radius,angle,10,log_scale,True)
+		(x,y) = compute_xy(r,a)
+		arcs.append(x)
+		arcs.append(y)
+	return draw.Lines(*arcs,
+		fill='none',
+		stroke=stroke,
+		stroke_width=stroke_width,
+	)
+
+def make_ticks(radius, ticks, length, log_scale=None, stroke='black', spiral=False, **style):
 	g = draw.Group()
 	for angle in ticks:
-		if log_scale:
-			angle = log(angle) * 360 / log_scale
+		(r,a) = compute_position(radius, angle, length, log_scale, spiral)
 		g.append(draw.Line(
 			-length,0,length,0,
 			fill='none',
 			stroke=stroke,
-			transform="rotate(%.3f) translate(%.3f)" % (angle,radius),
+			transform="rotate(%.3f) translate(%.3f)" % (a,r),
 			**style,
 		))
 	return g
@@ -70,29 +94,29 @@ def make_labels(radius, step, start, end, fmter, pos=(1,9), size=10, text_angle=
 		m += step
 	return g
 
-def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", text_angle=0, pos=(0,0), fill="black", stroke=None, stroke_width=0.3, length=0, **style):
+def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", text_angle=0, pos=(0,0), fill="black", stroke=None, stroke_width=0.3, length=0, spiral=False, **style):
 	g = draw.Group()
 	for (angle,label) in labels:
-		if log_scale:
-			angle = log(angle) * 360 / log_scale
+		(r,a) = compute_position(radius, angle, length, log_scale, spiral)
 		g.append(draw.Text(label, size, pos[0], pos[1],
 			align=align,
 			fill=fill,
 			stroke='none',
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (angle, radius, text_angle),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a, r, text_angle),
 			**style,
 		))
 
-		if length <= 0:
-			continue
-
-		g.append(draw.Line(
-			-length,0,length,0,
-			fill='none',
+	if length > 0:
+		g.append(make_ticks(
+			radius,
+			[x[0] for x in labels],
+			length,
+			log_scale=log_scale,
+			spiral=spiral,
 			stroke=stroke,
 			stroke_width=stroke_width,
-			transform="rotate(%.3f) translate(%.3f)" % (angle,radius),
 		))
+
 	return g
 
 def deg2sec(m):
@@ -105,7 +129,7 @@ def frange(start, end, step=1):
 		items.append(start+i*step)
 	return items
 
-def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360):
+def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360, size=10):
 	g = draw.Group()
 	g.append(draw.Circle(
 		0, 0, radius,
@@ -118,7 +142,7 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 	g.append(make_ticks(radius, frange(start, end, minor2), 3, stroke_width=0.1))
 	g.append(make_ticks(radius, frange(start, end, minor1), 5, stroke_width=0.2))
 	g.append(make_ticks(radius, frange(start, end, major),  10, stroke_width=0.4))
-	g.append(make_labels(radius, major, start, end, fmt, pos=pos))
+	g.append(make_labels(radius, major, start, end, fmt, pos=pos, size=size))
 	return g
 
 
@@ -520,6 +544,121 @@ def make_tangent_scale(radius):
 
 	return g
 
+
+# Sine is one quadrant for increased accuracy and makes two circles
+# for 0.01 to 0.1 and 0.1 to 1.0
+def make_log_sine(radius):
+	g = draw.Group()
+
+	# start at -20 since we will spiral outwards for the larger angles
+	#radius -= 20
+
+	major = []
+	minor1 = []
+	minor2 = []
+	minor3 = []
+	minor4 = []
+
+	# sine 0.56 - 5.6 degrees
+	for a in frange(0.5, 4.51, 0.1) + frange(4.6, 6.01, 0.2):
+		major.append(sin(radians(a)))
+	for a in frange(0.50, 6.001, 0.05):
+		minor1.append(sin(radians(a)))
+	for a in frange(0.50, 6.001, 0.01):
+		minor2.append(sin(radians(a)))
+	for a in frange(0.50, 1.801, 0.005):
+		minor3.append(sin(radians(a)))
+	#for a in frange(0.58, 1.801, 0.005):
+		#minor3.append(sin(radians(a)))
+
+	# sine 5.6 - 90 degrees
+	for a in frange(6, 40.1, 1) + frange(45, 80, 5) + frange(80,90.1,10):
+		major.append(sin(radians(a)))
+	for a in frange(6, 80, 0.5) + frange(80,90,1):
+		minor1.append(sin(radians(a)))
+	for a in frange(6, 40, 0.1) + frange(40,75,0.25):
+		minor2.append(sin(radians(a)))
+
+
+	g.append(make_logscale(radius, "", # we will label
+		major,
+		minor1,
+		minor2,
+		minor3,
+		[],
+		fmt=lambda x: ("%.1f" if x < 0.14 else "%.0f") % (degrees(asin(x))),
+		#fmt=lambda x: "%.1f" % (degrees(asin(x))),
+		log_scale=log(10),
+		extra_labels=[],
+		spiral=True,
+	))
+
+	# cosine is reverse of sin in red
+	g.append(make_tick_labels(radius,
+		[[x, ("%.1f" if x < 0.104 else "%.0f") % (90 - degrees(asin(x)))] for x in major],
+		8,
+		log_scale=log(10),
+		spiral=True,
+		text_angle=90,
+		text_anchor="end",
+		fill="red",
+	))
+
+	# a faint divider to separate the sine and tangent
+	g.append(draw_spiral(
+		radius-15,
+		[sin(radians(x)) for x in frange(0.50, 4.7, 0.01)],
+		log_scale=log(10),
+		stroke="green",
+		stroke_width=0.3,
+	))
+
+	return g
+
+# 0 to 45 and 45 to 90
+def make_log_tangent(radius):
+	g = draw.Group()
+
+	major = []
+	minor1 = []
+	minor2 = []
+	minor3 = []
+
+	# tan(5.7) to 45 is 0.1 to 1.0
+	for a in frange(2, 45, 1) + frange(45,83.1,1):
+		major.append(tan(radians(a)))
+	for a in frange(2, 83.1, 0.5):
+		minor1.append(tan(radians(a)))
+	for a in frange(2, 83.1, 0.1):
+		minor2.append(tan(radians(a)))
+	for a in frange(2, 20, 0.05) + frange(70,83.001, 0.05):
+		minor3.append(tan(radians(a)))
+
+	g.append(make_logscale(radius, "T",
+		major,
+		minor1,
+		minor2,
+		minor3,
+		[],
+		fmt=lambda x: "%.0f" % (degrees(atan(x))),
+		log_scale=log(10),
+		spiral=True,
+		extra_labels=[],
+	))
+
+	# cotan is in reverse in red
+	g.append(make_tick_labels(radius,
+		[[x, "%.0f" % (90 - degrees(atan(x)))] for x in major],
+		8,
+		log_scale=log(10),
+		spiral=True,
+		text_angle=90,
+		text_anchor="end",
+		fill="red",
+	))
+
+	return g
+
 # Sine is one quadrant for increased accuracy
 def make_sine(radius):
 	g = draw.Group()
@@ -601,28 +740,40 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 	fmt=lambda x: "%d" % (x),
 	text_anchor="start",
 	pos=(2,+10),
+	spiral=False,
 	**kwargs
 ):
 	g = draw.Group()
-	g.append(draw.Text(label, 8, -3, -2,
-		font_style="heavy",
+	(label_r,label_a) = compute_position(radius, major[0], 9, log_scale, spiral)
+	g.append(draw.Text(label, 9, +12, +8,
+		font_style="bold",
 		fill="blue",
 		stroke="none",
-		text_anchor="end",
-		transform="translate(%d) rotate(+90)" % (radius),
+		text_anchor="start",
+		transform="rotate(%.3f) translate(%3.f) rotate(+90)" % (label_a, label_r),
 	))
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
+	if not spiral:
+		g.append(draw.Circle(
+			0, 0, radius,
+			fill='none',
+			stroke='black',
+			stroke_width=0.1,
+		))
+	else:
+		g.append(draw_spiral(
+			radius,
+			minor2,
+			log_scale=log_scale,
+			stroke="black",
+			stroke_width=0.1,
+		))
 	g.append(make_ticks(radius,
 		minor4,
 		log_scale=log_scale,
 		length=2,
 		stroke_width=0.1,
 		stroke="black",
+		spiral=spiral,
 	))
 	g.append(make_ticks(radius,
 		minor3,
@@ -630,6 +781,7 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 		length=4,
 		stroke_width=0.1,
 		stroke="black",
+		spiral=spiral,
 	))
 	g.append(make_ticks(radius,
 		minor2,
@@ -637,21 +789,24 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 		length=6,
 		stroke_width=0.2,
 		stroke="black",
+		spiral=spiral,
 	))
 	g.append(make_ticks(radius,
 		minor1,
 		log_scale=log_scale,
 		length=8,
-		stroke_width=0.2,
+		stroke_width=0.3,
 		stroke="black",
+		spiral=spiral,
 	))
 	g.append(make_tick_labels(radius,
 		[[_, fmt(_)] for _ in major],
 		10,
 		log_scale=log_scale,
 		length=10,
-		stroke_width=0.4,
+		stroke_width=0.5,
 		stroke="black",
+		spiral=spiral,
 		text_angle=90,
 		text_anchor=text_anchor,
 		pos=pos,
@@ -664,9 +819,10 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 			8,
 			log_scale=log_scale,
 			text_angle=90,
-			length=7,
-			stroke="black",
-			stroke_width=0.1,
+			length=3,
+			stroke="red",
+			stroke_width=0.3,
+			spiral=spiral,
 			text_anchor=text_anchor,
 			pos=(pos[0],pos[1]-2),
 			**kwargs
@@ -680,23 +836,29 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 # sqrt(Y) by going X^2 -> X
 # 1/sqrt(Y) by going X^2 -> 1/X
 #
-def make_sqrt_scale(radius):
+def make_sqrt_scale(radius,draw_inverse):
 	g = draw.Group()
 
 	major = frange(1,10)
 	minor1 = frange(1,10,0.5)
 	minor2 = frange(1,10,0.1)
 	minor3 = frange(1,10,0.05)
-	minor4 = frange(1,2, 0.01)
+	minor4 = frange(1,6, 0.01) + frange(6,10,0.025)
 
-	extra_points = frange(11,20) + [25,35,45]
+	extra_points = frange(11,20) + [25,35,45,55,65,75]
 
 	extra_labels = [[_/10, "%.1f" % (_/10)] for _ in extra_points]
 	extra_labels += [[pi, "π"]]
 	extra_labels += [[e, "e"]]
+	extra_labels += [[sqrt(2), "_√2"]]
+	extra_labels += [[degrees(1), "r"]]
+	extra_labels += [[0.00134102, "W"]]
+	extra_labels += [[2.54, "mm"]]
+	extra_labels += [[2.2, "kg"]]
+	extra_labels += [[1/0.5399, "km"]]
 
 	# the X scale goes up to 10
-	g.append(make_logscale(radius-20, "X",
+	g.append(make_logscale(radius, "X",
 		major,
 		minor1,
 		minor2,
@@ -706,30 +868,32 @@ def make_sqrt_scale(radius):
 		extra_labels=extra_labels,
 	))
 
-	# Draw the scales in reverse to make the 1/X scale
-	g.append(make_logscale(radius-40, "1/X",
-		major[2:] + [2,10],
-		minor1,
-		minor2,
-		minor3,
-		minor4,
-		log_scale=log(0.1),
-		fmt=lambda x: "%.01f" % (x/10),
-		text_anchor="end",  # left side of the line
-		pos=(-2,+10),
-		extra_labels = [[_, "%.02f" % (_/100)] for _ in extra_points],
-	))
-
-	# double the scales to go up to 100 for the X^2 on the outside
-	g.append(make_logscale(radius, "X²",
-		major + [10 * _ for _ in major],
-		minor1 + [10 * _ for _ in minor1],
-		minor2 + [10 * _ for _ in minor2],
-		minor3 + [10 * _ for _ in minor3],
-		minor4 + [10 * _ for _ in minor4],
-		log_scale=log(100),
-		extra_labels=extra_labels + [[_, "%d" % (_)] for _ in extra_points],
-	))
+	if draw_inverse:
+		# Draw the scales in reverse to make the 1/X scale
+		g.append(make_logscale(radius-20, "1/X",
+			[10,2] + major[2:],
+			minor1,
+			minor2,
+			minor3,
+			minor4,
+			fill="red",
+			log_scale=log(0.1),
+			fmt=lambda x: "%.01f" % (x/10),
+			text_anchor="end",  # left side of the line
+			pos=(-2,+10),
+			extra_labels = [[_, "%.02f" % (_/100)] for _ in extra_points],
+		))
+	else:
+		# double the scales to go up to 100 for the X^2 on the outside
+		g.append(make_logscale(radius+20, "X²",
+			major + [10 * _ for _ in major],
+			minor1 + [10 * _ for _ in minor1],
+			minor2 + [10 * _ for _ in minor2],
+			minor3 + [10 * _ for _ in minor3],
+			minor4 + [10 * _ for _ in minor4],
+			log_scale=log(100),
+			extra_labels=extra_labels + [[_, "%d" % (_)] for _ in extra_points],
+		))
 	return g
 
 def make_radians(radius):
@@ -764,7 +928,7 @@ def make_radians(radius):
 	g.append(make_ticks(radius, [degrees(_) for _ in frange(0,2*pi,0.05)], 5, stroke_width=0.2))
 
 	g.append(make_tick_labels(radius, major,
-		10,
+		8,
 		text_angle=90,
 		pos=(2,8),
 		length=8,
@@ -773,7 +937,7 @@ def make_radians(radius):
 	))
 
 	g.append(make_tick_labels(radius, extra_labels,
-		10,
+		8,
 		text_angle=90,
 		pos=(0,-2),
 		text_anchor="middle",
@@ -874,9 +1038,9 @@ def make_equation_of_time(radius):
 	r = lambda d: radius + eq_time_radius(d)
 	for d in range(0,366):
 		minutes = equation_of_time(d)
-
-		pts.append((r(d) * cos(radians(minutes*6))))
-		pts.append((r(d) * sin(radians(minutes*6))))
+		(x,y) = compute_xy(r(d), minutes*6)
+		pts.append(x)
+		pts.append(y)
 	g.append(draw.Lines(*pts, stroke="black", stroke_width=0.2, fill="none"))
 
 	d = 0
@@ -998,6 +1162,31 @@ def make_sin_sin_scale(radius):
 
 	return g
 
+def make_360_clock(radius):
+	g = draw.Group()
+	g.append(make_rule(radius-20, 5, 1, 0.5,
+		size=7,
+		fmt=lambda x: "%.0f" % (x)))
+	g.append(make_labels(radius-20, 5, 0, 360,
+		lambda x: "%.0f" % ((360-x) % 360),
+		size=7,
+		pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
+	))
+	#g.append(make_radians(radius-40))
+
+	# 24-hour clock on the outsde and inverted in red
+	g.append(make_rule(radius, 360/(24), 360/(24*4), 360/(24*60),
+		size=9,
+		fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15))),
+	))
+	g.append(make_labels(radius, 360/(24), 0, 360,
+		lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
+		size=9,
+		pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
+	))
+
+	return g
+
 ####
 #### Front side
 ####
@@ -1038,7 +1227,7 @@ front.append(pointer)
 front.append(outer)
 front.append(inner)
 
-inner.append(draw.Image(-200, -300, 250, 250, path="latitude.svg", embed=True))
+inner.append(draw.Image(-250, -300, 250, 250, path="latitude.svg", embed=True))
 
 
 
@@ -1048,30 +1237,33 @@ inner.append(draw.Image(-200, -300, 250, 250, path="latitude.svg", embed=True))
 back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 back.append(pointer)
 back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
+back.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
 back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
-# rule for 360 degree circle with reverse angles as well
-back.append(make_rule(420, 5, 1, 0.5, fmt=lambda x: "%.0f" % (x)))
-back.append(make_labels(420, 5, 0, 360, lambda x: "-%.0f" % ((360-x) % 360),
-	pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
-))
-back.append(make_radians(400))
+outer = draw.Group(id="back_outer")
+inner = draw.Group(id="back_inner")
 
-# 24-hour clock on the outsde and inverted in red
-back.append(make_rule(440, 360/(24*2), 360/(24*4), 360/(24*60), fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15)))))
-back.append(make_labels(440, 360/(24*2), 0, 360, lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
-	pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
-))
+# rule for 360 degree circle with reverse angles as well
+inner.append(make_360_clock(235))
 
 # 90 degree circle and sine/cosine tables
-back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
-back.append(make_labels(365, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
-back.append(make_sine(345))
-back.append(make_tangent_scale(328))
+#back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
+#back.append(make_labels(365, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
+#back.append(make_sine(345))
 
-back.append(make_gha_scale(295))
-back.append(make_sqrt_scale(235))
+#back.append(make_gha_scale(240))
+
+outer.append(make_sqrt_scale(420, False))
+inner.append(make_sqrt_scale(400, True))
+inner.append(make_log_sine(360))
+inner.append(make_log_tangent(285))
+
+
+#back.append(make_log_cosine(320))
 #back.append(make_sin_sin_scale(200))
+
+back.append(outer)
+back.append(inner)
 
 d.append(front)
 d.append(back)
