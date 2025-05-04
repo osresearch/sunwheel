@@ -484,7 +484,7 @@ def make_tangent_scale(radius):
 	minor2 = []
 	for a in frange(0, 2, 0.1):
 		major += [[degrees(atan(a))*4, "%.1f" % (a)]]
-	for a in frange(2, 10, 1) + frange(10,18,2) + [20,30,50,90]:
+	for a in frange(2, 10, 1) + [10,12,14,20,30,80]:
 		major += [[degrees(atan(a))*4, "%.0f" % (a)]]
 
 	for a in frange(2, 10, 0.5) + frange(10,30,1):
@@ -1064,13 +1064,13 @@ back.append(make_labels(440, 360/(24*2), 0, 360, lambda x: "%02d:%02d" % ((24+12
 ))
 
 # 90 degree circle and sine/cosine tables
-back.append(make_rule(370, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
-back.append(make_labels(370, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
-back.append(make_sine(352))
-back.append(make_tangent_scale(334))
+back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
+back.append(make_labels(365, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
+back.append(make_sine(345))
+back.append(make_tangent_scale(328))
 
-back.append(make_gha_scale(300))
-back.append(make_sqrt_scale(240))
+back.append(make_gha_scale(295))
+back.append(make_sqrt_scale(235))
 #back.append(make_sin_sin_scale(200))
 
 d.append(front)
