@@ -31,7 +31,7 @@
      inkscape:window-x="1240"
      inkscape:window-y="421"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g24" />
+     inkscape:current-layer="g23" />
   <defs
      id="defs1">
     <marker
@@ -163,14 +163,34 @@
         <text
            xml:space="preserve"
            style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
-           x="146.20995"
-           y="32.489613"
+           x="152.85725"
+           y="32.756691"
            id="text8"><tspan
              sodipodi:role="line"
              id="tspan8"
              style="font-size:1.64435px;stroke-width:0.264583"
-             x="146.20995"
-             y="32.489613">L=90 - (H+D)</tspan></text>
+             x="152.85725"
+             y="32.756691"><tspan
+   style="fill:#ff0000"
+   id="tspan35">L</tspan>=90 - (H+D+         )</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+           x="151.86436"
+           y="31.658712"
+           id="text43-3"><tspan
+             sodipodi:role="line"
+             id="tspan43-5"
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="151.86436"
+             y="31.658712">d &gt;0</tspan><tspan
+             sodipodi:role="line"
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="151.86436"
+             y="33.714149"
+             id="tspan44-1"><tspan
+   style="fill:#ff0000"
+   id="tspan45-7">d</tspan> &lt;0</tspan></text>
         <g
            id="g28"
            transform="matrix(1.3445222,0,0,1.3445222,-12.360936,-21.92588)">
@@ -353,17 +373,6 @@
         </g>
         <text
            xml:space="preserve"
-           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
-           x="145.32646"
-           y="38.188042"
-           id="text13"><tspan
-             sodipodi:role="line"
-             id="tspan13"
-             style="font-size:1.64435px;stroke-width:0.264583"
-             x="145.32646"
-             y="38.188042">L=90 - (H-D)</tspan></text>
-        <text
-           xml:space="preserve"
            style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;stroke-width:0.154158"
            x="119.89126"
            y="33.15567"
@@ -373,6 +382,49 @@
              x="119.89126"
              y="33.15567"
              id="tspan30">L&gt;D</tspan></text>
+        <g
+           id="g47">
+          <text
+             xml:space="preserve"
+             style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+             x="151.91441"
+             y="37.86161"
+             id="text13"><tspan
+               sodipodi:role="line"
+               id="tspan13"
+               style="font-size:1.64435px;stroke-width:0.264583"
+               x="151.91441"
+               y="37.86161"><tspan
+   style="fill:#ff0000"
+   id="tspan34">L</tspan>=90 - (H<tspan
+   style="fill:#ff0000"
+   id="tspan33">-D -         </tspan><tspan
+   id="tspan47"
+   style="fill:#1a1a1a">)</tspan></tspan></text>
+          <text
+             xml:space="preserve"
+             style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+             x="150.99446"
+             y="36.822968"
+             id="text43"><tspan
+               sodipodi:role="line"
+               style="font-size:1.64435px;stroke-width:0.264583"
+               x="150.99446"
+               y="36.822968"
+               id="tspan44"><tspan
+   style="fill:#ff0000"
+   id="tspan45">d</tspan> &gt;0</tspan><tspan
+               sodipodi:role="line"
+               style="font-size:1.64435px;stroke-width:0.264583"
+               x="150.99446"
+               y="38.878407"
+               id="tspan48">d &lt;0</tspan><tspan
+               sodipodi:role="line"
+               style="font-size:1.64435px;stroke-width:0.264583"
+               x="150.99446"
+               y="40.933842"
+               id="tspan49" /></text>
+        </g>
       </g>
       <g
          id="g23"
@@ -380,14 +432,32 @@
         <text
            xml:space="preserve"
            style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
-           x="144.79404"
-           y="41.193214"
+           x="151.88647"
+           y="41.697697"
            id="text23"><tspan
              sodipodi:role="line"
              id="tspan23"
              style="font-size:1.64435px;stroke-width:0.264583"
-             x="144.79404"
-             y="41.193214">L=(H+D) - 90</tspan></text>
+             x="151.88647"
+             y="41.697697">L=(H+D+        ) - 90</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;stroke-width:0.264583"
+           x="147.63809"
+           y="40.662071"
+           id="text43-3-4"><tspan
+             sodipodi:role="line"
+             id="tspan43-5-6"
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="147.63809"
+             y="40.662071">d &gt;0</tspan><tspan
+             sodipodi:role="line"
+             style="font-size:1.64435px;stroke-width:0.264583"
+             x="147.63809"
+             y="42.71751"
+             id="tspan44-1-9"><tspan
+   style="fill:#ff0000"
+   id="tspan45-7-4">d</tspan> &lt;0</tspan></text>
         <text
            xml:space="preserve"
            style="font-size:1.64435px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;stroke-width:0.154158"
