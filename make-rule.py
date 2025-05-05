@@ -400,7 +400,7 @@ def make_semidiameter(radius):
 # TODO: add lines to help with alignment
 def make_d_lines(outer_radius):
 	g = draw.Group(transform="rotate(+0)")
-	inner_step = 290
+	inner_step = 300
 
 	radius = lambda d: outer_radius - inner_step * (1-d)
 
@@ -564,7 +564,7 @@ def make_log_sine(radius):
 	minor4 = []
 
 	# sine 0.56 - 5.6 degrees
-	for a in frange(0.5, 4.51, 0.1) + frange(4.6, 6.01, 0.2):
+	for a in frange(0.5, 3.01, 0.1) + frange(3.0, 6.01, 0.2):
 		major.append(sin(radians(a)))
 	for a in frange(0.50, 6.001, 0.05):
 		minor1.append(sin(radians(a)))
@@ -607,6 +607,7 @@ def make_log_sine(radius):
 		text_angle=90,
 		text_anchor="end",
 		fill="red",
+		pos=(-1,-2),
 	))
 
 	# a faint divider to separate the sine and tangent
@@ -852,7 +853,7 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 def make_sqrt_scale(radius,draw_inverse):
 	g = draw.Group()
 
-	major = frange(1,10)
+	major = frange(2,10)
 	minor1 = frange(1,10,0.5)
 	minor2 = frange(1,10,0.1)
 	minor3 = frange(1,10,0.05)
@@ -886,9 +887,11 @@ def make_sqrt_scale(radius,draw_inverse):
 		extra_labels=extra_labels,
 	))
 
+	g.append(draw_marker("1", radius, 0 if draw_inverse else 180))
+
 	if draw_inverse:
 		# Draw the scales in reverse to make the 1/X scale
-		g.append(make_logscale(radius-25, "1/X",
+		g.append(make_logscale(radius-30, "1/X",
 			[10,2] + major[2:],
 			minor1,
 			minor2,
@@ -903,7 +906,7 @@ def make_sqrt_scale(radius,draw_inverse):
 		))
 	else:
 		# double the scales to go up to 100 for the X^2 on the outside
-		g.append(make_logscale(radius+25, "X²",
+		g.append(make_logscale(radius+30, "X²",
 			major + [10 * _ for _ in major],
 			minor1 + [10 * _ for _ in minor1],
 			minor2 + [10 * _ for _ in minor2],
@@ -963,6 +966,28 @@ def make_radians(radius):
 		
 	return g
 
+def draw_marker(label, radius, angle):
+	g = draw.Group(transform="translate(%.3f)" % (radius))
+	g.append(draw.Lines(
+		0, 0,
+		15, +5,
+		25, +5,
+		25, -5,
+		15, -5,
+		close=True,
+		fill="black",
+		stroke="none",
+		transform="rotate(%.3f)" % (angle),
+	))
+
+	g.append(draw.Text(label, 14, 0, -12 if angle == 0 else +21 ,
+		text_anchor="middle",
+		fill="white",
+		transform="rotate(%.3f)" % (90),
+	))
+
+	return g
+
 def make_minutes(radius, side=3):
 	g = draw.Group()
 
@@ -978,26 +1003,30 @@ def make_minutes(radius, side=3):
 	# 0-60 minutes around the circle in black
 	#g.append(make_rule(radius, 360/60, 360/120, 360/600, pos=(2,9)))
 	# black numbers going clockwise
-	g.append(make_labels(radius, 6, 0, 360,
+	px = 2
+	py = 20 if side & 1 != 0 else -10
+
+	g.append(make_labels(radius, 6, 6, 360,
 		lambda x: "%.0f" % ((x/6) % 60),
-		size=13,
-		pos=(2,20) if side & 1 != 0 else (2,-10),
+		size=11,
+		pos=(px,py),
 		text_anchor="start",
 		fill="black",
 	))
 
 	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 6, 0, 360,
+	g.append(make_labels(radius, 6, 6, 360,
 		lambda x: "%.0f" % ((60-x/6) % 60),
-		pos=(-3,-10) if side & 1 != 0 else (-3,+20),
-		size=13,
+		pos=(-px,py),
+		size=11,
 		text_anchor="end",
 		fill="red",
 		font_style="italic",
 	))
 
-	# heavy red line to mark the zero and +/- for the crossing
-	g.append(draw.Line(radius-10, 0, radius+10, 0, stroke="red", stroke_width=3))
+	# Special marker for the zeros
+	g.append(draw_marker("0", radius, 180 if side == 1 else 0))
+
 
 #	g.append(draw.Text("+", 30,
 #		2, -radius,
@@ -1018,7 +1047,7 @@ def make_fractional_minutes(radius):
 	g.append(make_rule(radius, 360/100, 360/200, 360/1000,
 		fmt=lambda x: "%.0f" % (x/360*100),
 		side=1,
-		pos=(2,+10),
+		pos=(1.5,+10),
 		size=8,
 	))
 
@@ -1057,18 +1086,18 @@ def eq_time_radius(d):
 	return -45
 
 months = [
-	["Jan",31,(+6,-1)],
-	["Feb",28,(+6,-1)],
-	["Mar",31,(-6,+6)],
-	["Apr",30,(-6,+6)],
-	["May",31,(-7,+5)],
+	["Jan",31,(-7,-1)],
+	["Feb",28,(-7,-1)],
+	["Mar",31,(+7,+6)],
+	["Apr",30,(+6,+6)],
+	["May",31,(+7,+5)],
 	["Jun",30,(+6,-2)],
 	["Jul",31,(+5,-2)],
 	["Aug",31,(+8,+5)],
 	["Sep",30,(+6,+5)],
-	["Oct",31,(-6,+6)],
+	["Oct",31,(+8,+6)],
 	["Nov",30,(+8,-2)],
-	["Dec",31,(+6,-2)],
+	["Dec",31,(-8,-2)],
 ]
 
 def make_equation_of_time(radius):
