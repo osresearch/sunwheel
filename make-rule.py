@@ -549,74 +549,88 @@ def make_tangent_scale(radius):
 	return g
 
 
-# Sine is one quadrant for increased accuracy and makes two circles
-# for 0.01 to 0.1 and 0.1 to 1.0
-def make_log_sine(radius):
+def make_sine(radius,major,minor1,minor2,minor3):
 	g = draw.Group()
-
-	# start at -20 since we will spiral outwards for the larger angles
-	#radius -= 20
-
-	major = []
-	minor1 = []
-	minor2 = []
-	minor3 = []
-	minor4 = []
-
-	# sine 0.56 - 5.6 degrees
-	for a in frange(0.5, 3.01, 0.1) + frange(3.0, 6.01, 0.2):
-		major.append(sin(radians(a)))
-	for a in frange(0.50, 6.001, 0.05):
-		minor1.append(sin(radians(a)))
-	for a in frange(0.50, 6.001, 0.01):
-		minor2.append(sin(radians(a)))
-	for a in frange(0.50, 1.801, 0.005):
-		minor3.append(sin(radians(a)))
-	#for a in frange(0.58, 1.801, 0.005):
-		#minor3.append(sin(radians(a)))
-
-	# sine 5.6 - 90 degrees
-	for a in frange(6, 40.1, 1) + frange(45, 80, 5) + frange(80,90.1,10):
-		major.append(sin(radians(a)))
-	for a in frange(6, 80, 0.5) + frange(80,90,1):
-		minor1.append(sin(radians(a)))
-	for a in frange(6, 40, 0.1) + frange(40,75,0.25):
-		minor2.append(sin(radians(a)))
-
+	convert = lambda pts: [sin(radians(pt)) for pt in pts]
 
 	g.append(make_logscale(radius, "", # we will label
-		major,
-		minor1,
-		minor2,
-		minor3,
+		convert(major),
+		convert(minor1),
+		convert(minor2),
+		convert(minor3),
 		[],
 		side=2,
 		fmt=lambda x: ("%.1f" if x < 0.14 else "%.0f") % (degrees(asin(x))),
 		#fmt=lambda x: "%.1f" % (degrees(asin(x))),
 		log_scale=log(10),
 		extra_labels=[],
-		spiral=True,
 	))
 
 	# cosine is reverse of sin in red
 	g.append(make_tick_labels(radius,
-		[[x, ("%.1f" if x < 0.104 else "%.0f") % (90 - degrees(asin(x)))] for x in major],
+		[[x, ("%.1f" if x < 0.104 else "%.0f") % (90 - degrees(asin(x)))] for x in convert(major)],
 		8,
 		log_scale=log(10),
-		spiral=True,
 		text_angle=90,
 		text_anchor="end",
 		fill="red",
 		pos=(-1,-2),
 	))
 
-	# a faint divider to separate the sine and tangent
-	g.append(draw_spiral(
-		radius-15,
-		[sin(radians(x)) for x in frange(0.50, 4.7, 0.01)],
+	return g
+
+# Sine is one quadrant for increased accuracy and makes two circles
+# for 0.01 to 0.1 and 0.1 to 1.0
+# the spiral looked cool, but takes up more space than two concentric circles
+def make_log_sine(radius):
+	g = draw.Group()
+
+	# start at -20 since we will spiral outwards for the larger angles
+	#radius -= 20
+	# sine 0.56 - 5.6 degrees
+	s1 = (0.6, 5.6+0.0001)
+	g.append(make_sine(radius-25,
+		frange(s1[0], 3.01, 0.1) + frange(3.0, s1[1], 0.2),
+		frange(s1[0], s1[1], 0.05),
+		frange(s1[0], s1[1], 0.01),
+		frange(s1[0], 1.801, 0.005),
+	))
+
+
+	# sine 5.6 - 90 degrees
+	g.append(make_sine(radius,
+		frange(6, 40.1, 1) + frange(45, 80, 5) + frange(80,90.1,10),
+		frange(6, 80, 0.5) + frange(80,90,1),
+		frange(6, 40, 0.1) + frange(40,75,0.25),
+		frange(6, 20, 0.05)
+	))
+
+	return g
+
+def make_tangent(radius, major, minor1, minor2, minor3):
+	g = draw.Group()
+	convert = lambda pts: [tan(radians(pt)) for pt in pts]
+
+	g.append(make_logscale(radius, "T",
+		convert(major),
+		convert(minor1),
+		convert(minor2),
+		convert(minor3),
+		[],
+		side=2,
+		fmt=lambda x: "%.0f" % (degrees(atan(x))),
 		log_scale=log(10),
-		stroke="green",
-		stroke_width=0.3,
+		extra_labels=[],
+	))
+
+	# cotan is in reverse in red
+	g.append(make_tick_labels(radius,
+		[[x, "%.0f" % (90 - degrees(atan(x)))] for x in convert(major)],
+		8,
+		log_scale=log(10),
+		text_angle=90,
+		text_anchor="end",
+		fill="red",
 	))
 
 	return g
@@ -625,49 +639,31 @@ def make_log_sine(radius):
 def make_log_tangent(radius):
 	g = draw.Group()
 
-	major = []
-	minor1 = []
-	minor2 = []
-	minor3 = []
-
-	# tan(5.7) to 45 is 0.1 to 1.0
-	for a in frange(2, 45, 1) + frange(45,83.1,1):
-		major.append(tan(radians(a)))
-	for a in frange(2, 83.1, 0.5):
-		minor1.append(tan(radians(a)))
-	for a in frange(2, 83.1, 0.1):
-		minor2.append(tan(radians(a)))
-	for a in frange(2, 20, 0.05) + frange(70,83.001, 0.05):
-		minor3.append(tan(radians(a)))
-
-	g.append(make_logscale(radius, "T",
-		major,
-		minor1,
-		minor2,
-		minor3,
-		[],
-		side=2,
-		fmt=lambda x: "%.0f" % (degrees(atan(x))),
-		log_scale=log(10),
-		spiral=True,
-		extra_labels=[],
+	g.append(make_tangent(radius,
+		frange(45, 84.1, 1),
+		frange(45, 84.1, 0.5),
+		frange(45, 84.1, 0.1),
+		frange(45, 84.1, 0.05),
 	))
 
-	# cotan is in reverse in red
-	g.append(make_tick_labels(radius,
-		[[x, "%.0f" % (90 - degrees(atan(x)))] for x in major],
-		8,
-		log_scale=log(10),
-		spiral=True,
-		text_angle=90,
-		text_anchor="end",
-		fill="red",
+	g.append(make_tangent(radius-22,
+		frange(6, 45.1, 1),
+		frange(6, 45.1, 0.5),
+		frange(6, 45.1, 0.1),
+		frange(6, 20, 0.05),
+	))
+
+	g.append(make_tangent(radius-44,
+		frange(1, 6.1, 1),
+		frange(0.7, 6.1, 0.5),
+		frange(0.7, 6.1, 0.1),
+		frange(0.7, 6.1, 0.05),
 	))
 
 	return g
 
 # Sine is one quadrant for increased accuracy
-def make_sine(radius):
+def old_make_sine(radius):
 	g = draw.Group()
 	labels = []
 	extra_labels = []
@@ -882,7 +878,7 @@ def make_sqrt_scale(radius,draw_inverse):
 		minor3,
 		minor4,
 		side=side,
-		pos=(2,+10) if draw_inverse else (2,-1.5),
+		pos=(2,+10) if draw_inverse else (2,-2),
 		log_scale=log(10),
 		extra_labels=extra_labels,
 	))
@@ -891,7 +887,7 @@ def make_sqrt_scale(radius,draw_inverse):
 
 	if draw_inverse:
 		# Draw the scales in reverse to make the 1/X scale
-		g.append(make_logscale(radius-30, "1/X",
+		g.append(make_logscale(radius-20, "1/X",
 			[10,2] + major[2:],
 			minor1,
 			minor2,
@@ -906,8 +902,8 @@ def make_sqrt_scale(radius,draw_inverse):
 		))
 	else:
 		# double the scales to go up to 100 for the X^2 on the outside
-		g.append(make_logscale(radius+30, "X²",
-			major + [10 * _ for _ in major],
+		g.append(make_logscale(radius+25, "X²",
+			major + [10] + [10 * _ for _ in major],
 			minor1 + [10 * _ for _ in minor1],
 			minor2 + [10 * _ for _ in minor2],
 			minor3 + [10 * _ for _ in minor3],
@@ -1328,7 +1324,7 @@ inner.append(make_360_clock(235))
 outer.append(make_sqrt_scale(410, False))
 inner.append(make_sqrt_scale(410, True))
 inner.append(make_log_sine(360))
-inner.append(make_log_tangent(285))
+inner.append(make_log_tangent(305))
 
 
 #back.append(make_log_cosine(320))
