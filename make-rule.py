@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # Generates the slide rule elements using SVG
+#
 
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan
 import drawsvg as draw
@@ -53,10 +54,10 @@ def compute_xy(r,a):
 	return (r * cos(radians(a)), r * sin(radians(a)))
 
 
-def draw_spiral(radius, pts, log_scale, stroke='black', stroke_width=0.1):
+def draw_spiral(radius, pts, log_scale, stroke='black', stroke_width=0.1, spiral=True):
 	arcs = []
 	for angle in pts:
-		(r,a) = compute_position(radius,angle,10,log_scale,True)
+		(r,a) = compute_position(radius,angle,10,log_scale,spiral)
 		(x,y) = compute_xy(r,a)
 		arcs.append(x)
 		arcs.append(y)
@@ -156,8 +157,8 @@ def height_of_eye(H_e):
 
 def make_height_of_eye(radius,angle):
 	g = draw.Group(transform="rotate(%.3f)" % (angle))
-	major = [height_of_eye(H_e) for H_e in frange(0,20.1,1)]
-	minor1 = [height_of_eye(H_e) for H_e in frange(0,20,0.5)]
+	major = [height_of_eye(H_e) for H_e in frange(0,25.1,1)]
+	minor1 = [height_of_eye(H_e) for H_e in frange(0,25,0.5)]
 	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
 	minor2 += [height_of_eye(H_e) for H_e in frange(5,10,0.25)]
 
@@ -167,7 +168,7 @@ def make_height_of_eye(radius,angle):
 
 	# Meters
 	labels = [[height_of_eye(h_e), "%.0f" % (h_e)] for h_e in
-		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 17, 20]]
+		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]]
 
 	g.append(make_tick_labels(
 		radius-10,
@@ -177,7 +178,7 @@ def make_height_of_eye(radius,angle):
 	))
 	g.append(make_tick_labels(
 		radius-10,
-		[[height_of_eye(21.5), "m"]],
+		[[height_of_eye(26.5), "m"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		#stroke="red",
@@ -188,11 +189,11 @@ def make_height_of_eye(radius,angle):
 	# Feet
 	ft_radius = radius - 50
 	ft_per_m = 3.281
-	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,65.1,5)]
-	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,65.1,1)]
+	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,80.1,5)]
+	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,80.1,1)]
 
 	labels = [[height_of_eye(h_e/ft_per_m), "%.0f" % (h_e)] for h_e in
-		[5,10,15,20,25,30,35,40,45,50,55,60,65]]
+		[5,10,15,20,25,30,35,40,45,50,60,70,80]]
 
 	g.append(make_ticks(ft_radius, minor1,  8, stroke_width=0.2))
 	g.append(make_ticks(ft_radius, major,  15, stroke_width=0.3))
@@ -204,7 +205,7 @@ def make_height_of_eye(radius,angle):
 	))
 	g.append(make_tick_labels(
 		ft_radius,
-		[[height_of_eye(21.5), "ft"]],
+		[[height_of_eye(26.5), "ft"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		#stroke="red",
@@ -250,17 +251,20 @@ def make_refraction(radius, angle):
 
 	t_scale = lambda t: radius - 60 - t * 5
 
-	for h_a in majors:
-		g.append(make_arcs(frange(-10,30.1,1), lambda t: (t_scale(t), refraction(h_a,1010,t)), stroke_width=0.4))
-	for h_a in minors1:
-		g.append(make_arcs(frange(-10,30.1,1), lambda t: (t_scale(t), refraction(h_a,1010,t)), stroke_width=0.2))
-	for h_a in minors2:
-		g.append(make_arcs(frange(-10,30.1,1), lambda t: (t_scale(t), refraction(h_a,1010,t)), stroke_width=0.1))
+	t_max = 40
+	pressure = 1010
 
-	for t in [-10,-5,0,5,10,15,20,25,30]:
+	for h_a in majors:
+		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.4))
+	for h_a in minors1:
+		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.2))
+	for h_a in minors2:
+		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.1))
+
+	for t in [-10,-5,0,5,10,15,20,25,30,35,40]:
 		r = t_scale(t)
 		g.append(make_arcs(minors2,
-			lambda a: (r, refraction(a,1010,t)),
+			lambda a: (r, refraction(a,pressure,t)),
 			stroke_width= 0.8 if (t % 10 == 0) else 0.1,
 		))
 
@@ -269,7 +273,7 @@ def make_refraction(radius, angle):
 		g.append(draw.Text(
 			"%d°F" % (t * 9/5 + 32),
 			8.5, -8, -2,
-			transform="rotate(%f) translate(%f)" % (refraction(3,1010,t), r),
+			transform="rotate(%f) translate(%f)" % (refraction(3,pressure,t), r),
 			text_anchor="center",
 		))
 		g.append(draw.Text(
@@ -281,7 +285,7 @@ def make_refraction(radius, angle):
 
 	g.append(make_tick_labels(
 		radius,
-		[[refraction(a,1010,-9), "%.0f" % (a)] for a in majors],
+		[[refraction(a,pressure,-9), "%.0f" % (a)] for a in majors],
 		size=8.5,
 		pos=(-5,+3),
 		text_anchor="start",
@@ -588,12 +592,12 @@ def make_log_sine(radius):
 	# start at -20 since we will spiral outwards for the larger angles
 	#radius -= 20
 	# sine 0.56 - 5.6 degrees
-	s1 = (0.6, 5.6+0.0001)
+	s1 = (0.7, 6.0+0.0001)
 	g.append(make_sine(radius-25,
 		frange(s1[0], 3.01, 0.1) + frange(3.0, s1[1], 0.2),
-		frange(s1[0], s1[1], 0.05),
-		frange(s1[0], s1[1], 0.01),
-		frange(s1[0], 1.801, 0.005),
+		frange(0.65, s1[1], 0.05),
+		frange(0.62, s1[1], 0.01),
+		frange(0.62, 1.801, 0.005),
 	))
 
 
@@ -611,21 +615,21 @@ def make_tangent(radius, major, minor1, minor2, minor3):
 	g = draw.Group()
 	convert = lambda pts: [tan(radians(pt)) for pt in pts]
 
-	g.append(make_logscale(radius, "T",
+	g.append(make_logscale(radius, "",
 		convert(major),
 		convert(minor1),
 		convert(minor2),
 		convert(minor3),
 		[],
 		side=2,
-		fmt=lambda x: "%.0f" % (degrees(atan(x))),
+		fmt=lambda x: ("%.1f" if x < 0.17 else "%.0f") % (degrees(atan(x))),
 		log_scale=log(10),
 		extra_labels=[],
 	))
 
 	# cotan is in reverse in red
 	g.append(make_tick_labels(radius,
-		[[x, "%.0f" % (90 - degrees(atan(x)))] for x in convert(major)],
+		[[x, ("%.1f" if x < 0.17 else "%.0f") % (90 - degrees(atan(x)))] for x in convert(major)],
 		8,
 		log_scale=log(10),
 		text_angle=90,
@@ -640,24 +644,36 @@ def make_log_tangent(radius):
 	g = draw.Group()
 
 	g.append(make_tangent(radius,
-		frange(45, 84.1, 1),
-		frange(45, 84.1, 0.5),
-		frange(45, 84.1, 0.1),
-		frange(45, 84.1, 0.05),
+		frange(45, 84.001, 1),
+		frange(45, 84.001, 0.5),
+		frange(45, 84.001, 0.1),
+		frange(45, 84.001, 0.05),
 	))
 
 	g.append(make_tangent(radius-22,
-		frange(6, 45.1, 1),
-		frange(6, 45.1, 0.5),
-		frange(6, 45.1, 0.1),
+		frange(6, 45.001, 1),
+		frange(6, 45.001, 0.5),
+		frange(6, 45.001, 0.1),
 		frange(6, 20, 0.05),
 	))
 
 	g.append(make_tangent(radius-44,
-		frange(1, 6.1, 1),
-		frange(0.7, 6.1, 0.5),
-		frange(0.7, 6.1, 0.1),
-		frange(0.7, 6.1, 0.05),
+		frange(2, 6.001, 1) + frange(0.7, 3, 0.1),
+		frange(0.7, 3, 0.1) + frange(3, 6.001, 0.5),
+		frange(0.65, 3.001, 0.05) + frange(3, 6.001, 0.05),
+		frange(0.65, 1.001, 0.01),
+	))
+
+	g.append(draw.Circle(0, 0, radius+15,
+		fill="none",
+		stroke="black",
+		stroke_width=0.2,
+	))
+
+	g.append(draw.Circle(0, 0, radius-44-12,
+		fill="none",
+		stroke="black",
+		stroke_width=0.2,
 	))
 
 	return g
@@ -756,7 +772,7 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 		text_anchor="start",
 		transform="rotate(%.3f) translate(%3.f) rotate(+90)" % (label_a, label_r),
 	))
-	if not spiral:
+	if False: #not spiral:
 		g.append(draw.Circle(
 			0, 0, radius,
 			fill='none',
@@ -768,6 +784,7 @@ def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
 			radius,
 			minor2,
 			log_scale=log_scale,
+			spiral=spiral,
 			stroke="black",
 			stroke_width=0.1,
 		))
@@ -883,7 +900,7 @@ def make_sqrt_scale(radius,draw_inverse):
 		extra_labels=extra_labels,
 	))
 
-	g.append(draw_marker("1", radius, 0 if draw_inverse else 180))
+	g.append(draw_marker("1", radius, 180 if draw_inverse else 0))
 
 	if draw_inverse:
 		# Draw the scales in reverse to make the 1/X scale
@@ -1284,8 +1301,10 @@ inner.append(make_d_lines(h_e_radius+10))
 inner.append(make_equation_of_time(100))
 
 # Cut lines
-inner.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
-outer.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
+axle = draw.Circle(0,0, 5, fill="none", stroke="black", stroke_width=1)
+inner.append(axle)
+outer.append(axle)
+inner.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle), id="pointer")
@@ -1295,21 +1314,24 @@ front.append(pointer)
 front.append(outer)
 front.append(inner)
 
-inner.append(draw.Image(-250, -300, 250, 250, path="latitude.svg", embed=True))
+img_sz = 800
+inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=True))
 
 
 
 ####
-#### Reverse side (no rotating parts)
+#### Reverse side
 ####
 back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 back.append(pointer)
-back.append(draw.Circle(0,0, 10, fill="none", stroke="black", stroke_width=1))
-back.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
-back.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 outer = draw.Group(id="back_outer")
 inner = draw.Group(id="back_inner")
+
+inner.append(axle)
+outer.append(axle)
+inner.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
+outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
 # rule for 360 degree circle with reverse angles as well
 inner.append(make_360_clock(235))
@@ -1333,8 +1355,34 @@ inner.append(make_log_tangent(305))
 back.append(outer)
 back.append(inner)
 
+# paper pointer until a better one can be made
+pointer_diam = 35
+pointer = draw.Group()
+pointer.append(axle)
+pointer.append(draw.Circle(0,0,pointer_diam, fill="none", stroke="black", stroke_width=2))
+pointer.append(draw.Lines(
+	+pointer_diam,0,
+	+460,0,
+	+480,pointer_diam/2,
+	+460,pointer_diam,
+	0,pointer_diam,
+	fill="white", stroke="black", stroke_width=2, closed=True,
+))
+pointer.append(draw.Line(
+	+pointer_diam,5,
+	+460,5,
+	stroke="red",
+	stroke_width=10,
+))
+
+front.append(pointer)
+mirror_pointer = draw.Group(transform="scale(1,-1)")
+mirror_pointer.append(pointer)
+back.append(mirror_pointer)
+
 d.append(front)
 d.append(back)
+
 
 if output_file.endswith(".png"):
 	d.save_png(output_file)
