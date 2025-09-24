@@ -1,0 +1,240 @@
+<!doctype html><meta charset=utf-8><title>shortest html5</title>
+<body>
+ Sextant specialized  slide rule
+
+<table>
+<tr><td>
+<label for="height_deg">Measurement (deg, min)</label>
+</td><td>
+<input id="height_deg" type="number" min="0" max="90" step="1" value="45"/>
+<input id="height_min" type="number" min="0" max="59.9" step="0.1" value="13.6"/>
+</td></tr>
+
+<tr><td>
+Observation
+</td><td>
+<input id="upper" type="radio" name="limb" checked onclick="limb='upper'"/>
+<label for="upper">Upper</label>
+<input id="lower" type="radio" name="limb" onclick="limb='lower'"/>
+<label for="lower">Lower</label>
+<input id="star" type="radio" name="limb" onclick="limb='star'"/>
+<label for="star">Star</label>
+</td></tr>
+
+<tr><td>
+<label for="date">Date</label>
+</td><td>
+<input id="date" type="date"/>
+</td></tr>
+
+<tr><td>
+<label for="index_error">Index Error (min)</label>
+</td><td>
+<input id="index_error" type="number" value="+0.2" step="0.1" min="-5" max="+5" />
+</td></tr>
+
+<tr><td>
+<label for="eye_height">Height of Eye (m)</label>
+</td><td>
+<input id="eye_height" type="number" min="0" max="25" value="4.5" step="0.5" />
+</td></tr>
+
+<tr><td>
+<label for="temperature">Temp (C)</label>
+</td><td>
+<input id="temperature" type="number" min="-10" max="40" step="0.5" value="21.5" />
+</td></tr>
+</table>
+
+
+</form>
+
+
+
+<script>
+document.getElementById("date").valueAsDate = new Date();
+
+var limb = 'upper';
+var inner;
+var outer;
+var pointer;
+var sliderule;
+var speed = "1s";
+
+var index_error = -0.2;
+var temperature = 10;
+var height_deg = 35;
+function get(id) { return Number(document.getElementById(id).value) }
+
+var height_of_eye_offset = -180 / 6;
+
+function height_of_eye(H_e) {
+	return (1.76 * Math.sqrt(H_e));
+}
+
+function radians(deg)
+{
+	return Math.PI * deg / 180;
+}
+
+
+function refraction(H_a, p=1010, t=10)
+{
+        let r = 1/Math.tan(radians(H_a + 7.31 / (H_a + 4.4)))
+        let f = p / (273+t) * 283/1010
+        return f * r;
+}
+
+function compute_refraction_and_height()
+{
+	let ha = get("height_deg"); // should use fraction too
+	let t = get("temperature");
+	return refraction(ha, 1010, t) + height_of_eye(get("eye_height"));
+}
+
+function semi_diam(time)
+{
+	let mon = Number(time.substr(5,2));
+	let day = Number(time.substr(8,2));
+	let approx = [
+ 		16.29, // Jan"],
+                16.26, // Feb
+                16.17, // Mar
+                16.03, // Apr"],
+                15.90, // May
+                15.80, // Jun
+                15.75, // Jul"],
+                15.78, // Aug"],
+                15.87, // "],
+                16.00, // Oct"],
+                16.14, // "],
+                16.24, // Dec"],
+ 		16.29, // Jan"],
+	];
+
+	return (approx[mon-1] * day + approx[mon] * (31-day)) / 31
+}
+
+function compute_limb(step)
+{
+	let time = document.getElementById("date").value;
+	if (limb == "star")
+		return 0; // never any correction
+	if (limb == "lower")
+	{
+		if (step == 1)
+			return 0;
+		return +semi_diam(time)
+	}
+
+	// upper always goes the same way
+	return -semi_diam(time)
+}
+
+
+function rotate(elem, value, speed)
+{
+	elem.value = value;
+	elem.style.transitionDuration = speed;
+	elem.setAttribute("transform","rotate(" + -value*6 + ")");
+}
+
+function setup(){
+	sliderule = document.getElementById("sliderule").contentDocument;
+	pointer = sliderule.getElementById("pointer");
+	inner = sliderule.getElementById("inner");
+	outer = sliderule.getElementById("outer");
+
+	rotate(pointer, 0, speed)
+	rotate(inner, 0, speed)
+	rotate(outer, 0, speed)
+}
+
+function reset_pointer(all=0)
+{
+	// rotate so that the pointer is level and the outer
+	// marks the current pointed to value
+	rotate(outer, outer.value - pointer.value, speed)
+	if (all)
+		rotate(inner, inner.value - pointer.value, speed)
+	rotate(pointer, 0, speed)
+
+}
+
+function set_rule(p,i,o) {
+	sliderule = document.getElementById("sliderule").contentDocument;
+
+	// find the shortest way to rotate the inner one
+	// the outer and pointer must take the long way around
+	if (i - inner > 30)
+		i = i - 60;
+	else
+	if (i - inner < -30)
+		i = i + 60;
+
+	inner = i;
+	outer = o;
+	pointer = p;
+	sliderule.getElementById("pointer").style.transitionDuration = speed;
+	sliderule.getElementById("inner").style.transitionDuration = speed;
+	sliderule.getElementById("outer").setAttribute("transform","rotate(" + -outer*6 + ")");
+	sliderule.getElementById("pointer").setAttribute("transform","rotate(" + pointer*6 + ")");
+}
+
+function move_rule(which, value, rel=0)
+{
+	var elem = sliderule.getElementById(which);
+
+	if (rel)
+		value += elem.value;
+	rotate(elem, value);
+}
+//set_rule(0,0,0);
+</script>
+
+<table>
+<tr>
+<td width="60%"><object id="sliderule" data="rule.svg" width="100%"></object></td>
+<td>
+Correcting sextant height measurement:
+<ul>
+<li onclick="setup()">Start with the pointer on the inner and outer at 0
+
+<li onclick="move_rule('outer',get('height_min'))">Rotate the outer dial to the minutes of the sextant height (black digits).
+
+<li onclick="move_rule('pointer',get('index_error'))">
+<b>Correct for sextant index error</b>: Point to the index error on the inner dial (red digits), read the corrected height from the outer dial
+
+<li onclick="reset_pointer();move_rule('inner',height_of_eye(get('eye_height'))-height_of_eye_offset)">
+<b>Correct for height of eye, temperature and refraction</b>: Rotate the inner dial so that the height of eye is under the pointer.
+
+<li onclick="move_rule('pointer', compute_refraction_and_height(), 1)">
+Rotate the pointer so that it lines up with the current temperature and height of the measurement.
+
+<li onclick="reset_pointer(1)">Read the refraction and temperature corrected height measurement from the outer ring.
+
+<li onclick="move_rule('inner', compute_limb(1))">
+<b>Correct for upper/lower limb measurement</b>: 
+For upper limb measurement, rotate the inner to line up the approximate time of year with the pointer.  For lower, rotate the inner to zero.
+
+<li onclick="move_rule('pointer', compute_limb(2), 1)">
+For upper limb measurements, rotate the pointer to the zero of the inner ring. For lower, rotate the pointer to the approximate time of year.
+
+<li onclick="reset_pointer(1)">Read the semi-diameter corrected height measurement from the outer ring.
+
+<li onclick="set_rule(16.0, -16.0, -2.2)">Set the pointer to the zero on the inside scale and note that the it passed the zero mark on the outside scale in the positive direction, so we need to add one to the degree value.
+<li onclick="set_rule(0.0, 0, 13.8)">Now the correct adjusted sextant height is <b>35&deg; 13.8'</b> after compensating for dip, refraction, temperature, sun semidiameter and the lower limb measurement.
+</ul>
+Computing latitude (same hemisphere, L > D):
+<ul>
+<li onclick="set_rule(0.0,2.4,13.8)"/>L > D, so L=90-(H-D), which means subtracting the sun declination from the sextant height.  Rotate the inner dial so that 2.4 in black lines up with the pointer, which will move the noon value higher.
+<li onclick="set_rule(-6.7-2.4,2.4,13.8)"/>d is positive and we are subtracting the declination change. Rotate the pointer to where the 0.8 line intersects the 21:21 with the red numbers.
+<li onclick="set_rule(0,-6.7, 4.7)"/>Read the minutes off the black numbers on the outer dial and compute the H-D value as 35&deg; 4.7m - 12&deg; = 23&deg; 4.7' (the minutes of declination have already been handled).
+<li>Compute the latitude as 90 - 23&deg; 4.7'. 60' - 4.7' can be read from the red numbers on the outer scale, while the sine/cosine scale on the reverse can be used to estimate the degrees 90-23 = 66 point something.  The result is <b>66&deg; 55.3'</b>.
+</ul>
+</tr>
+</table>
+
+
+
+

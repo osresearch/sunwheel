@@ -12,7 +12,7 @@ year = 2020 # for equation of time
 pointer_angle = 0
 inner_angle = 0
 outer_angle = 0
-draw_back = True
+draw_back = False
 output_file = "rule.svg"
 
 if len(sys.argv) > 1 and sys.argv[1].endswith(".png"):
