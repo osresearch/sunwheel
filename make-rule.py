@@ -20,13 +20,11 @@ if len(sys.argv) > 1 and sys.argv[1].endswith(".png"):
 	# all the parameters are in the file name
 	output_file = sys.argv[1]
 	group = re.match(r".*-(.*),(.*),(.*)\.png", output_file)
-	if not group:
-		print("unable to parse file name", file=sys.stderr)
-		sys.exit(-1)
-	pointer_angle = float(group[1])*6
-	inner_angle = float(group[2])*6
-	outer_angle = float(group[3])*6
-	draw_back = 0
+	if group:
+		pointer_angle = float(group[1])*6
+		inner_angle = float(group[2])*6
+		outer_angle = float(group[3])*6
+		draw_back = 0
 elif len(sys.argv) > 1:
 	pointer_angle = float(sys.argv[1])
 if len(sys.argv) > 2:
@@ -1375,10 +1373,11 @@ pointer.append(draw.Line(
 	stroke_width=10,
 ))
 
-front.append(pointer)
 mirror_pointer = draw.Group(transform="scale(1,-1)")
 mirror_pointer.append(pointer)
-back.append(mirror_pointer)
+
+#front.append(pointer)
+#back.append(mirror_pointer)
 
 d.append(front)
 d.append(back)

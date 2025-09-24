@@ -131,3 +131,15 @@ Computing latitude (same hemisphere, L > D):
 
 
 
+Computing Hc (if D is contrary hemisphere, use -D):
+```
+sin(Hc) = sin(D)*sin(Lat) + cos(D)*cos(Lat)*cos(LHA)
+```
+
+Computing Z one of:
+```
+cos(Z) = (sin(D) - sin(Lat) sin(Hc)) / (cos(Lat) cos(Hc))
+tan(Z) = sin(LHA) / (cos(Lat) cos(D) - sin(L) cos(LHA))
+```
+
+The plus or minus steps have to be done by hand.
