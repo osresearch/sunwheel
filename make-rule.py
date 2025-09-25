@@ -1097,17 +1097,17 @@ def eq_time_radius(d):
 	return -45
 
 months = [
-	["Jan",31,(-7,-1)],
-	["Feb",28,(-7,-1)],
-	["Mar",31,(-7,-1)],
-	["Apr",30,(-6,-1)],
-	["May",31,(+7,-2)],
-	["Jun",30,(+6,-2)],
+	["Jan",31,(+7,-1)],
+	["Feb",28,(+7,-1)],
+	["Mar",31,(+7,-1)],
+	["Apr",30,(-7,-1)],
+	["May",31,(+8,-2)],
+	["Jun",30,(+7,-2)],
 	["Jul",31,(-8,-2)],
 	["Aug",31,(-8,-2)],
-	["Sep",30,(+6,+5)],
-	["Oct",31,(-8,-2)],
-	["Nov",30,(-8,-2)],
+	["Sep",30,(-8,-2)],
+	["Oct",31,(+6,-2)],
+	["Nov",30,(+6,-2)],
 	["Dec",31,(+8,-2)],
 ]
 
@@ -1165,11 +1165,32 @@ def make_equation_of_time(radius):
 # throughout the year for approximating the lattitude
 # https://en.wikipedia.org/wiki/Position_of_the_Sun#Calculations
 # {\displaystyle \delta _{\odot }=-\arcsin \left[0.39779\cos \left(0.98565^{\circ }\left(N+10\right)+1.914^{\circ }\sin \left(0.98565^{\circ }\left(N-2\right)\right)\right)\right]}
+
+def declination(d):
+	return -degrees(asin(0.39779 * cos(radians(0.98565 * (d+10) + 1.914 * sin(radians(0.98565 * (d-2)))))))
+
+# compute the perpendicular between two declination days
+# for making pretty hash marks.
+# there must be a better way to do this since we are already
+# in polar space, but whatever we have to hard code it anyway
+def declination_perp(d, r_func):
+	d1 = declination(d)
+	d2 = declination(d+1)
+
+	r1 = r_func(d)
+	r2 = r_func(d+1)
+
+	(x1,y1) = compute_xy(r1, d1*6)
+	(x2,y2) = compute_xy(r2, d2*6)
+
+	a = atan2(y2-y1, x2-x1)
+	return degrees(a) - d1*6 + 90
+
 # the zeros are at day 80 and day 266, which is where we want
 # the curves to cross
 def make_declination(radius):
 	g = draw.Group(id="declination")
-	decl = lambda d: -degrees(asin(0.39779 * cos(radians(0.98565 * (d+10) + 1.914 * sin(radians(0.98565 * (d-2)))))))
+
 	r = lambda d: radius - 50 * sin((d-0)/365 * 2 * pi)
 
 	scale = 3
@@ -1179,7 +1200,7 @@ def make_declination(radius):
 
 	arcs = []
 	for d in range(0,365):
-		a = decl(d)
+		a = declination(d)
 		rd = r(d)
 		(x,y) = compute_xy(rd,a * 6)
 		arcs.append(x)
@@ -1194,37 +1215,37 @@ def make_declination(radius):
 
 	d = 0
 	for (name,d_in_month,label_pos) in months:
-		a = decl(d)
+		a = declination(d)
 
 		#(x,y) = compute_xy(r,a * 6)
 		g.append(draw.Text(name, 7, *label_pos,
 			fill="black",
 			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f)" % (a * 6, r(d)),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a * 6, r(d), declination_perp(d,r)),
 		))
 
 		for d_of_month in range(1,d_in_month):
-			d_minutes = decl(d + d_of_month)
+			d_minutes = declination(d + d_of_month)
 			g.append(draw.Line(-2,0,+2,0,
 				stroke="black",
 				stroke_width=0.1,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
 		for d_of_month in range(7,d_in_month,7):
-			d_minutes = decl(d + d_of_month)
+			d_minutes = declination(d + d_of_month)
 			g.append(draw.Line(-3,0,+3,0,
 				stroke="black",
 				stroke_width=0.2,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
 
 		g.append(draw.Line(-5,0,+5,0,
 			stroke="black",
 			stroke_width=0.5,
 			fill="none",
-			transform="rotate(%.3f) translate(%.3f)" % (a*6, r(d)),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a*6, r(d), declination_perp(d, r)),
 		))
 
 #		g.append(draw.Text(name, 7, *label_pos,
