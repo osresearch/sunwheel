@@ -402,7 +402,7 @@ def make_semidiameter(radius):
 # TODO: add lines to help with alignment
 def make_d_lines(outer_radius):
 	g = draw.Group(transform="rotate(+0)")
-	inner_step = 300
+	inner_step = 265
 
 	radius = lambda d: outer_radius - inner_step * (1-d)
 
