@@ -1,4 +1,4 @@
-<!doctype html><meta charset=utf-8><title>shortest html5</title>
+<!doctype html><meta charset=utf-8><title>Star Gate sextant tool</title>
 <body>
  Sextant specialized  slide rule
 
@@ -215,15 +215,15 @@ Rotate the pointer so that it lines up with the current temperature and height o
 
 <li onclick="move_rule('inner', compute_limb(1))">
 <b>Correct for upper/lower limb measurement</b>: 
-For upper limb measurement, rotate the inner to line up the approximate time of year with the pointer.  For lower, rotate the inner to zero.
+For upper limb measurement, rotate the inner to line up the approximate time of year with the pointer.<br/>
+For lower, rotate the inner to zero.<br/>
+For stars, skip this step.
 
 <li onclick="move_rule('pointer', compute_limb(2), 1)">
 For upper limb measurements, rotate the pointer to the zero of the inner ring. For lower, rotate the pointer to the approximate time of year.
 
 <li onclick="reset_pointer(1)">Read the semi-diameter corrected height measurement from the outer ring.
 
-<li onclick="set_rule(16.0, -16.0, -2.2)">Set the pointer to the zero on the inside scale and note that the it passed the zero mark on the outside scale in the positive direction, so we need to add one to the degree value.
-<li onclick="set_rule(0.0, 0, 13.8)">Now the correct adjusted sextant height is <b>35&deg; 13.8'</b> after compensating for dip, refraction, temperature, sun semidiameter and the lower limb measurement.
 </ul>
 Computing latitude (same hemisphere, L > D):
 <ul>

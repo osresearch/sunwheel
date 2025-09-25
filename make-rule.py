@@ -247,7 +247,7 @@ def make_refraction(radius, angle):
 	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
 	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
 
-	t_scale = lambda t: radius - 60 - t * 5
+	t_scale = lambda t: radius - 50 - t * 4.5
 
 	t_max = 40
 	pressure = 1010
@@ -282,7 +282,7 @@ def make_refraction(radius, angle):
 		))
 
 	g.append(make_tick_labels(
-		radius,
+		radius+2,
 		[[refraction(a,pressure,-9), "%.0f" % (a)] for a in majors],
 		size=8.5,
 		pos=(-5,+3),
@@ -1099,16 +1099,16 @@ def eq_time_radius(d):
 months = [
 	["Jan",31,(-7,-1)],
 	["Feb",28,(-7,-1)],
-	["Mar",31,(+7,+6)],
-	["Apr",30,(+6,+6)],
-	["May",31,(+7,+5)],
+	["Mar",31,(-7,-1)],
+	["Apr",30,(-6,-1)],
+	["May",31,(+7,-2)],
 	["Jun",30,(+6,-2)],
-	["Jul",31,(+5,-2)],
-	["Aug",31,(+8,+5)],
+	["Jul",31,(-8,-2)],
+	["Aug",31,(-8,-2)],
 	["Sep",30,(+6,+5)],
-	["Oct",31,(+8,+6)],
-	["Nov",30,(+8,-2)],
-	["Dec",31,(-8,-2)],
+	["Oct",31,(-8,-2)],
+	["Nov",30,(-8,-2)],
+	["Dec",31,(+8,-2)],
 ]
 
 def make_equation_of_time(radius):
@@ -1158,6 +1158,88 @@ def make_equation_of_time(radius):
 		))
 		d += d_in_month
 			
+	return g
+
+
+# related to the equation of time, the declination of the sun
+# throughout the year for approximating the lattitude
+# https://en.wikipedia.org/wiki/Position_of_the_Sun#Calculations
+# {\displaystyle \delta _{\odot }=-\arcsin \left[0.39779\cos \left(0.98565^{\circ }\left(N+10\right)+1.914^{\circ }\sin \left(0.98565^{\circ }\left(N-2\right)\right)\right)\right]}
+# the zeros are at day 80 and day 266, which is where we want
+# the curves to cross
+def make_declination(radius):
+	g = draw.Group(id="declination")
+	decl = lambda d: -degrees(asin(0.39779 * cos(radians(0.98565 * (d+10) + 1.914 * sin(radians(0.98565 * (d-2)))))))
+	r = lambda d: radius - 50 * sin((d-0)/365 * 2 * pi)
+
+	scale = 3
+	r = lambda d: radius - scale * equation_of_time(d)
+	stroke = 'black'
+	stroke_width = 1
+
+	arcs = []
+	for d in range(0,365):
+		a = decl(d)
+		rd = r(d)
+		(x,y) = compute_xy(rd,a * 6)
+		arcs.append(x)
+		arcs.append(y)
+
+
+	g.append(draw.Lines(*arcs,
+		fill='none',
+		stroke=stroke,
+		stroke_width=stroke_width,
+	))
+
+	d = 0
+	for (name,d_in_month,label_pos) in months:
+		a = decl(d)
+
+		#(x,y) = compute_xy(r,a * 6)
+		g.append(draw.Text(name, 7, *label_pos,
+			fill="black",
+			text_anchor="middle",
+			transform="rotate(%.3f) translate(%.3f)" % (a * 6, r(d)),
+		))
+
+		for d_of_month in range(1,d_in_month):
+			d_minutes = decl(d + d_of_month)
+			g.append(draw.Line(-2,0,+2,0,
+				stroke="black",
+				stroke_width=0.1,
+				fill="none",
+				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+			))
+		for d_of_month in range(7,d_in_month,7):
+			d_minutes = decl(d + d_of_month)
+			g.append(draw.Line(-3,0,+3,0,
+				stroke="black",
+				stroke_width=0.2,
+				fill="none",
+				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+			))
+
+		g.append(draw.Line(-5,0,+5,0,
+			stroke="black",
+			stroke_width=0.5,
+			fill="none",
+			transform="rotate(%.3f) translate(%.3f)" % (a*6, r(d)),
+		))
+
+#		g.append(draw.Text(name, 7, *label_pos,
+#			fill="black",
+#			text_anchor="middle",
+#			transform="rotate(%.3f) translate(%.3f)" % (r(d)*6, r(d)),
+#		))
+		d += d_in_month
+
+	# circles for every five minutes
+	g.append(draw.Circle(0, 0, radius, fill="none", stroke="gray", stroke_width=1.0))
+	g.append(draw.Circle(0, 0, radius+10*scale, fill="none", stroke="gray", stroke_width=0.25))
+	g.append(draw.Circle(0, 0, radius+5*scale, fill="none", stroke="gray", stroke_width=0.25))
+	g.append(draw.Circle(0, 0, radius-5*scale, fill="none", stroke="red", stroke_width=0.25))
+	g.append(draw.Circle(0, 0, radius-10*scale, fill="none", stroke="red", stroke_width=0.25))
 	return g
 
 
@@ -1296,7 +1378,8 @@ inner.append(make_refraction(h_e_radius, -180))
 inner.append(make_semidiameter(h_e_radius))
 inner.append(make_d_lines(h_e_radius+10))
 
-inner.append(make_equation_of_time(100))
+#inner.append(make_equation_of_time(100))
+inner.append(make_declination(115))
 
 # Cut lines
 axle = draw.Circle(0,0, 5, fill="none", stroke="black", stroke_width=1)
