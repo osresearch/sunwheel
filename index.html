@@ -14,8 +14,8 @@ Sextant specialized slide rule
 </td><td>
 <input id="height_deg" type="number" min="0" max="90" step="1" value="45"/>
 <input id="height_min" type="number" min="0" max="59.9" step="0.1" value="13.6"/>
-</td><td>
-
+</td><td rowspan=6>
+<ul id="log"></ul>
 </td></tr>
 
 <tr><td>
@@ -160,7 +160,7 @@ function setup(){
 	rotate(outer, 0, speed)
 	step = 0;
 
-	document.getElementById("description").innerHTML = "Fill in the measurements and click next to start";
+	document.getElementById("log").innerHTML = "";
 }
 
 function reset_pointer(all=0)
@@ -204,15 +204,36 @@ function move_rule(which, value, rel=0)
 }
 //set_rule(0,0,0);
 
-function pointer_check()
+
+function fmt(min,deg=0)
 {
-	if (outer.value - pointer.value > 60)
-		return "<br/><b>Note that the pointer has crossed 60, increasing the degrees</b>";
+	var rc = ''
+	if (min < 0)
+	{
+		min += 60;
 
-	if (outer.value - pointer.value < 0)
-		return "<br/><b>Note that the pointer has crossed zero, decreasing the degrees</b>";
+		if (deg == 0) {
+			rc = '-';
+		} else {
+			deg -= 1;
+		}
+	}
 
-	return "";
+	if (min > 60)
+	{
+		deg += 1
+		min -= 60;
+	}
+
+	if (deg != 0)
+	{
+		rc += deg + "°"
+		if (min < 10)
+			rc += '0'
+	}
+
+	rc += min.toFixed(1) + "'"
+	return "<b>" + rc + "</b>";
 }
 
 var step = 0;
@@ -222,26 +243,38 @@ var steps = [
 	return "Start with the pointer on the inner and outer ring at 0";
 },
 () => {
-	move_rule('outer', get('height_min'));
-	return "Rotate the outer dial to the minutes of the sextant height (black digits)";
+	var h = get('height_min')
+	move_rule('outer', h);
+	return "Rotate the outer dial black digits to the minutes of the sextant altitude: " + fmt(outer.value);
 },
 () => {
-	move_rule('pointer',get('index_error'));
-	return  "<b>Correct for sextant index error</b>: Point to the index error on the inner dial (red digits), read the corrected height from the outer dial" + pointer_check();
+	var ic = get('index_error')
+	move_rule('pointer',ic);
+	return  "Point to the sextant index error on the inner dial red digits: " + fmt(ic);
+},
+() => {
+	reset_pointer();
+	move_rule('inner', -get('index_error'))
+	return "read the observed altitude from the outer dial black digits: " + fmt(outer.value, get('height_deg'));
 
 },
 () => {
 	reset_pointer();
-	move_rule('inner',height_of_eye(get('eye_height'))-height_of_eye_offset);
-	return "<b>Correct for height of eye, temperature and refraction</b>: Rotate the inner dial so that the height of eye is under the pointer.";
+	var he = get('eye_height');
+	var eye_correction = height_of_eye(he);
+	move_rule('inner',eye_correction-height_of_eye_offset);
+
+	return "Rotate the inner dial so that the height of eye is under the pointer: " + he.toFixed(1) + "m";
 },
 () => {
-	move_rule('pointer', compute_refraction_and_height(), 1);
-	return "Rotate the pointer so that it lines up with the current temperature and height of the measurement." + pointer_check();
+	var refraction = compute_refraction_and_height();
+
+	move_rule('pointer', refraction , 1);
+	return "Rotate the pointer so that it lines up with the current temperature and original sextant altitude."
 },
 () => {
 	reset_pointer(1);
-	return "Read the refraction and temperature corrected height measurement from the outer ring.";
+	return "Read the refraction and temperature corrected height measurement from the outer ring: " + fmt(outer.value, get('height_deg'));
 },
 () => {
 	if (limb == "star") {
@@ -258,18 +291,18 @@ var steps = [
 	}
 },
 () => {
-	move_rule('pointer', -semi_diam());
 	if (limb == "upper") {
-		return "Upper limb measurement moves the pointer to zero on the inner ring (adding to the height)" + pointer_check();
+		move_rule('pointer', -semi_diam());
+		return "Upper limb measurement moves the pointer to zero on the inner ring (adding to the height)";
 	} else {
 		move_rule('pointer', +semi_diam());
-		return "Lower limb measurement moves the pointer to approximate date (subtracting from the height)" + pointer_check();
+		return "Lower limb measurement moves the pointer to approximate date (subtracting from the height)";
 	}
 },
 () => {
 	reset_pointer(1);
 	step = 0;
-	return "Read the corrected height measurement from the outer ring.";
+	return "Finally, read the corrected height measurement from the outer ring: " + fmt(outer.value, get('height_deg'));
 },
 ];
 
@@ -281,62 +314,17 @@ function next_step()
 
 	step++;
 	console.log("step=", step)
-	var desc_elem = document.getElementById("description");
-	desc_elem.innerHTML = steps[step]()
+	var desc_elem = document.getElementById("log");
+	var li = document.createElement('li');
+	li.innerHTML = steps[step]()
+	desc_elem.appendChild(li)
 }
 
 </script>
 
-<table>
-<tr>
-<td width="60%">
-<object id="sliderule" data="rule.svg" width="100%"></object>
-</td><td>
-</td>
-</tr>
-<table>
-
-<!--
-<td>
-Correcting sextant height measurement:
-<ul>
-<li onclick="setup()">Start with the pointer on the inner and outer at 0
-
-<li onclick="move_rule('outer',get('height_min'))">Rotate the outer dial to the minutes of the sextant height (black digits).
-
-<li onclick="move_rule('pointer',get('index_error'))">
-<b>Correct for sextant index error</b>: Point to the index error on the inner dial (red digits), read the corrected height from the outer dial
-
-<li onclick="reset_pointer();move_rule('inner',height_of_eye(get('eye_height'))-height_of_eye_offset)">
-<b>Correct for height of eye, temperature and refraction</b>: Rotate the inner dial so that the height of eye is under the pointer.
-
-<li onclick="move_rule('pointer', compute_refraction_and_height(), 1)">
-Rotate the pointer so that it lines up with the current temperature and height of the measurement.
-
-<li onclick="reset_pointer(1)">Read the refraction and temperature corrected height measurement from the outer ring.
-
-<li onclick="move_rule('inner', compute_limb(1))">
-<b>Correct for upper/lower limb measurement</b>: 
-For upper limb measurement, rotate the inner to line up the approximate time of year with the pointer.<br/>
-For lower, rotate the inner to zero.<br/>
-For stars, skip this step.
-
-<li onclick="move_rule('pointer', compute_limb(2), 1)">
-For upper limb measurements, rotate the pointer to the zero of the inner ring. For lower, rotate the pointer to the approximate time of year.
-
-<li onclick="reset_pointer(1)">Read the semi-diameter corrected height measurement from the outer ring.
-
-</ul>
-Computing latitude (same hemisphere, L > D):
-<ul>
-<li onclick="set_rule(0.0,2.4,13.8)"/>L > D, so L=90-(H-D), which means subtracting the sun declination from the sextant height.  Rotate the inner dial so that 2.4 in black lines up with the pointer, which will move the noon value higher.
-<li onclick="set_rule(-6.7-2.4,2.4,13.8)"/>d is positive and we are subtracting the declination change. Rotate the pointer to where the 0.8 line intersects the 21:21 with the red numbers.
-<li onclick="set_rule(0,-6.7, 4.7)"/>Read the minutes off the black numbers on the outer dial and compute the H-D value as 35&deg; 4.7m - 12&deg; = 23&deg; 4.7' (the minutes of declination have already been handled).
-<li>Compute the latitude as 90 - 23&deg; 4.7'. 60' - 4.7' can be read from the red numbers on the outer scale, while the sine/cosine scale on the reverse can be used to estimate the degrees 90-23 = 66 point something.  The result is <b>66&deg; 55.3'</b>.
-</ul>
-</tr>
-</table>
+<br/>
+<object id="sliderule" data="rule.svg" width="60%"></object>
 
 
-
-
+</body>
+</html>
