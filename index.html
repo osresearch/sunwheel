@@ -1,6 +1,12 @@
-<!doctype html><meta charset=utf-8><title>Star Gate sextant tool</title>
+<!doctype html>
+<head>
+<meta charset=utf-8>
+<title>Star Gate sextant tool</title>
+<style>
+</style>
+</head>
 <body>
- Sextant specialized  slide rule
+Sextant specialized slide rule
 
 <table>
 <tr><td>
@@ -32,7 +38,7 @@ Observation
 <tr><td>
 <label for="index_error">Index Error (min)</label>
 </td><td>
-<input id="index_error" type="number" value="+1.2" step="0.1" min="-5" max="+5" />
+<input id="index_error" type="number" value="1.2" step="0.1" min="-5" max="+5" />
 </td></tr>
 
 <tr><td>
@@ -140,17 +146,7 @@ function compute_limb(step)
 function rotate(elem, value, speed)
 {
 	elem.value = value;
-	elem.style.transitionDuration = speed;
-	elem.setAttribute("transform","rotate(" + -value*6 + ")");
-
-/*
-	elem.style.webkitTransitionDuration = speed;
-	elem.style.webkitTransitionProperty = "transform";
-	elem.style.webkitTransform = "rotate(" + -value*6 + ")";
-	elem.style.MozTransitionDuration = speed;
-	elem.style.MozTransitionProperty = "transform";
-	elem.style.MozTransform = "rotate(" + -value*6 + ")";
-*/
+	elem.style.transform = "rotate(" + -value*6 + "deg)";
 }
 
 function setup(){
