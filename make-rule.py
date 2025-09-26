@@ -39,6 +39,13 @@ if len(sys.argv) > 5:
 
 
 d = draw.Drawing(2000 if draw_back else 1000,1000, origin=(0,0))
+d.append_css("""
+.spinner {
+	-webkit-transition: all 2s;
+	-moz-transition: all 2s;
+	transition: all 2s;
+}
+""")
 
 def compute_position(radius, angle, length, log_scale=False, spiral=False):
 	length = 10 # always force same spiral in
@@ -1377,10 +1384,10 @@ def make_360_clock(radius):
 front = draw.Group(transform="translate(500 500)")
 
 
-outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer")
+outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer", class_="spinner")
 outer.append(make_minutes(410, side=2))
 
-inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner")
+inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_="spinner")
 inner.append(make_minutes(410, side=1))
 
 # minute to fractional degree on the outside
@@ -1409,7 +1416,7 @@ outer.append(axle)
 inner.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
 
-pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle), id="pointer")
+pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle), id="pointer", class_="spinner")
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 front.append(pointer)
@@ -1459,7 +1466,7 @@ back.append(inner)
 
 # paper pointer until a better one can be made
 pointer_diam = 35
-pointer = draw.Group()
+pointer = draw.Group(class_="spinner")
 pointer.append(axle)
 pointer.append(draw.Circle(0,0,pointer_diam, fill="none", stroke="black", stroke_width=2))
 pointer.append(draw.Lines(

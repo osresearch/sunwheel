@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      width="1000" height="1000" viewBox="0 0 1000 1000">
+<style>/*<![CDATA[*/
+.spinner {
+	-webkit-transition: all 2s;
+	-moz-transition: all 2s;
+	transition: all 2s;
+}
+/*]]>*/</style>
 <defs>
 </defs>
 <g transform="translate(500 500)">
-<g transform="rotate(0.000)" id="pointer">
+<g transform="rotate(0.000)" id="pointer" class="spinner">
 <path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" id="d1" />
 <path d="M0,0 L-500,0" fill="none" stroke="none" stroke-width="2" id="d2" />
 </g>
-<g transform="rotate(0.000)" id="outer">
+<g transform="rotate(0.000)" id="outer" class="spinner">
 <g>
 <g>
 <path d="M0,0 L10,0" fill="none" stroke="black" transform="rotate(0.000) translate(410.000)" stroke-width="0.2" />
@@ -2442,7 +2449,7 @@
 <circle cx="0" cy="0" r="5" fill="none" stroke="black" stroke-width="1" id="d0" />
 <circle cx="0" cy="0" r="450" fill="none" stroke="black" stroke-width="1" />
 </g>
-<g transform="rotate(0.000)" id="inner">
+<g transform="rotate(0.000)" id="inner" class="spinner">
 <g>
 <g>
 <path d="M-10,0 L0,0" fill="none" stroke="black" transform="rotate(0.000) translate(410.000)" stroke-width="0.2" />
