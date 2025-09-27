@@ -1060,6 +1060,54 @@ def make_minutes(radius, side=3):
 
 	return g
 
+def make_ninety_minus(radius):
+	g = draw.Group()
+
+	# make the rule with no numbers
+	g.append(make_rule(radius, 360/60, 360/120, 360/360,
+		fmt=lambda x: "", # "%.0f" % (90 - x/360*60),
+		side=1,
+		pos=(1.5,+10),
+		size=8,
+	))
+
+	# red numbers going reverse around the circle
+	g.append(make_labels(radius, 360/60, 6, 360,
+		lambda x: "S->" if x == 0 else "%.0f" % (30+x//6),
+		pos=(+2,+10),
+		size=8,
+		text_anchor="start",
+		fill="black",
+		font_style="italic",
+	))
+	g.append(make_labels(radius, 360/60, 6, 360,
+		lambda x: "<-N" if x == 0 else "%.0f" % (90-x//6),
+		pos=(-2,+10),
+		size=8,
+		text_anchor="end",
+		fill="red",
+	))
+
+	# and draw the N/S direction labels, which are the
+	# wrong colors based on the labels above so they are done
+	# by hand
+	g.append(make_labels(radius, 6, 0, 6,
+		lambda x: "<-N",
+		size=8,
+		pos=(-2,10),
+		fill="black",
+		text_anchor="end",
+	))
+	g.append(make_labels(radius, 6, 0, 6,
+		lambda x: "S->",
+		size=8,
+		pos=(+2,10),
+		fill="red",
+		text_anchor="start",
+	))
+
+	return g
+
 def make_fractional_minutes(radius):
 	g = draw.Group()
 	g.append(make_rule(radius, 360/100, 360/200, 360/1000,
@@ -1206,7 +1254,9 @@ def make_declination(radius):
 	stroke_width = 1
 
 	arcs = []
-	for d in range(0,365):
+
+	# northern hemisphere
+	for d in range(80,266):
 		a = declination(d)
 		rd = r(d)
 		(x,y) = compute_xy(rd,a * 6)
@@ -1216,17 +1266,33 @@ def make_declination(radius):
 
 	g.append(draw.Lines(*arcs,
 		fill='none',
-		stroke=stroke,
+		stroke='black',
+		stroke_width=stroke_width,
+	))
+
+	arcs = []
+	for d in range(266,266+180):
+		a = declination(d)
+		rd = r(d)
+		(x,y) = compute_xy(rd,a * 6)
+		arcs.append(x)
+		arcs.append(y)
+
+
+	g.append(draw.Lines(*arcs,
+		fill='none',
+		stroke='red',
 		stroke_width=stroke_width,
 	))
 
 	d = 0
 	for (name,d_in_month,label_pos) in months:
 		a = declination(d)
+		color = 'red' if d < 80 or d > 266 else 'black'
 
 		#(x,y) = compute_xy(r,a * 6)
 		g.append(draw.Text(name, 7, *label_pos,
-			fill="black",
+			fill=color,
 			text_anchor="middle",
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a * 6, r(d), declination_perp(d,r)),
 		))
@@ -1234,7 +1300,7 @@ def make_declination(radius):
 		for d_of_month in range(1,d_in_month):
 			d_minutes = declination(d + d_of_month)
 			g.append(draw.Line(-2,0,+2,0,
-				stroke="black",
+				stroke=color,
 				stroke_width=0.1,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
@@ -1242,14 +1308,14 @@ def make_declination(radius):
 		for d_of_month in range(7,d_in_month,7):
 			d_minutes = declination(d + d_of_month)
 			g.append(draw.Line(-3,0,+3,0,
-				stroke="black",
+				stroke=color,
 				stroke_width=0.2,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
 
 		g.append(draw.Line(-5,0,+5,0,
-			stroke="black",
+			stroke=color,
 			stroke_width=0.5,
 			fill="none",
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a*6, r(d), declination_perp(d, r)),
@@ -1391,7 +1457,8 @@ inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_
 inner.append(make_minutes(410, side=1))
 
 # minute to fractional degree on the outside
-outer.append(make_fractional_minutes(448))
+#outer.append(make_fractional_minutes(448))
+outer.append(make_ninety_minus(448))
 
 #inner.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
