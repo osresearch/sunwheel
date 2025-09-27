@@ -6,16 +6,15 @@
 </style>
 </head>
 <body>
-Sextant specialized slide rule
-
 <table>
 <tr><td>
 <label for="height_deg">Measurement (deg, min)</label>
 </td><td>
-<input id="height_deg" type="number" min="0" max="90" step="1" value="45"/>
+<input id="height_deg" type="number" min="0" max="90" step="1" value="75"/>
 <input id="height_min" type="number" min="0" max="59.9" step="0.1" value="13.6"/>
-</td><td rowspan=6>
-<ul id="log"></ul>
+</td><td>
+<input type="button" onclick="next_step()" value="Next"/>
+<input type="button" onclick="setup()" value="Start over"/>
 </td></tr>
 
 <tr><td>
@@ -27,6 +26,9 @@ Observation
 <label for="lower">Lower</label>
 <input id="star" type="radio" name="limb" onclick="limb='star'"/>
 <label for="star">Star</label>
+</td><td rowspan=6>
+<div id="description">Fill in the measurements and click next to start</div>
+<ul id="log"></ul>
 </td></tr>
 
 <tr><td>
@@ -52,11 +54,14 @@ Observation
 </td><td>
 <input id="temperature" type="number" min="-10" max="40" step="0.5" value="21.5" />
 </td></tr>
-</table>
 
-<div id="description">Fill in the measurements and click next to start</div>
-<input type="button" onclick="next_step()" value="Next"/>
-<input type="button" onclick="setup()" value="Start over"/>
+<tr><td>
+<label for="direction">Sight direction</label>
+</td><td>
+S <input id="direction" type="range" min=0 max=1 value=0 style="width:50px"/> N
+</td></tr>
+
+</table>
 
 </form>
 
@@ -71,6 +76,9 @@ var outer;
 var pointer;
 var sliderule;
 var speed = "2s";
+var computed = 0;
+var computed_min = 0;
+var computed_deg = 0;
 
 var index_error = -0.2;
 var temperature = 10;
@@ -142,6 +150,19 @@ function compute_limb(step)
 	return -semi_diam()
 }
 
+function degrees(d) { return d * 180 / Math.PI }
+function radians(d) { return d * Math.PI / 180 }
+
+function declination()
+{
+	let time = document.getElementById("date").value;
+	let mon = Number(time.substr(5,2));
+	let day = Number(time.substr(8,2));
+	let d = 30 * (mon-1) + day; // approximately
+
+        return -degrees(Math.asin(0.39779 * Math.cos(radians(0.98565 * (d+10) + 1.914 * Math.sin(radians(0.98565 * (d-2)))))))
+
+}
 
 function rotate(elem, value, speed)
 {
@@ -205,7 +226,7 @@ function move_rule(which, value, rel=0)
 //set_rule(0,0,0);
 
 
-function fmt(min,deg=0)
+function fmt(min,deg=0,prec=1)
 {
 	var rc = ''
 	if (min < 0)
@@ -232,8 +253,23 @@ function fmt(min,deg=0)
 			rc += '0'
 	}
 
-	rc += min.toFixed(1) + "'"
+	rc += min.toFixed(prec) + "'"
 	return "<b>" + rc + "</b>";
+}
+
+function next_step()
+{
+	if (step == 0)
+		setup();
+
+	if (++step >= steps.length)
+		step = 0;
+
+	console.log("step=", step)
+	var desc_elem = document.getElementById("log");
+	var li = document.createElement('li');
+	li.innerHTML = steps[step]()
+	desc_elem.appendChild(li)
 }
 
 var step = 0;
@@ -301,24 +337,54 @@ var steps = [
 },
 () => {
 	reset_pointer(1);
-	step = 0;
-	return "Finally, read the corrected height measurement from the outer ring: " + fmt(outer.value, get('height_deg'));
+
+	// store the computed height
+	computed_deg = get('height_deg');
+	computed_min = outer.value;
+	computed = computed_deg + computed_min / 60;
+
+	return "Finally, read the corrected height measurement minutes from the outer ring: " + fmt(computed_min, computed_deg);
+},
+() => {
+
+	move_rule('outer', 0);
+	return "To compute the approximate lattitude, return the outer ring to zero";
+},
+() => {
+	var decl = declination();
+	var min = (decl % 1)*60;
+	var deg = Math.round(decl);
+	var hemi = 'Northern';
+	if (min < 0)
+	{
+		hemi = 'Southern';
+		min = -min;
+	}
+	
+	move_rule('inner', decl);
+	return "Rotate the inner to align the analemma date to find the declination of the sun "+ fmt(min, deg, 0) + " in the " + hemi + " hemisphere";
+},
+() => {
+	var decl = declination();
+	var dir = get('direction') - 0.5;
+
+	if (dir > 0)
+	{
+		move_rule('pointer', 90 - computed);
+		return "Looking north, L = D + H - 90. Set the pointer to computed height on the outer outer black " + fmt(computed_min, computed_deg);
+	} else {
+		move_rule('pointer', computed - 90);
+		return "Looking south, L = D + (90 - h). Set the pointer to the computed height on the outer outer red " + fmt(computed_min, computed_deg);
+	}
+},
+() => {
+	reset_pointer(1)
+	var lat_min = Math.abs((inner.value % 1) * 60);
+	var lat_deg = Math.round(inner.value);
+	return "Read the approximate latitude in degrees from the inner ring " + fmt(lat_min, lat_deg);
 },
 ];
 
-
-function next_step()
-{
-	if (step == 0)
-		setup();
-
-	step++;
-	console.log("step=", step)
-	var desc_elem = document.getElementById("log");
-	var li = document.createElement('li');
-	li.innerHTML = steps[step]()
-	desc_elem.appendChild(li)
-}
 
 </script>
 
