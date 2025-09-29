@@ -5,7 +5,7 @@
 <style>
 </style>
 </head>
-<body>
+<body style="background-color: #FFF;">
 <table>
 <tr><td>
 <label for="height_deg">Measurement (deg, min)</label>
@@ -34,7 +34,7 @@ Observation
 <tr><td>
 <label for="date">Date</label>
 </td><td>
-<input id="date" type="date"/>
+<input id="date" type="datetime-local"/>
 </td></tr>
 
 <tr><td>
@@ -153,13 +153,22 @@ function compute_limb(step)
 function degrees(d) { return d * 180 / Math.PI }
 function radians(d) { return d * Math.PI / 180 }
 
-function declination()
+function get_date()
 {
 	let time = document.getElementById("date").value;
 	let mon = Number(time.substr(5,2));
 	let day = Number(time.substr(8,2));
-	let d = 30 * (mon-1) + day; // approximately
+	let d = 30 * (mon-1) + (day+0.5); // approximately at noon
+	return d;
+}
 
+function get_declination()
+{
+	return declination(get_date());
+}
+
+function declination(d)
+{
         return -degrees(Math.asin(0.39779 * Math.cos(radians(0.98565 * (d+10) + 1.914 * Math.sin(radians(0.98565 * (d-2)))))))
 
 }
@@ -320,7 +329,7 @@ var steps = [
 	}
 	if (limb == "upper") {
 		move_rule('inner', -semi_diam());
-		return "Upper limb measurements moves the inner ring to line up with the approximate date";
+		return "Upper limb measurements moves the inner ring to line up with the semi diameter for the date " + fmt(semi_diam(), 0);
 	} else {
 		move_rule('inner', 0);
 		return "Lower limb measument moves the the inner ring to zero";
@@ -329,10 +338,10 @@ var steps = [
 () => {
 	if (limb == "upper") {
 		move_rule('pointer', -semi_diam());
-		return "Upper limb measurement moves the pointer to zero on the inner ring (adding to the height)";
+		return "Upper limb measurement moves the pointer to zero on the inner ring (adding semi diameter to the height)";
 	} else {
 		move_rule('pointer', +semi_diam());
-		return "Lower limb measurement moves the pointer to approximate date (subtracting from the height)";
+		return "Lower limb measurement moves the pointer to approximate date (subtracting semi diameter from the height) " + fmt(semi_diam(), 0);
 	}
 },
 () => {
@@ -351,9 +360,9 @@ var steps = [
 	return "To compute the approximate lattitude, return the outer ring to zero";
 },
 () => {
-	var decl = declination();
+	var decl = get_declination();
 	var min = (decl % 1)*60;
-	var deg = Math.round(decl);
+	var deg = Math.trunc(decl);
 	var hemi = 'Northern';
 	if (min < 0)
 	{
@@ -365,7 +374,7 @@ var steps = [
 	return "Rotate the inner to align the analemma date to find the declination of the sun "+ fmt(min, deg, 0) + " in the " + hemi + " hemisphere";
 },
 () => {
-	var decl = declination();
+	var decl = get_declination();
 	var dir = get('direction') - 0.5;
 
 	if (dir > 0)
@@ -380,8 +389,46 @@ var steps = [
 () => {
 	reset_pointer(1)
 	var lat_min = Math.abs((inner.value % 1) * 60);
-	var lat_deg = Math.round(inner.value);
+	var lat_deg = Math.trunc(inner.value);
 	return "Read the approximate latitude in degrees from the inner ring " + fmt(lat_min, lat_deg);
+},
+() => {
+	move_rule('inner', 0);
+	move_rule('pointer', 0);
+	move_rule('outer', 0);
+
+	return "To compute exact latitude for meridan site requires the almanac. Reset all the rings"; //, leave the outer on the observed minutes height " + fmt(computed_min, computed_deg);
+},
+() => {
+	var date = get_date();
+	var decl = declination(date);
+	var d = (declination(date + 1.0/24) - decl) * 60;
+	
+	var decl_min = (decl % 1) * 60;
+	move_rule('outer', decl_min);
+
+	return "Assuming the declination is " + decl.toFixed(2) + ", set the inner to point to the minutes on the outer " + decl_min.toFixed(1);
+},
+() => {
+	// todo -- reverse the order of these so the value is on inner ring
+	var date = get_date();
+	var decl = declination(date);
+	var d = (declination(date + 1.0/24) - decl) * 60;
+
+	var date = document.getElementById("date").value;
+	var hour = Number(date.substr(11,2));
+	var min = Number(date.substr(14,2));
+	hour = hour + min / 60 - 12;
+	
+	move_rule('pointer', -hour * d);
+	return "Assuming the d is " + d.toFixed(1) + ". Set pointer to current time " + hour.toFixed(2) + " (GMT)";
+},
+() => {
+	var decl = get_declination();
+	reset_pointer(1);
+	//decl = outer.value / 60;
+
+	return "Read the corrected minutes from the outer " + outer.value.toFixed(1) + " and compute declination " + (outer.value/60 + Math.trunc(decl)).toFixed(2);
 },
 ];
 
@@ -389,7 +436,7 @@ var steps = [
 </script>
 
 <br/>
-<object id="sliderule" data="rule.svg" width="60%"></object>
+<object id="sliderule" data="rule.svg" width="50%"></object>
 
 
 </body>
