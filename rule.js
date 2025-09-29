@@ -8,6 +8,7 @@ var speed = "2s";
 var computed = 0;
 var computed_min = 0;
 var computed_deg = 0;
+var za = 0;
 
 var index_error = -0.2;
 var temperature = 10;
@@ -109,7 +110,9 @@ function rotate(elem, value, speed)
 }
 
 function setup(){
-	document.getElementById("date").valueAsDate = new Date();
+	var date = document.getElementById("date");
+	if (date.value == "")
+		date.valueAsDate = new Date();
 	sliderule = document.getElementById("sliderule").contentDocument;
 	pointer = sliderule.getElementById("pointer");
 	inner = sliderule.getElementById("inner");
@@ -167,35 +170,43 @@ function move_rule(which, value, rel=0)
 //set_rule(0,0,0);
 
 
-function fmt(min,deg=0,prec=1)
+function fmt_min(min, color=1)
 {
-	var rc = ''
+	var s = min.toFixed(1) + "'"
+	if (color)
+		s = recolor(min, s)
+	return s;
+}
+
+function fmt_deg(deg, color=1)
+{
+	var s = deg.toString() + "&deg;"
+	if (color)
+		s = recolor(deg, s);
+	return s;
+}
+
+function fmt(deg,color=1)
+{
+	if (-1 < deg && deg < 0)
+	{
+		// special case for -0 degrees
+		var s = "-0&deg;" + fmt_min(-deg*60, 0);
+		if (color)
+			s = recolor(deg, s);
+		return s;
+	}
+
+	var min = (deg % 1) * 60;
+	deg = Math.trunc(deg);
+
 	if (min < 0)
-	{
-		min += 60;
+		min = -min;
 
-		if (deg == 0) {
-			rc = '-';
-		} else {
-			deg -= 1;
-		}
-	}
-
-	if (min > 60)
-	{
-		deg += 1
-		min -= 60;
-	}
-
-	if (deg != 0)
-	{
-		rc += deg + "°"
-		if (min < 10)
-			rc += '0'
-	}
-
-	rc += min.toFixed(prec) + "'"
-	return "<b>" + rc + "</b>";
+	var s = deg.toString() + "&deg;" + fmt_min(min, 0);
+	if (color)
+		s = recolor(deg, s);
+	return s;
 }
 
 function next_step()
@@ -213,6 +224,13 @@ function next_step()
 	desc_elem.appendChild(li)
 }
 
+function bold(s) { return "<b>" + s + "</b>" }
+function recolor(sign,s) {
+	return '<span class=' +
+		(sign < 0 ? "negative" : "positive" ) +
+		'>' + s + '</span>';
+}
+
 var step = 0;
 var steps = [
 () => {
@@ -222,18 +240,18 @@ var steps = [
 () => {
 	var h = get('height_min')
 	move_rule('outer', h);
-	return "Rotate the outer dial black digits to the minutes of the sextant altitude: " + fmt(outer.value);
+	return "Rotate the outer dial black digits to the minutes of the sextant altitude: " + fmt_min(h);
 },
 () => {
 	var ic = get('index_error')
 	move_rule('pointer',ic);
-	return  "Point to the sextant index error on the inner dial red digits: " + fmt(ic);
+	return  "Point to the sextant index error on the inner dial red digits: " + fmt_min(ic);
 },
 () => {
-	reset_pointer();
-	move_rule('inner', -get('index_error'))
-	return "read the observed altitude from the outer dial black digits: " + fmt(outer.value, get('height_deg'));
-
+	reset_pointer(1);
+	//move_rule('inner', -get('index_error'))
+	var ha = get('height_deg') + outer.value/60;
+	return "Read the apparent altitude from the outer dial black digits: " + recolor(ha, "Ha = " + fmt(ha));
 },
 () => {
 	reset_pointer();
@@ -241,7 +259,7 @@ var steps = [
 	var eye_correction = height_of_eye(he);
 	move_rule('inner',eye_correction-height_of_eye_offset);
 
-	return "Rotate the inner dial so that the height of eye is under the pointer: " + he.toFixed(1) + "m";
+	return "Rotate the inner dial so that the height of eye is under the pointer: " + recolor(he, he.toFixed(1) + "m");
 },
 () => {
 	var refraction = compute_refraction_and_height();
@@ -251,7 +269,8 @@ var steps = [
 },
 () => {
 	reset_pointer(1);
-	return "Read the refraction and temperature corrected height measurement from the outer ring: " + fmt(outer.value, get('height_deg'));
+	var h = get('height_deg') + outer.value / 60;
+	return "Read the refraction and temperature corrected height measurement from the outer ring: " + fmt(h);
 },
 () => {
 	if (limb == "star") {
@@ -259,21 +278,26 @@ var steps = [
 		step += 1; // skip the next one
 		return "Since this is a star measurement, no limb correction is necessary";
 	}
+
+	var diam = semi_diam();
+
 	if (limb == "upper") {
-		move_rule('inner', -semi_diam());
-		return "Upper limb measurements moves the inner ring to line up with the semi diameter for the date " + fmt(semi_diam(), 0);
+		move_rule('inner', -diam);
+		return "Upper limb measurements moves the inner ring to line up with the semi diameter for the date " + fmt_min(diam);
 	} else {
 		move_rule('inner', 0);
 		return "Lower limb measument moves the the inner ring to zero";
 	}
 },
 () => {
+	var diam = semi_diam();
+
 	if (limb == "upper") {
-		move_rule('pointer', -semi_diam());
+		move_rule('pointer', -diam);
 		return "Upper limb measurement moves the pointer to zero on the inner ring (adding semi diameter to the height)";
 	} else {
-		move_rule('pointer', +semi_diam());
-		return "Lower limb measurement moves the pointer to approximate date (subtracting semi diameter from the height) " + fmt(semi_diam(), 0);
+		move_rule('pointer', +diam);
+		return "Lower limb measurement moves the pointer to approximate date (subtracting semi diameter from the height) " + fmt_min(diam);
 	}
 },
 () => {
@@ -284,27 +308,33 @@ var steps = [
 	computed_min = outer.value;
 	computed = computed_deg + computed_min / 60;
 
-	return "Finally, read the corrected height measurement minutes from the outer ring: " + fmt(computed_min, computed_deg);
-},
-() => {
-
-	move_rule('outer', 0);
-	return "To compute the approximate lattitude, return the outer ring to zero";
+	return "Finally, read the corrected observed height measurement minutes from the outer ring: " + recolor(computed, "Ho = " + fmt(computed, 0));
 },
 () => {
 	var decl = get_declination();
-	var min = (decl % 1)*60;
-	var deg = Math.trunc(decl);
-	var hemi = 'Northern';
-	if (min < 0)
-	{
-		hemi = 'Southern';
-		min = -min;
-	}
+	var hemi = decl > 0 ? 'Northern' : 'Southern';
 	
+	move_rule('pointer', 0);
+	move_rule('outer', 0);
 	move_rule('inner', decl);
-	return "Rotate the inner to align the analemma date to find the declination of the sun "+ fmt(min, deg, 0) + " in the " + hemi + " hemisphere";
+	return "To approximate the Sun's declination, reset the outer and rotate the inner to align the analemma date with the pointer and read the angle on the inner ring "+ fmt(decl) + " (" + hemi + " hemisphere)";
 },
+/*
+() => {
+	var dir = get('direction') - 0.5;
+	var which = dir > 0 ? "black" : "red"
+
+	move_rule('pointer', outer.value + (dir > 0 ? 90-computed : computed - 90));
+
+	return "To compute the lattitude requires the Zenith angle, 90 - Ho. Set the pointer to Ho on the " + which + " outer outer ring (since the sight is facing " + (dir > 0 ? "north" : "south") + ")";
+},
+() => {
+	reset_pointer(1);
+	var dir = get('direction') - 0.5;
+	var which = dir > 0 ? "red" : "black"
+	return "Read the approximate zenith angle from the " + which + "outer ring Z = " + fmt(-outer.value) + " (note that the sign flips and that the minutes are 60 - " + fmt_min(computed_min) + " minutes)";
+},
+*/
 () => {
 	var decl = get_declination();
 	var dir = get('direction') - 0.5;
@@ -312,54 +342,77 @@ var steps = [
 	if (dir > 0)
 	{
 		move_rule('pointer', 90 - computed);
-		return "Looking north, L = D + H - 90. Set the pointer to computed height on the outer outer black " + fmt(computed_min, computed_deg);
+		return "Since this is facing north, set Ho on the black of the outer outer ring " + fmt(computed);
 	} else {
 		move_rule('pointer', computed - 90);
-		return "Looking south, L = D + (90 - h). Set the pointer to the computed height on the outer outer red " + fmt(computed_min, computed_deg);
+		return "Since this is facing south, set Ho on the red of the outer outer ring " + fmt(-computed);
 	}
 },
 () => {
 	reset_pointer(1)
-	var lat_min = Math.abs((inner.value % 1) * 60);
-	var lat_deg = Math.trunc(inner.value);
-	return "Read the approximate latitude in degrees from the inner ring " + fmt(lat_min, lat_deg);
+	var lat = inner.value;
+	return "Read the approximate latitude in degrees from the inner ring " + fmt(lat);
 },
 () => {
 	move_rule('inner', 0);
-	move_rule('pointer', 0);
-	move_rule('outer', 0);
-
-	return "To compute exact latitude for meridan site requires the almanac. Reset all the rings"; //, leave the outer on the observed minutes height " + fmt(computed_min, computed_deg);
+	za = outer.value;
+	return "For a more accurate lattitude, read the Zenith angle " + fmt(za) + " from the outer ring opposite the <b>Ho</b> setting.<br/>The Zenith Angle is 90 - Ho for a southern sight and Ho - 90 for a northern sight. Note that the Zenith angle minutes " + fmt_min((za % 1) * 60) + " is <b>60'</b> - " + fmt_min(computed_min);
 },
 () => {
-	var date = get_date();
-	var decl = declination(date);
-	var d = (declination(date + 1.0/24) - decl) * 60;
-	
-	var decl_min = (decl % 1) * 60;
-	move_rule('outer', decl_min);
-
-	return "Assuming the declination is " + decl.toFixed(2) + ", set the inner to point to the minutes on the outer " + decl_min.toFixed(1);
-},
-() => {
-	// todo -- reverse the order of these so the value is on inner ring
 	var date = get_date();
 	var decl = declination(date);
 	var d = (declination(date + 1.0/24) - decl) * 60;
 
 	var date = document.getElementById("date").value;
-	var hour = Number(date.substr(11,2));
-	var min = Number(date.substr(14,2));
+	let mon = date.substr(5,5);
+	var ts = date.substr(11,5)
+	var hour = Number(ts.substr(0,2))
+	var min = Number(ts.substr(3,2))
 	hour = hour + min / 60 - 12;
 	
-	move_rule('pointer', -hour * d);
-	return "Assuming the d is " + d.toFixed(1) + ". Set pointer to current time " + hour.toFixed(2) + " (GMT)";
+	var s = "The almanac entry for the date might look something like<br/><tt>" + mon + " " +  fmt(decl,0) + " " + fmt_min(d,0) + " " + "-3:30" + "</tt><br/>";
+
+	move_rule('outer', 0);
+	move_rule('inner', hour*d);
+	move_rule('pointer', 0);
+	return s + "The alamanc d value is " + fmt_min(d) + " which means that the declination changes that many minutes per hour. To compute the declination at time of measurement, set pointer to " + recolor(d,ts) + " (use the " + (d < 0 ? "red" : "black") + " times to match the sign on d)";
+
+},
+() => {
+	var date = get_date();
+	var decl = declination(date);
+	var decl_min = (decl % 1) * 60;
+	
+	move_rule('pointer', -decl_min);
+	return  "The alamanc's declination of the sun at noon GMT is " + fmt(decl) + ". To add this to the time correction, set the pointer to " + fmt_min(decl_min) + " on the outer";
 },
 () => {
 	var decl = get_declination();
 	reset_pointer(1);
 	//decl = outer.value / 60;
 
-	return "Read the corrected minutes from the outer " + outer.value.toFixed(1) + " and compute declination " + (outer.value/60 + Math.trunc(decl)).toFixed(2);
+	var decl_min = inner.value;
+	computed_decl = Math.trunc(decl) + decl_min/60
+	return "Read the corrected minutes from the inner " + fmt_min(decl_min) + " and compute the actual declination " + fmt(computed_decl);
 },
+() => {
+	move_rule('outer', 0)
+	return "Reset the outer to zero";
+},
+() => {
+	var za_min = (za % 1) * 60
+	move_rule('pointer', -za_min);
+	return "Set the pointer to the Zenith Angle minutes " + fmt_min(za_min);
+},
+() => {
+	reset_pointer(1);
+	var decl = get_declination();
+	var min = inner.value;
+	var lat = Math.trunc(decl) + Math.trunc(za) + min/60;
+
+	var s = "Read the computed minutes of lattitude from the inner ring " + fmt_min(min);
+	s += "<br/>And compute L = D + Za = " + fmt_deg(Math.trunc(decl)) + " + " + fmt_deg(Math.trunc(za)) + " + " + fmt_min(min) + " = " + fmt(lat);
+	return s;
+},
+
 ];
