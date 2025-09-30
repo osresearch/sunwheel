@@ -323,19 +323,20 @@ var steps = [
 	if (dir > 0)
 	{
 		move_rule('pointer', 90 - computed);
-		return s + "Ho on the black of the outer outer ring " + fmt(computed) + " (since this is facing north)";
+		return s + "Ho on the black of the outer outer ring " + fmt(computed) + " (since we are north of the Sun)";
 	} else {
 		move_rule('pointer', computed - 90);
-		return s + "set Ho on the red of the outer outer ring " + fmt(-computed) + " (since this is facing south)";
+		return s + "set Ho on the red of the outer outer ring " + fmt(-computed) + " (since we are south of the Sun)";
 	}
 },
 () => {
 	reset_pointer(1);
-	za = outer.value;
+	za = -outer.value;
 	set("za", recolor(za, "Za = " + fmt(za)));
 
 	var s = "Read the Zenith Angle " + fmt(za) + " from the opposite color on the outer ring.";
 	s += " Note that the minutes are " + fmt_min((za % 1) * 60) + " = 60 - " + fmt_min(computed_min);
+	s += "<br/>Zenith angles are positive north of the sun, negative south of the sun."
 	s += "<hr/>"
 	return s;
 },
@@ -344,12 +345,11 @@ var steps = [
 	var hemi = decl > 0 ? 'Northern' : 'Southern';
 	
 	move_rule('pointer', 0);
-	move_rule('outer', 0);
 	move_rule('inner', decl);
 
 	set("decl", recolor(decl, "Decl = " + fmt(decl)) + " (approx)");
 
-	return "For an approximate latitude, first find the approximate Sun's declination, rotate the inner to align the analemma date with the pointer and read the angle on the inner ring "+ fmt(decl) + " (" + hemi + " hemisphere)";
+	return "For an approximate latitude, approximate the Sun's declination by rotate the inner to align the analemma date with the pointer and read the angle on the inner ring "+ fmt(decl) + " (" + hemi + " hemisphere)";
 },
 /*
 () => {
@@ -368,23 +368,11 @@ var steps = [
 },
 */
 () => {
-	var decl = get_declination();
-	var dir = get('direction') - 0.5;
-
-	if (dir > 0)
-	{
-		move_rule('pointer', 90 - computed);
-		return "Since this is facing north, set Ho on the black of the outer outer ring " + fmt(computed);
-	} else {
-		move_rule('pointer', computed - 90);
-		return "Since this is facing south, set Ho on the red of the outer outer ring " + fmt(-computed);
-	}
-},
-() => {
+	move_rule('pointer', outer.value);
 	reset_pointer(1)
 	var lat = inner.value;
 	set("lat", recolor(lat, "Lat = " + fmt(lat)) + " (approx)");
-	return "Read the approximate latitude in degrees from the inner ring " + fmt(lat) + "<hr/>";
+	return "Since the Zenith angle was already set on the outer, move the pointer to the outer origin and read the approximate latitude in degrees from the inner ring " + fmt(lat) + "<hr/>";
 },
 () => {
 	var date = get_date();
