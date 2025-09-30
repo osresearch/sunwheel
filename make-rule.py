@@ -1152,18 +1152,18 @@ def eq_time_radius(d):
 	return -45
 
 months = [
-	["Jan",31,(+7,-1)],
-	["Feb",28,(+7,-1)],
-	["Mar",31,(+7,-1)],
-	["Apr",30,(-7,-1)],
-	["May",31,(+8,-2)],
-	["Jun",30,(+7,-2)],
-	["Jul",31,(-8,-2)],
-	["Aug",31,(-8,-2)],
-	["Sep",30,(-8,-2)],
-	["Oct",31,(+6,-2)],
-	["Nov",30,(+6,-2)],
-	["Dec",31,(+8,-2)],
+	["Jan",31,(+9,-2)],
+	["Feb",28,(+9,-2)],
+	["Mar",31,(+9,-2)],
+	["Apr",30,(+9,-2)],
+	["May",31,(-9,-2)],
+	["Jun",30,(-9,-2)],
+	["Jul",31,(-9,-2)],
+	["Aug",31,(-9,-2)],
+	["Sep",30,(+9,-2)],
+	["Oct",31,(-9,-2)],
+	["Nov",30,(-9,-2)],
+	["Dec",31,(-9,-2)],
 ]
 
 def make_equation_of_time(radius):
@@ -1182,16 +1182,16 @@ def make_equation_of_time(radius):
 	for (name,d_in_month,label_pos) in months:
 		minutes = equation_of_time(d)
 
-		g.append(draw.Line(-5,0,+5,0,
+		g.append(draw.Line(-20,0,+0,0,
 			stroke="black",
-			stroke_width=0.5,
+			stroke_width=10,
 			fill="none",
 			transform="rotate(%.3f) translate(%.3f)" % (minutes*6, r(d)),
 		))
 
 		for d_of_month in range(1,d_in_month):
 			d_minutes = equation_of_time(d + d_of_month)
-			g.append(draw.Line(-1,0,+1,0,
+			g.append(draw.Line(-2,0,+2,0,
 				stroke="black",
 				stroke_width=0.1,
 				fill="none",
@@ -1199,7 +1199,8 @@ def make_equation_of_time(radius):
 			))
 		for d_of_month in range(7,d_in_month,7):
 			d_minutes = equation_of_time(d + d_of_month)
-			g.append(draw.Line(-3,0,+3,0,
+			x = 8 if d_of_month == 14 else 4
+			g.append(draw.Line(-x,0,+4,0,
 				stroke="black",
 				stroke_width=0.2,
 				fill="none",
@@ -1211,6 +1212,7 @@ def make_equation_of_time(radius):
 			text_anchor="middle",
 			transform="rotate(%.3f) translate(%.3f)" % (minutes*6, r(d)),
 		))
+
 		d += d_in_month
 			
 	return g
@@ -1242,21 +1244,22 @@ def declination_perp(d, r_func):
 	return degrees(a) - d1*6 + 90
 
 # the zeros are at day 80 and day 266, which is where we want
-# the curves to cross
+# the curves to cross.  This produces a nice analemma of the sun's motion
 def make_declination(radius):
 	g = draw.Group(id="declination")
 
 	r = lambda d: radius - 50 * sin((d-0)/365 * 2 * pi)
 
 	scale = 3
-	r = lambda d: radius - scale * equation_of_time(d)
+	r = lambda d: radius + scale * equation_of_time(d)
+	#r = lambda d: radius - 2000 * (declination(d+1.0/24) - declination(d))
 	stroke = 'black'
 	stroke_width = 1
 
 	arcs = []
 
 	# northern hemisphere
-	for d in range(80,266):
+	for d in range(80,267):
 		a = declination(d)
 		rd = r(d)
 		(x,y) = compute_xy(rd,a * 6)
@@ -1285,14 +1288,15 @@ def make_declination(radius):
 		stroke_width=stroke_width,
 	))
 
+	def decl_color(d): return 'red' if d < 80 or d > 266 else 'black'
+
 	d = 0
 	for (name,d_in_month,label_pos) in months:
 		a = declination(d)
-		color = 'red' if d < 80 or d > 266 else 'black'
 
 		#(x,y) = compute_xy(r,a * 6)
 		g.append(draw.Text(name, 7, *label_pos,
-			fill=color,
+			fill=decl_color(d),
 			text_anchor="middle",
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a * 6, r(d), declination_perp(d,r)),
 		))
@@ -1300,23 +1304,26 @@ def make_declination(radius):
 		for d_of_month in range(1,d_in_month):
 			d_minutes = declination(d + d_of_month)
 			g.append(draw.Line(-2,0,+2,0,
-				stroke=color,
-				stroke_width=0.1,
+				stroke=decl_color(d+d_of_month),
+				stroke_width=0.2,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
 		for d_of_month in range(7,d_in_month,7):
 			d_minutes = declination(d + d_of_month)
-			g.append(draw.Line(-3,0,+3,0,
-				stroke=color,
+			x = 6 if d_of_month == 14 else 4
+			g.append(draw.Line(-x,0,+x,0,
+				stroke=decl_color(d+d_of_month),
 				stroke_width=0.2,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
 
-		g.append(draw.Line(-5,0,+5,0,
-			stroke=color,
-			stroke_width=0.5,
+		# draw a thick line under the label
+		lx = label_pos[0]
+		g.append(draw.Line(lx*2,0,0,0,
+			stroke=decl_color(d),
+			stroke_width=1,
 			fill="none",
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a*6, r(d), declination_perp(d, r)),
 		))
