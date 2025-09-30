@@ -3544,10 +3544,15 @@
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-109.170) translate(76.635) rotate(196.313)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-107.573) translate(76.045) rotate(195.224)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-105.944) translate(75.491) rotate(194.144)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-134.214) translate(96.607) rotate(223.272)" />
-<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-127.805) translate(88.522) rotate(212.883)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-119.394) translate(81.774) rotate(204.222)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-109.170) translate(76.635) rotate(196.313)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-131.723) translate(92.999) rotate(218.507)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-120.712) translate(82.645) rotate(205.399)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-105.944) translate(75.491) rotate(194.144)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-135.655) translate(99.115) rotate(226.809)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-131.723) translate(92.999) rotate(218.507)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-126.722) translate(87.469) rotate(211.573)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-120.712) translate(82.645) rotate(205.399)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-113.761) translate(78.626) rotate(199.640)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-105.944) translate(75.491) rotate(194.144)" />
 <path d="M18,0 L0,0" stroke="red" stroke-width="1" fill="none" transform="rotate(-138.473) translate(105.680) rotate(237.407)" />
 <text x="9" y="-2" font-size="7" fill="red" text-anchor="middle" transform="rotate(-104.284) translate(74.975) rotate(193.075)">Feb</text>
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-102.594) translate(74.497) rotate(192.016)" />
@@ -3577,9 +3582,13 @@
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-54.570) translate(74.411) rotate(172.485)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-52.333) translate(74.854) rotate(172.002)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-50.083) translate(75.327) rotate(171.547)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-91.841) translate(72.435) rotate(185.943)" />
-<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-78.125) translate(71.784) rotate(179.703)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-63.373) translate(72.967) rotate(174.708)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-86.105) translate(71.926) rotate(183.136)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-65.535) translate(72.691) rotate(175.336)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-95.536) translate(72.968) rotate(187.907)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-86.105) translate(71.926) rotate(183.136)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-76.076) translate(71.844) rotate(178.906)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-65.535) translate(72.691) rotate(175.336)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-54.570) translate(74.411) rotate(172.485)" />
 <path d="M18,0 L0,0" stroke="red" stroke-width="1" fill="none" transform="rotate(-104.284) translate(74.975) rotate(193.075)" />
 <text x="9" y="-2" font-size="7" fill="red" text-anchor="middle" transform="rotate(-47.821) translate(75.831) rotate(171.120)">Mar</text>
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-45.548) translate(76.365) rotate(170.721)" />
@@ -3612,10 +3621,15 @@
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(17.883) translate(98.365) rotate(167.967)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(20.224) translate(99.313) rotate(168.073)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(22.558) translate(100.258) rotate(168.189)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-31.699) translate(80.137) rotate(168.873)" />
-<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-15.231) translate(85.575) rotate(167.758)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(1.366) translate(91.783) rotate(167.531)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(17.883) translate(98.365) rotate(167.967)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-24.671) translate(82.350) rotate(168.271)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-1.004) translate(90.864) rotate(167.518)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(22.558) translate(100.258) rotate(168.189)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-36.351) translate(78.777) rotate(169.389)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-24.671) translate(82.350) rotate(168.271)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-12.863) translate(86.424) rotate(167.677)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-1.004) translate(90.864) rotate(167.518)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(10.828) translate(95.524) rotate(167.711)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(22.558) translate(100.258) rotate(168.189)" />
 <path d="M18,0 L0,0" stroke="red" stroke-width="1" fill="none" transform="rotate(-47.821) translate(75.831) rotate(171.120)" />
 <text x="9" y="-2" font-size="7" fill="black" text-anchor="middle" transform="rotate(24.886) translate(101.201) rotate(168.314)">Apr</text>
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(27.206) translate(102.140) rotate(168.447)" />
@@ -3647,10 +3661,13 @@
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(82.977) translate(121.803) rotate(174.364)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(84.877) translate(122.270) rotate(174.681)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(86.753) translate(122.710) rotate(175.005)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(40.933) translate(107.627) rotate(169.416)" />
-<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(56.410) translate(113.486) rotate(170.863)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(71.121) translate(118.453) rotate(172.614)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(84.877) translate(122.270) rotate(174.681)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(47.647) translate(110.227) rotate(169.997)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(69.074) translate(117.809) rotate(172.345)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(36.398) translate(105.833) rotate(169.063)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(47.647) translate(110.227) rotate(169.997)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(58.563) translate(114.257) rotate(171.095)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(69.074) translate(117.809) rotate(172.345)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(79.111) translate(120.789) rotate(173.753)" />
 <path d="M18,0 L0,0" stroke="black" stroke-width="1" fill="none" transform="rotate(24.886) translate(101.201) rotate(168.314)" />
 <text x="-9" y="-2" font-size="7" fill="black" text-anchor="middle" transform="rotate(88.605) translate(123.122) rotate(175.337)">May</text>
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(90.433) translate(123.506) rotate(175.678)" />
@@ -3683,10 +3700,15 @@
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(128.736) translate(123.127) rotate(-168.964)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(129.684) translate(122.748) rotate(-167.927)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(130.595) translate(122.348) rotate(-166.821)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(100.858) translate(125.209) rotate(-182.078)" />
-<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(111.739) translate(125.869) rotate(-178.892)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(121.082) translate(125.133) rotate(-174.755)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(128.736) translate(123.127) rotate(-168.964)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(105.699) translate(125.667) rotate(-180.801)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(119.847) translate(125.320) rotate(-175.425)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(130.595) translate(122.348) rotate(-166.821)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(97.490) translate(124.757) rotate(-182.867)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(105.699) translate(125.667) rotate(-180.801)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(113.172) translate(125.847) rotate(-178.370)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(119.847) translate(125.320) rotate(-175.425)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(125.671) translate(124.131) rotate(-171.720)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(130.595) translate(122.348) rotate(-166.821)" />
 <path d="M-18,0 L0,0" stroke="black" stroke-width="1" fill="none" transform="rotate(88.605) translate(123.122) rotate(175.337)" />
 <text x="-9" y="-2" font-size="7" fill="black" text-anchor="middle" transform="rotate(131.467) translate(121.927) rotate(-165.636)">Jun</text>
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(132.302) translate(121.487) rotate(-164.365)" />
@@ -3718,10 +3740,13 @@
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(139.950) translate(106.249) rotate(-51.642)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(139.691) translate(105.647) rotate(-47.259)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(139.392) translate(105.055) rotate(-43.312)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(136.494) translate(118.482) rotate(-154.158)" />
-<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(139.569) translate(114.386) rotate(-131.529)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(140.640) translate(109.985) rotate(-87.925)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(139.691) translate(105.647) rotate(-47.259)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(138.054) translate(116.787) rotate(-146.478)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(140.610) translate(110.618) rotate(-95.069)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(135.253) translate(119.547) rotate(-158.161)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(138.054) translate(116.787) rotate(-146.478)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(139.845) translate(113.767) rotate(-126.656)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(140.610) translate(110.618) rotate(-95.069)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(140.344) translate(107.475) rotate(-61.872)" />
 <path d="M-18,0 L0,0" stroke="black" stroke-width="1" fill="none" transform="rotate(131.467) translate(121.927) rotate(-165.636)" />
 <text x="-9" y="-2" font-size="7" fill="black" text-anchor="middle" transform="rotate(139.051) translate(104.472) rotate(-39.755)">Jul</text>
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(138.671) translate(103.900) rotate(-36.541)" />
@@ -3754,10 +3779,15 @@
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(113.990) translate(95.874) rotate(1.075)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(112.588) translate(95.947) rotate(1.758)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(111.155) translate(96.051) rotate(2.413)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(135.546) translate(100.755) rotate(-22.344)" />
-<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(130.128) translate(97.905) rotate(-11.893)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(122.900) translate(96.207) rotate(-4.514)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(113.990) translate(95.874) rotate(1.075)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(133.453) translate(99.409) rotate(-17.336)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(124.039) translate(96.370) rotate(-5.442)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(111.155) translate(96.051) rotate(2.413)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(136.746) translate(101.742) rotate(-26.315)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(133.453) translate(99.409) rotate(-17.336)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(129.204) translate(97.586) rotate(-10.697)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(124.039) translate(96.370) rotate(-5.442)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(118.005) translate(95.839) rotate(-1.138)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(111.155) translate(96.051) rotate(2.413)" />
 <path d="M-18,0 L0,0" stroke="black" stroke-width="1" fill="none" transform="rotate(139.051) translate(104.472) rotate(-39.755)" />
 <text x="-9" y="-2" font-size="7" fill="black" text-anchor="middle" transform="rotate(109.692) translate(96.186) rotate(3.043)">Aug</text>
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(108.199) translate(96.352) rotate(3.647)" />
@@ -3790,10 +3820,15 @@
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(58.392) translate(112.147) rotate(11.679)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(56.266) translate(113.093) rotate(11.725)" />
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(54.124) translate(114.057) rotate(11.758)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(98.639) translate(98.010) rotate(6.755)" />
-<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(86.288) translate(101.358) rotate(9.342)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(72.812) translate(106.134) rotate(10.935)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(58.392) translate(112.147) rotate(11.679)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(93.495) translate(99.262) rotate(7.994)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(74.799) translate(105.370) rotate(10.763)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(54.124) translate(114.057) rotate(11.758)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(101.937) translate(97.331) rotate(5.814)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(93.495) translate(99.262) rotate(7.994)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(84.427) translate(101.957) rotate(9.628)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(74.799) translate(105.370) rotate(10.763)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(64.676) translate(109.434) rotate(11.454)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(54.124) translate(114.057) rotate(11.758)" />
 <path d="M-18,0 L0,0" stroke="black" stroke-width="1" fill="none" transform="rotate(109.692) translate(96.186) rotate(3.043)" />
 <text x="9" y="-2" font-size="7" fill="black" text-anchor="middle" transform="rotate(51.968) translate(115.039) rotate(11.777)">Sep</text>
 <path d="M-2,0 L2,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(49.798) translate(116.038) rotate(11.784)" />
@@ -3825,10 +3860,13 @@
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-9.726) translate(144.370) rotate(8.712)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-12.065) translate(145.400) rotate(8.505)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-14.402) translate(146.415) rotate(8.294)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(36.516) translate(122.334) rotate(11.581)" />
-<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(20.567) translate(130.097) rotate(10.899)" />
-<path d="M-4,0 L4,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(4.309) translate(137.925) rotate(9.846)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-12.065) translate(145.400) rotate(8.505)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(29.731) translate(125.626) rotate(11.341)" />
+<path d="M-6,0 L6,0" stroke="black" stroke-width="0.2" fill="none" transform="rotate(6.643) translate(136.819) rotate(10.016)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(40.990) translate(120.185) rotate(11.692)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(29.731) translate(125.626) rotate(11.341)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(18.259) translate(131.221) rotate(10.769)" />
+<path d="M-4,0 L4,0" stroke="black" stroke-width="0.25" fill="none" transform="rotate(6.643) translate(136.819) rotate(10.016)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-5.046) translate(142.267) rotate(9.111)" />
 <path d="M18,0 L0,0" stroke="black" stroke-width="1" fill="none" transform="rotate(51.968) translate(115.039) rotate(11.777)" />
 <text x="-9" y="-2" font-size="7" fill="red" text-anchor="middle" transform="rotate(-16.737) translate(147.413) rotate(8.077)">Oct</text>
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-19.069) translate(148.393) rotate(7.856)" />
@@ -3861,10 +3899,15 @@
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-78.728) translate(164.416) rotate(0.015)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-80.729) translate(164.518) rotate(-0.368)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-82.709) translate(164.579) rotate(-0.761)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-32.969) translate(153.831) rotate(6.436)" />
-<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-48.856) translate(159.000) rotate(4.573)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-64.183) translate(162.607) rotate(2.459)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-78.728) translate(164.416) rotate(0.015)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-39.833) translate(156.219) rotate(5.666)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-62.036) translate(162.198) rotate(2.778)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-82.709) translate(164.579) rotate(-0.761)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-28.358) translate(152.110) rotate(6.927)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-39.833) translate(156.219) rotate(5.666)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-51.085) translate(159.618) rotate(4.288)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-62.036) translate(162.198) rotate(2.778)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-72.605) translate(163.873) rotate(1.110)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-82.709) translate(164.579) rotate(-0.761)" />
 <path d="M-18,0 L0,0" stroke="red" stroke-width="1" fill="none" transform="rotate(-16.737) translate(147.413) rotate(8.077)" />
 <text x="-9" y="-2" font-size="7" fill="red" text-anchor="middle" transform="rotate(-84.666) translate(164.601) rotate(-1.165)">Nov</text>
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-86.601) translate(164.582) rotate(-1.580)" />
@@ -3896,10 +3939,13 @@
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-126.781) translate(150.278) rotate(339.387)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-127.856) translate(149.250) rotate(338.026)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-128.891) translate(148.194) rotate(336.576)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-97.698) translate(163.611) rotate(355.648)" />
-<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-109.390) translate(160.640) rotate(351.578)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-119.514) translate(155.788) rotate(346.054)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-127.856) translate(149.250) rotate(338.026)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-102.886) translate(162.577) rotate(354.038)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-118.172) translate(156.590) rotate(346.965)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-94.102) translate(164.098) rotate(356.632)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-102.886) translate(162.577) rotate(354.038)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-110.937) translate(160.059) rotate(350.896)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-118.172) translate(156.590) rotate(346.965)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-124.512) translate(152.242) rotate(341.871)" />
 <path d="M-18,0 L0,0" stroke="red" stroke-width="1" fill="none" transform="rotate(-84.666) translate(164.601) rotate(-1.165)" />
 <text x="-9" y="-2" font-size="7" fill="red" text-anchor="middle" transform="rotate(-129.886) translate(147.111) rotate(335.031)">Dec</text>
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-130.838) translate(146.000) rotate(333.381)" />
@@ -3932,10 +3978,15 @@
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-139.686) translate(110.130) rotate(246.056)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-139.364) translate(108.754) rotate(243.212)" />
 <path d="M-2,0 L2,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-138.995) translate(107.387) rotate(240.528)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-135.663) translate(138.835) rotate(320.783)" />
-<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-139.277) translate(129.628) rotate(298.590)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-140.631) translate(119.911) rotate(270.503)" />
-<path d="M-4,0 L4,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-139.686) translate(110.130) rotate(246.056)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-137.484) translate(134.980) rotate(312.339)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-140.578) translate(121.314) rotate(274.520)" />
+<path d="M-6,0 L6,0" stroke="red" stroke-width="0.2" fill="none" transform="rotate(-138.995) translate(107.387) rotate(240.528)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-134.228) translate(141.312) rotate(325.561)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-137.484) translate(134.980) rotate(312.339)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-139.610) translate(128.261) rotate(294.760)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-140.578) translate(121.314) rotate(274.520)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-140.373) translate(114.301) rotate(255.589)" />
+<path d="M-4,0 L4,0" stroke="red" stroke-width="0.25" fill="none" transform="rotate(-138.995) translate(107.387) rotate(240.528)" />
 <path d="M-18,0 L0,0" stroke="red" stroke-width="1" fill="none" transform="rotate(-129.886) translate(147.111) rotate(335.031)" />
 <circle cx="0" cy="0" r="115" fill="none" stroke="gray" stroke-width="1.0" />
 <circle cx="0" cy="0" r="145" fill="none" stroke="gray" stroke-width="0.25" />

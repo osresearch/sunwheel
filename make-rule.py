@@ -1197,7 +1197,7 @@ def make_equation_of_time(radius):
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
 			))
-		for d_of_month in range(7,d_in_month,7):
+		for d_of_month in range(10,d_in_month,10):
 			d_minutes = equation_of_time(d + d_of_month)
 			x = 8 if d_of_month == 14 else 4
 			g.append(draw.Line(-x,0,+4,0,
@@ -1309,14 +1309,20 @@ def make_declination(radius):
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
-		for d_of_month in range(7,d_in_month,7):
+		for d_of_month in range(10,d_in_month,10):
 			d_minutes = declination(d + d_of_month)
-			x = 6 if d_of_month == 14 else 4
-			g.append(draw.Line(-x,0,+x,0,
+			g.append(draw.Line(-6,0,+6,0,
 				stroke=decl_color(d+d_of_month),
 				stroke_width=0.2,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
+			))
+		for d_of_month in range(5,d_in_month,5):
+			g.append(draw.Line(-4,0,+4,0,
+				stroke=decl_color(d+d_of_month),
+				stroke_width=0.25,
+				fill="none",
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (declination(d+d_of_month)*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
 			))
 
 		# draw a thick line under the label
