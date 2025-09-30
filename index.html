@@ -17,14 +17,18 @@
 </head>
 <body style="background-color: #FFF;">
 <table>
+<tr><th>Measurement</th>
+<td>
+<input type="button" onclick="setup()" value="Start over"/>
+<input type="button" onclick="next_step()" value="Next"/>
+</td></tr>
 <tr><td>
-<label for="height_deg">Measurement (deg, min)</label>
+<label for="height_deg">Sextant reading (deg, min)</label>
 </td><td>
 <input id="height_deg" type="number" min="0" max="90" step="1" value="75"/>
 <input id="height_min" type="number" min="0" max="59.9" step="0.1" value="13.6"/>
-</td><td>
-<input type="button" onclick="next_step()" value="Next"/>
-<input type="button" onclick="setup()" value="Start over"/>
+</td><td rowspan=15>
+<ul id="log"></ul>
 </td></tr>
 
 <tr><td>
@@ -36,9 +40,6 @@ Observation
 <label for="lower">Lower</label>
 <input id="star" type="radio" name="limb" onclick="limb='star'"/>
 <label for="star">Star</label>
-</td><td rowspan=6>
-<div id="description">Fill in the measurements and click next to start</div>
-<ul id="log"></ul>
 </td></tr>
 
 <tr><td>
@@ -69,6 +70,31 @@ Observation
 <label for="direction">Sight direction</label>
 </td><td>
 S <input id="direction" type="range" min=0 max=1 value=0 style="width:50px"/> N
+</td></tr>
+
+<tr><th>Computed</th></tr>
+<tr><td>
+<label for="ho">Height observed</label>
+</td><td>
+<div id="ho"></div>
+</td></tr>
+
+<tr><td>
+<label for="za">Zenith Angle</label>
+</td><td>
+<div id="za"></div>
+</td></tr>
+
+<tr><td>
+<label for="decl">Declination</label>
+</td><td>
+<div id="decl"></div>
+</td></tr>
+
+<tr><td>
+<label for="lat">Latitude</label>
+</td><td>
+<div id="lat"></div>
 </td></tr>
 
 </table>
