@@ -2,7 +2,7 @@
 # Generates the slide rule elements using SVG
 #
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan
+from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor
 import drawsvg as draw
 import datetime
 import sys
@@ -12,7 +12,7 @@ year = 2020 # for equation of time
 pointer_angle = 0
 inner_angle = 0
 outer_angle = 0
-draw_back = False
+draw_back = True
 output_file = "rule.svg"
 
 if len(sys.argv) > 1 and sys.argv[1].endswith(".png"):
@@ -1129,6 +1129,29 @@ def make_fractional_minutes(radius):
 
 	return g
 
+# one hour split into 15 degrees
+# this is the increments and corrections table for the sun,
+# which moves at 15 degrees per hour
+def make_fifteen_degrees(radius):
+	g = draw.Group()
+	g.append(make_rule(radius, 360/(15*4), 360/(15*4*3), 360/(15*60),
+		fmt=lambda x: "%.0f°%.0f'" % (floor(x*15/360), floor(x*60*15/360) % 60),
+		side=1,
+		pos=(1.5,+14),
+		size=9,
+	))
+
+	# red numbers going reverse around the circle
+#	g.append(make_labels(radius, 360/100, 0, 360,
+#		lambda x: "%.0f" % (((360-x) * 100 / 360) % 100),
+#		pos=(-2,+10),
+#		size=8,
+#		text_anchor="end",
+#		fill="red",
+#		font_style="italic",
+#	))
+
+	return g
 	
 
 # minutes that the sun is ahead of noon
@@ -1141,6 +1164,7 @@ def julian(m,d,y=year):
 	
 
 def eq_time_radius(d):
+	return -50 * sin((d-0)/365 * 2 * pi)
 	if d < julian(2,11):
 		return -45
 	if d < julian(5,15):
@@ -1170,7 +1194,7 @@ def make_equation_of_time(radius):
 	g = draw.Group()
 	pts = []
 	#r = lambda d: radius/2 + 30 * sin(2*pi*d/365 + 0.95)
-	r = lambda d: radius + eq_time_radius(d)
+	r = lambda d: radius - eq_time_radius(d)
 	for d in range(0,366):
 		minutes = equation_of_time(d)
 		(x,y) = compute_xy(r(d), minutes*6)
@@ -1184,9 +1208,9 @@ def make_equation_of_time(radius):
 
 		g.append(draw.Line(-20,0,+0,0,
 			stroke="black",
-			stroke_width=10,
+			stroke_width=1,
 			fill="none",
-			transform="rotate(%.3f) translate(%.3f)" % (minutes*6, r(d)),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (minutes*6, r(d), declination_perp(d,equation_of_time,r)),
 		))
 
 		for d_of_month in range(1,d_in_month):
@@ -1195,7 +1219,7 @@ def make_equation_of_time(radius):
 				stroke="black",
 				stroke_width=0.1,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,equation_of_time, r)),
 			))
 		for d_of_month in range(10,d_in_month,10):
 			d_minutes = equation_of_time(d + d_of_month)
@@ -1204,13 +1228,13 @@ def make_equation_of_time(radius):
 				stroke="black",
 				stroke_width=0.2,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f)" % (d_minutes*6, r(d+d_of_month)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,equation_of_time,r)),
 			))
 
 		g.append(draw.Text(name, 7, *label_pos,
 			fill="black",
 			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f)" % (minutes*6, r(d)),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (minutes*6, r(d), declination_perp(d,equation_of_time,r)),
 		))
 
 		d += d_in_month
@@ -1230,9 +1254,9 @@ def declination(d):
 # for making pretty hash marks.
 # there must be a better way to do this since we are already
 # in polar space, but whatever we have to hard code it anyway
-def declination_perp(d, r_func):
-	d1 = declination(d)
-	d2 = declination(d+1)
+def declination_perp(d, a_func, r_func):
+	d1 = a_func(d)
+	d2 = a_func(d+1)
 
 	r1 = r_func(d)
 	r2 = r_func(d+1)
@@ -1298,7 +1322,7 @@ def make_declination(radius):
 		g.append(draw.Text(name, 7, *label_pos,
 			fill=decl_color(d),
 			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a * 6, r(d), declination_perp(d,r)),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a * 6, r(d), declination_perp(d,declination, r)),
 		))
 
 		for d_of_month in range(1,d_in_month):
@@ -1307,7 +1331,7 @@ def make_declination(radius):
 				stroke=decl_color(d+d_of_month),
 				stroke_width=0.2,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,declination, r)),
 			))
 		for d_of_month in range(10,d_in_month,10):
 			d_minutes = declination(d + d_of_month)
@@ -1315,14 +1339,14 @@ def make_declination(radius):
 				stroke=decl_color(d+d_of_month),
 				stroke_width=0.2,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,declination, r)),
 			))
 		for d_of_month in range(5,d_in_month,5):
 			g.append(draw.Line(-4,0,+4,0,
 				stroke=decl_color(d+d_of_month),
 				stroke_width=0.25,
 				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (declination(d+d_of_month)*6, r(d+d_of_month), declination_perp(d+d_of_month,r)),
+				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (declination(d+d_of_month)*6, r(d+d_of_month), declination_perp(d+d_of_month,declination, r)),
 			))
 
 		# draw a thick line under the label
@@ -1331,7 +1355,7 @@ def make_declination(radius):
 			stroke=decl_color(d),
 			stroke_width=1,
 			fill="none",
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a*6, r(d), declination_perp(d, r)),
+			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a*6, r(d), declination_perp(d, declination, r)),
 		))
 
 #		g.append(draw.Text(name, 7, *label_pos,
@@ -1353,11 +1377,18 @@ def make_declination(radius):
 def make_sin_sin_scale(radius):
 	g = draw.Group(id="sinsin")
 
+	def func(lat, d, lha):
+		return sin(radians(d))*sin(radians(lat)) + cos(radians(d))*cos(radians(lat))*cos(radians(lha))
+
 	# scale on the outside goes from 0 to 0.4 (sin(23))
-	max_scale = 0.42
-	output_angle = lambda x: 0 if x == 0 else radians(log(max_scale) * 360 / log(x))
+	lha = 0
+
+	max_scale = 1
+	max_lat = 60.1
+	#output_angle = lambda x: 0 if x == 0 else radians(log(max_scale) * 360 / log(x))
+	output_angle = lambda x: 0 if x == 0 else radians(x * 360 / max_scale)
 	#output_angle = lambda x: 0 if x == 0 else radians(x * 180 / max_scale)
-	output_radius = lambda l: radius - 150*sin(radians(l))
+	output_radius = lambda l: radius - 350*abs(sin(radians(l)))
 	for o in frange(0.001,0.01,0.001):
 		g.append(draw.Text("%.3f" % (o),
 			5, 0, 0,
@@ -1372,12 +1403,12 @@ def make_sin_sin_scale(radius):
 			transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius),
 		))
 
-	for d in [0.1, 0.25, 0.5] + frange(1,25.1,1):
+	for d in [0.1, 0.25, 0.5] + frange(0,25.1,1):
 		pts = []
-		for l in frange(1,90.1,1):
+		for l in frange(-max_lat,max_lat,1):
 			# compute the angle that provides correct output
 			# for sin(d)*sin(l)
-			o = sin(radians(d)) * sin(radians(l))
+			o = func(l, d, lha)
 			a = output_angle(o)
 			r = output_radius(l)
 
@@ -1398,10 +1429,10 @@ def make_sin_sin_scale(radius):
 		))
 
 
-	for l in frange(0,90.1,5):
+	for l in frange(-max_lat,max_lat,5):
 		pts = []
 		for d in frange(0.01,25.01,0.01):
-			o = sin(radians(d)) * sin(radians(l))
+			o = func(l, d, lha)
 			a = output_angle(o)
 			r = output_radius(l)
 
@@ -1409,13 +1440,13 @@ def make_sin_sin_scale(radius):
 			pts.append(r * sin(a))
 		g.append(draw.Lines(*pts,
 			fill="none",
-			stroke="black",
+			stroke="black" if l > 0 else "red",
 			stroke_width=0.1,
 		))
-	for l in frange(0,90.1,10):
+	for l in frange(-max_lat,max_lat,10):
 		pts = []
 		for d in frange(0.01,25.01,0.01):
-			o = sin(radians(d)) * sin(radians(l))
+			o = func(l, d, lha)
 			a = output_angle(o)
 			r = output_radius(l)
 
@@ -1423,7 +1454,7 @@ def make_sin_sin_scale(radius):
 			pts.append(r * sin(a))
 		g.append(draw.Lines(*pts,
 			fill="none",
-			stroke="black",
+			stroke="black" if l > 0 else "red",
 			stroke_width=0.2,
 		))
 			#g.append(draw.Text("%.2f" % v, 7, radius, 0,
@@ -1446,7 +1477,7 @@ def make_360_clock(radius):
 	# 24-hour clock on the outsde and inverted in red
 	g.append(make_rule(radius, 360/(24), 360/(24*4), 360/(24*60),
 		size=9,
-		fmt=lambda x: "%02d:%02d" % ((x // 15), (4 * (x % 15))),
+		fmt=lambda x: "%02d:%02d" % ((12 + x // 15) % 24, (4 * (x % 15))),
 	))
 	g.append(make_labels(radius, 360/(24), 0, 360,
 		lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
@@ -1469,9 +1500,8 @@ outer.append(make_minutes(410, side=2))
 inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_="spinner")
 inner.append(make_minutes(410, side=1))
 
-# minute to fractional degree on the outside
-#outer.append(make_fractional_minutes(448))
-outer.append(make_ninety_minus(448))
+outer.append(make_ninety_minus(450))
+outer.append(make_fractional_minutes(468))
 
 #inner.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
@@ -1486,7 +1516,6 @@ inner.append(make_refraction(h_e_radius, -180))
 inner.append(make_semidiameter(h_e_radius))
 inner.append(make_d_lines(h_e_radius+10))
 
-#inner.append(make_equation_of_time(100))
 inner.append(make_declination(115))
 
 # Cut lines
@@ -1494,7 +1523,7 @@ axle = draw.Circle(0,0, 5, fill="none", stroke="black", stroke_width=1)
 inner.append(axle)
 outer.append(axle)
 inner.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
-outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
+outer.append(draw.Circle(0,0, 470, fill="none", stroke="black", stroke_width=1))
 
 pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle), id="pointer", class_="spinner")
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
@@ -1520,10 +1549,17 @@ inner = draw.Group(id="back_inner")
 inner.append(axle)
 outer.append(axle)
 inner.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
-outer.append(draw.Circle(0,0, 450, fill="none", stroke="black", stroke_width=1))
+outer.append(draw.Circle(0,0, 470, fill="none", stroke="black", stroke_width=1))
+
+inner.append(make_minutes(410, side=1))
+
+outer.append(make_minutes(410, side=2))
+outer.append(make_fractional_minutes(468))
+outer.append(make_fifteen_degrees(450))
 
 # rule for 360 degree circle with reverse angles as well
-inner.append(make_360_clock(235))
+inner.append(make_360_clock(370))
+inner.append(make_equation_of_time(280))
 
 # 90 degree circle and sine/cosine tables
 #back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
@@ -1532,10 +1568,12 @@ inner.append(make_360_clock(235))
 
 #back.append(make_gha_scale(240))
 
-outer.append(make_sqrt_scale(410, False))
-inner.append(make_sqrt_scale(410, True))
-inner.append(make_log_sine(360))
-inner.append(make_log_tangent(305))
+# TODO: make the outer one half sided
+#outer.append(make_sqrt_scale(410, False))
+#inner.append(make_sqrt_scale(410, True))
+#inner.append(make_log_sine(360))
+#inner.append(make_log_tangent(305))
+#inner.append(make_sin_sin_scale(410))
 
 
 #back.append(make_log_cosine(320))
