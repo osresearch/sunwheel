@@ -8,7 +8,7 @@ import datetime
 import sys
 import re
 
-year = 2020 # for equation of time
+year = 2026 # for equation of time
 pointer_angle = 0
 inner_angle = 0
 outer_angle = 0
@@ -558,6 +558,27 @@ def make_tangent_scale(radius):
 	return g
 
 
+def make_sine_nolog(radius):
+	g = draw.Group()
+	g.append(make_rule(radius, 360/(15*4), 360/(15*4*2), 360/(15*4*8),
+		fmt=lambda x: "%04.0f" % (sin(radians(x/6))*10000),
+		side=1,
+		pos=(1.5,+12),
+		size=7,
+	))
+
+	# red numbers going reverse around the circle
+	g.append(make_labels(radius, 360/(15*4), 6, 366,
+		lambda x: "%04.0f" % (sin(radians(90-x/6))*10000),
+		pos=(-2,+12),
+		size=7,
+		text_anchor="end",
+		fill="red",
+		font_style="italic",
+	))
+
+	return g
+
 def make_sine(radius,major,minor1,minor2,minor3):
 	g = draw.Group()
 	convert = lambda pts: [sin(radians(pt)) for pt in pts]
@@ -1006,15 +1027,18 @@ def draw_marker(label, radius, angle):
 
 	return g
 
-def make_minutes(radius, side=3):
+def make_minutes(radius, side=3, include_red=True, divisions=600, divisions2=None):
 	g = draw.Group()
 
 	major = frange(0,360,360/60)
 	minor1 = frange(0,360,360/120)
-	minor2 = frange(0,360,360/600)
+	minor2 = frange(0,360,360/divisions)
+	if divisions2:
+		minor3 = frange(0,360,360/divisions2)
+		g.append(make_ticks(radius, minor3, 8, stroke_width=0.1, side=side))
 
 	g.append(make_ticks(radius, minor2, 10, stroke_width=0.2, side=side))
-	g.append(make_ticks(radius, minor1, 20, stroke_width=0.3, side=side))
+	g.append(make_ticks(radius, minor1, 15, stroke_width=0.3, side=side))
 	g.append(make_ticks(radius, major, 25, stroke_width=0.5, side=side))
 	g.append(draw.Circle(0, 0, radius, fill="none", stroke="black", stroke_width=0.5))
 
@@ -1033,14 +1057,15 @@ def make_minutes(radius, side=3):
 	))
 
 	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 6, 6, 360,
-		lambda x: "%.0f" % ((60-x/6) % 60),
-		pos=(-px,py),
-		size=11,
-		text_anchor="end",
-		fill="red",
-		font_style="italic",
-	))
+	if include_red:
+		g.append(make_labels(radius, 6, 6, 360,
+			lambda x: "%.0f" % ((60-x/6) % 60),
+			pos=(-px,py),
+			size=11,
+			text_anchor="end",
+			fill="red",
+			font_style="italic",
+		))
 
 	# Special marker for the zeros
 	g.append(draw_marker("0", radius, 180 if side == 1 else 0))
@@ -1060,7 +1085,7 @@ def make_minutes(radius, side=3):
 
 	return g
 
-def make_ninety_minus(radius):
+def make_ninety_minus(radius, show_labels=True):
 	g = draw.Group()
 
 	# make the rule with no numbers
@@ -1073,6 +1098,18 @@ def make_ninety_minus(radius):
 
 	# red numbers going reverse around the circle
 	g.append(make_labels(radius, 360/60, 6, 360,
+		lambda x: "<-N" if x == 0 else "%.0f" % (90-x//6),
+		pos=(-2,+10),
+		size=8,
+		text_anchor="end",
+		fill="red",
+	))
+
+	if not show_labels:
+		return g
+
+	# black numebrs going forwards
+	g.append(make_labels(radius, 360/60, 6, 360,
 		lambda x: "S->" if x == 0 else "%.0f" % (30+x//6),
 		pos=(+2,+10),
 		size=8,
@@ -1080,13 +1117,7 @@ def make_ninety_minus(radius):
 		fill="black",
 		font_style="italic",
 	))
-	g.append(make_labels(radius, 360/60, 6, 360,
-		lambda x: "<-N" if x == 0 else "%.0f" % (90-x//6),
-		pos=(-2,+10),
-		size=8,
-		text_anchor="end",
-		fill="red",
-	))
+
 
 	# and draw the N/S direction labels, which are the
 	# wrong colors based on the labels above so they are done
@@ -1164,7 +1195,7 @@ def julian(m,d,y=year):
 	
 
 def eq_time_radius(d):
-	return -50 * sin((d-0)/365 * 2 * pi)
+	return -60 * sin((d-0)/365 * 2 * pi) - 20
 	if d < julian(2,11):
 		return -45
 	if d < julian(5,15):
@@ -1175,39 +1206,48 @@ def eq_time_radius(d):
 		return -30
 	return -45
 
+# Name, days, declination pos, eq time pos
 months = [
-	["Jan",31,(+9,-2)],
-	["Feb",28,(+9,-2)],
-	["Mar",31,(+9,-2)],
-	["Apr",30,(+9,-2)],
-	["May",31,(-9,-2)],
-	["Jun",30,(-9,-2)],
-	["Jul",31,(-9,-2)],
-	["Aug",31,(-9,-2)],
-	["Sep",30,(+9,-2)],
-	["Oct",31,(-9,-2)],
-	["Nov",30,(-9,-2)],
-	["Dec",31,(-9,-2)],
+	["Jan",31,(+9,-2),(-9,-2)],
+	["Feb",28,(+9,-2),(-9,-2)],
+	["Mar",31,(+9,-2),(-9,-2)],
+	["Apr",30,(-9,-2),(+9,-2)],
+	["May",31,(+9,-2),(+9,-2)],
+	["Jun",30,(+9,-2),(-9,-2)],
+	["Jul",31,(+9,-2),(+9,-2)],
+	["Aug",31,(-9,-2),(+9,-2)],
+	["Sep",30,(-9,-2),(+9,-2)],
+	["Oct",31,(-9,-2),(+9,-2)],
+	["Nov",30,(-9,-2),(+9,-2)],
+	["Dec",31,(-9,-2),(+9,-2)],
 ]
 
 def make_equation_of_time(radius):
 	g = draw.Group()
-	pts = []
 	#r = lambda d: radius/2 + 30 * sin(2*pi*d/365 + 0.95)
 	r = lambda d: radius - eq_time_radius(d)
-	for d in range(0,366):
+
+	pts = []
+	c = decl_color(0)
+	for d in range(0, 366):
 		minutes = equation_of_time(d)
 		(x,y) = compute_xy(r(d), minutes*6)
 		pts.append(x)
 		pts.append(y)
-	g.append(draw.Lines(*pts, stroke="black", stroke_width=0.2, fill="none"))
+		nc = decl_color(d)
+		if nc != c or d == 365:
+			g.append(draw.Lines(*pts, stroke=c, stroke_width=1, fill="none"))
+			c = nc
+			pts = pts[-2:]
+
 
 	d = 0
-	for (name,d_in_month,label_pos) in months:
+	for (name,d_in_month,_,label_pos) in months:
 		minutes = equation_of_time(d)
 
-		g.append(draw.Line(-20,0,+0,0,
-			stroke="black",
+		lx = label_pos[0]
+		g.append(draw.Line(lx*2,0,+0,0,
+			stroke=decl_color(d),
 			stroke_width=1,
 			fill="none",
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (minutes*6, r(d), declination_perp(d,equation_of_time,r)),
@@ -1216,7 +1256,7 @@ def make_equation_of_time(radius):
 		for d_of_month in range(1,d_in_month):
 			d_minutes = equation_of_time(d + d_of_month)
 			g.append(draw.Line(-2,0,+2,0,
-				stroke="black",
+				stroke=decl_color(d+d_of_month),
 				stroke_width=0.1,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,equation_of_time, r)),
@@ -1225,20 +1265,21 @@ def make_equation_of_time(radius):
 			d_minutes = equation_of_time(d + d_of_month)
 			x = 8 if d_of_month == 14 else 4
 			g.append(draw.Line(-x,0,+4,0,
-				stroke="black",
+				stroke=decl_color(d+d_of_month),
 				stroke_width=0.2,
 				fill="none",
 				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,equation_of_time,r)),
 			))
 
 		g.append(draw.Text(name, 7, *label_pos,
-			fill="black",
+			fill=decl_color(d),
 			text_anchor="middle",
 			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (minutes*6, r(d), declination_perp(d,equation_of_time,r)),
 		))
 
 		d += d_in_month
 			
+	#g.append(draw.Circle(0, 0, radius, fill="none", stroke="lightgray", stroke_width=1.0))
 	return g
 
 
@@ -1267,14 +1308,19 @@ def declination_perp(d, a_func, r_func):
 	a = atan2(y2-y1, x2-x1)
 	return degrees(a) - d1*6 + 90
 
+def decl_color(d):
+	# the declination is positive from 21 March to 21 Sept
+	#return 'red' if d < 80 or d > 266 else 'black'
+
+	# the d term is negative from 21 Jun to 21 Dec
+	return 'black' if d < 171 or d > 354 else 'red'
+
 # the zeros are at day 80 and day 266, which is where we want
 # the curves to cross.  This produces a nice analemma of the sun's motion
 def make_declination(radius):
 	g = draw.Group(id="declination")
 
-	r = lambda d: radius - 50 * sin((d-0)/365 * 2 * pi)
-
-	scale = 3
+	scale = -3
 	r = lambda d: radius + scale * equation_of_time(d)
 	#r = lambda d: radius - 2000 * (declination(d+1.0/24) - declination(d))
 	stroke = 'black'
@@ -1282,40 +1328,22 @@ def make_declination(radius):
 
 	arcs = []
 
-	# northern hemisphere
-	for d in range(80,267):
-		a = declination(d)
-		rd = r(d)
-		(x,y) = compute_xy(rd,a * 6)
-		arcs.append(x)
-		arcs.append(y)
+	pts = []
+	c = decl_color(0)
+	for d in range(0, 366):
+		minutes = declination(d)
+		(x,y) = compute_xy(r(d), minutes*6)
+		pts.append(x)
+		pts.append(y)
+		nc = decl_color(d)
+		if nc != c or d == 365:
+			g.append(draw.Lines(*pts, stroke=c, stroke_width=1, fill="none"))
+			c = nc
+			pts = pts[-2:]
 
-
-	g.append(draw.Lines(*arcs,
-		fill='none',
-		stroke='black',
-		stroke_width=stroke_width,
-	))
-
-	arcs = []
-	for d in range(266,266+180):
-		a = declination(d)
-		rd = r(d)
-		(x,y) = compute_xy(rd,a * 6)
-		arcs.append(x)
-		arcs.append(y)
-
-
-	g.append(draw.Lines(*arcs,
-		fill='none',
-		stroke='red',
-		stroke_width=stroke_width,
-	))
-
-	def decl_color(d): return 'red' if d < 80 or d > 266 else 'black'
 
 	d = 0
-	for (name,d_in_month,label_pos) in months:
+	for (name,d_in_month,label_pos,_) in months:
 		a = declination(d)
 
 		#(x,y) = compute_xy(r,a * 6)
@@ -1366,11 +1394,11 @@ def make_declination(radius):
 		d += d_in_month
 
 	# circles for every five minutes
-	g.append(draw.Circle(0, 0, radius, fill="none", stroke="gray", stroke_width=1.0))
-	g.append(draw.Circle(0, 0, radius+10*scale, fill="none", stroke="gray", stroke_width=0.25))
-	g.append(draw.Circle(0, 0, radius+5*scale, fill="none", stroke="gray", stroke_width=0.25))
-	g.append(draw.Circle(0, 0, radius-5*scale, fill="none", stroke="red", stroke_width=0.25))
-	g.append(draw.Circle(0, 0, radius-10*scale, fill="none", stroke="red", stroke_width=0.25))
+	#g.append(draw.Circle(0, 0, radius, fill="none", stroke="lightgray", stroke_width=1.0))
+	#g.append(draw.Circle(0, 0, radius+10*scale, fill="none", stroke="gray", stroke_width=0.25))
+	#g.append(draw.Circle(0, 0, radius+5*scale, fill="none", stroke="gray", stroke_width=0.25))
+	#g.append(draw.Circle(0, 0, radius-5*scale, fill="none", stroke="red", stroke_width=0.25))
+	#g.append(draw.Circle(0, 0, radius-10*scale, fill="none", stroke="red", stroke_width=0.25))
 	return g
 
 
@@ -1476,14 +1504,15 @@ def make_360_clock(radius):
 
 	# 24-hour clock on the outsde and inverted in red
 	g.append(make_rule(radius, 360/(24), 360/(24*4), 360/(24*60),
+		side=1,
 		size=9,
 		fmt=lambda x: "%02d:%02d" % ((12 + x // 15) % 24, (4 * (x % 15))),
 	))
-	g.append(make_labels(radius, 360/(24), 0, 360,
-		lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
-		size=9,
-		pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
-	))
+#	g.append(make_labels(radius, 360/(24), 0, 360,
+#		lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
+#		size=9,
+#		pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
+#	))
 
 	return g
 
@@ -1551,15 +1580,18 @@ outer.append(axle)
 inner.append(draw.Circle(0,0, 410, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, 470, fill="none", stroke="black", stroke_width=1))
 
-inner.append(make_minutes(410, side=1))
+# Make the minutes seconds rings with divisions every 5 seconds
+inner.append(make_minutes(410, side=1, divisions=60*6, divisions2=60*6*2))
 
-outer.append(make_minutes(410, side=2))
-outer.append(make_fractional_minutes(468))
-outer.append(make_fifteen_degrees(450))
+outer.append(make_minutes(410, side=2, include_red=False, divisions=60*6, divisions2=60*6*2))
+#outer.append(make_fractional_minutes(468))
+outer.append(make_ninety_minus(450, False))
+outer.append(make_sine_nolog(468))
 
 # rule for 360 degree circle with reverse angles as well
-inner.append(make_360_clock(370))
-inner.append(make_equation_of_time(280))
+inner.append(make_fifteen_degrees(385))
+inner.append(make_360_clock(360))
+inner.append(make_equation_of_time(240))
 
 # 90 degree circle and sine/cosine tables
 #back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
