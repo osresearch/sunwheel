@@ -557,25 +557,103 @@ def make_tangent_scale(radius):
 
 	return g
 
+# this makes sine or haversize
+# hav(x) y = (1 - cos(x))/2
+# 1 - 2y = cos(x) => ahav(y) = acos(1-2y)
+def haversine(x):
+	return (1 - cos(radians(x)))/2
+def ahaversine(y):
+	return degrees(acos(1 - 2 * y))
 
-def make_sine_nolog(radius):
+def make_sine_nolog(radius, use_cosine=False):
 	g = draw.Group()
-	g.append(make_rule(radius, 360/(15*4), 360/(15*4*2), 360/(15*4*8),
-		fmt=lambda x: "%04.0f" % (sin(radians(x/6))*10000),
-		side=1,
-		pos=(1.5,+12),
-		size=7,
+
+	side = 1
+	scale = 1000
+
+	if use_cosine:
+		def map(x): return ahaversine(x/scale) * 6
+		start = 0
+		end = scale * haversine(60)
+		color = "black"
+		majors = frange(start, end, 5)
+		minors1 = frange(start, end, 1)
+		minors2 = frange(start, end,  0.5)
+		minors3 = frange(start, haversine(30)*scale,  0.1)
+	else:
+		def map(x): return degrees(asin(x/scale)*6)
+		start = 0
+		end = scale * sin(radians(60)) + 1
+		color = "black"
+		majors = frange(start, end, 10)
+		minors1 = frange(start, end, 5)
+		minors2 = frange(start, end, 1)
+		minors3 = frange(scale*sin(radians(30)), end, 0.5)
+
+	def asin_map(m): return [map(x) for x in m]
+
+	g.append(make_ticks(radius,
+		asin_map(majors),
+		length=15,
+		stroke_width=0.5,
+		stroke="black",
+		side=side,
+	))
+	g.append(make_ticks(radius,
+		asin_map(minors1),
+		length=8,
+		stroke_width=0.4,
+		stroke="black",
+		side=side,
+	))
+	g.append(make_ticks(radius,
+		asin_map(minors2),
+		length=4,
+		stroke_width=0.3,
+		stroke="black",
+		side=side,
+	))
+	g.append(make_ticks(radius,
+		asin_map(minors3),
+		length=3,
+		stroke_width=0.2,
+		stroke="black",
+		side=side,
 	))
 
-	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 360/(15*4), 6, 366,
-		lambda x: "%04.0f" % (sin(radians(90-x/6))*10000),
-		pos=(-2,+12),
-		size=7,
-		text_anchor="end",
-		fill="red",
-		font_style="italic",
+	# need to filter the majors
+	if use_cosine:
+		majors += [2, 3, 4, 5, 6, 7, 8, 9]
+	major_labels = [ [map(x), "%03d" % (x)] for x in majors ]
+
+	if use_cosine:
+		major_labels += [[map(x/10), "%04d" % (x)] for x in [1, 2, 4, 7, 10, 15]]
+	g.append(make_tick_labels(radius,
+		major_labels,
+		7,
+		text_angle=90,
+		pos=(1,14),
+		fill=color,
+		length=0,
+		stroke_width=0.4,
 	))
+
+#	g.append(make_rule(radius, 360/(15*4), 360/(15*4*2), 360/(15*4*8),
+#		fmt=lambda x: "%04.0f" % (sin(radians(x/6))*10000),
+#		side=1,
+#		pos=(1.5,+12),
+#		size=7,
+#	))
+#
+#	# red numbers going reverse around the circle
+#	g.append(make_labels(radius, 360/(15*4), 6, 366,
+#		lambda x: "%04.0f" % (sin(radians(90-x/6))*10000),
+#		pos=(-2,+12),
+#		size=7,
+#		text_anchor="end",
+#		fill="red",
+#		font_style="italic",
+#	))
 
 	return g
 
@@ -1027,7 +1105,7 @@ def draw_marker(label, radius, angle):
 
 	return g
 
-def make_minutes(radius, side=3, include_red=True, divisions=600, divisions2=None):
+def make_minutes(radius, side=3, red_offset=60, divisions=600, divisions2=None):
 	g = draw.Group()
 
 	major = frange(0,360,360/60)
@@ -1057,9 +1135,9 @@ def make_minutes(radius, side=3, include_red=True, divisions=600, divisions2=Non
 	))
 
 	# red numbers going reverse around the circle
-	if include_red:
+	if red_offset is not None:
 		g.append(make_labels(radius, 6, 6, 360,
-			lambda x: "%.0f" % ((60-x/6) % 60),
+			lambda x: "%.0f" % ((red_offset-x/6)),
 			pos=(-px,py),
 			size=11,
 			text_anchor="end",
@@ -1167,20 +1245,20 @@ def make_fifteen_degrees(radius):
 	g = draw.Group()
 	g.append(make_rule(radius, 360/(15*4), 360/(15*4*3), 360/(15*60),
 		fmt=lambda x: "%.0f°%.0f'" % (floor(x*15/360), floor(x*60*15/360) % 60),
-		side=1,
+		side=3,
 		pos=(1.5,+14),
 		size=9,
 	))
 
 	# red numbers going reverse around the circle
-#	g.append(make_labels(radius, 360/100, 0, 360,
-#		lambda x: "%.0f" % (((360-x) * 100 / 360) % 100),
-#		pos=(-2,+10),
-#		size=8,
-#		text_anchor="end",
-#		fill="red",
-#		font_style="italic",
-#	))
+	g.append(make_labels(radius, 360/(15*4), 6, 366,
+		lambda x: "%.0f°%.0f'" % (floor((360-x)*15/360), floor((360-x)*60*15/360) % 60),
+		pos=(-2,-2),
+		size=8,
+		text_anchor="end",
+		fill="red",
+		font_style="italic",
+	))
 
 	return g
 	
@@ -1583,15 +1661,16 @@ outer.append(draw.Circle(0,0, 470, fill="none", stroke="black", stroke_width=1))
 # Make the minutes seconds rings with divisions every 5 seconds
 inner.append(make_minutes(410, side=1, divisions=60*6, divisions2=60*6*2))
 
-outer.append(make_minutes(410, side=2, include_red=False, divisions=60*6, divisions2=60*6*2))
+outer.append(make_minutes(410, side=2, red_offset=90, divisions=60*6, divisions2=60*6*2))
 #outer.append(make_fractional_minutes(468))
-outer.append(make_ninety_minus(450, False))
+#outer.append(make_ninety_minus(450, False))
 outer.append(make_sine_nolog(468))
+outer.append(make_sine_nolog(450, use_cosine=True))
 
 # rule for 360 degree circle with reverse angles as well
-inner.append(make_fifteen_degrees(385))
-inner.append(make_360_clock(360))
-inner.append(make_equation_of_time(240))
+inner.append(make_fifteen_degrees(375))
+inner.append(make_360_clock(350))
+inner.append(make_equation_of_time(230))
 
 # 90 degree circle and sine/cosine tables
 #back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
