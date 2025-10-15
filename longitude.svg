@@ -732,16 +732,6 @@
            y="191.66258">Hc</tspan></text><text
          xml:space="preserve"
          style="font-size:5.63712px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;stroke-width:0.352321"
-         x="172.02867"
-         y="289.81259"
-         id="text25"><tspan
-           sodipodi:role="line"
-           id="tspan24"
-           style="stroke-width:0.352321"
-           x="172.02867"
-           y="289.81259">cos(Hc) = sin(Lat) sin(Decl) + cos(Lat) cos(Decl) cos(LHA)</tspan></text><text
-         xml:space="preserve"
-         style="font-size:5.63712px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;stroke-width:0.352321"
          x="172.55983"
          y="297.7803"
          id="text26"><tspan
@@ -749,7 +739,7 @@
            id="tspan25"
            style="stroke-width:0.352321"
            x="172.55983"
-           y="297.7803">hav(90 - Hc) = hav(Lat-Decl) + cos(Lat) cos(Decl) hav(LHA)</tspan></text><path
+           y="297.7803">hav(Hc') = hav(Lat-Decl) + cos(Lat) cos(Decl) hav(Lon-GHA)</tspan></text><path
          style="fill:none;stroke:#ff0404;stroke-width:0.737044;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#ArrowWideHeavy)"
          d="m 284.61889,201.2669 c -10.22116,1.0087 -30.46652,-5.52344 -38.68163,-12.38679"
          id="path27"
@@ -777,4 +767,16 @@
            id="tspan32"
            style="stroke-width:0.154158"
            x="262.83334"
-           y="200.63077">Zn</tspan></text></g></g></svg>
+           y="200.63077">Zn</tspan></text><text
+         xml:space="preserve"
+         style="font-size:5.63712px;line-height:1.25;font-family:'Bitstream Vera Sans';-inkscape-font-specification:'Bitstream Vera Sans';letter-spacing:0px;word-spacing:0px;stroke-width:0.352321"
+         x="173.81883"
+         y="305.12448"
+         id="text36"><tspan
+           sodipodi:role="line"
+           id="tspan36"
+           style="stroke-width:0.352321"
+           x="173.81883"
+           y="305.12448">cos(Zn') = sin(Lon-GHA) cos(Decl) sin<tspan
+   style="font-size:65%;baseline-shift:super"
+   id="tspan37">-1</tspan>(Hc)</tspan></text></g></g></svg>
