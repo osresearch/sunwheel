@@ -139,7 +139,7 @@ def frange(start, end, step=1):
 		items.append(start+i*step)
 	return items
 
-def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360, size=10, side=3):
+def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360, size=10, side=3, ticksize=11):
 	g = draw.Group()
 	g.append(draw.Circle(
 		0, 0, radius,
@@ -148,10 +148,10 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 		stroke_width=0.1,
 	))
 	if minor3 is not None:
-		g.append(make_ticks(radius, frange(start, end, minor3), 2, stroke_width=0.1, side=side))
-	g.append(make_ticks(radius, frange(start, end, minor2), 3, stroke_width=0.1, side=side))
-	g.append(make_ticks(radius, frange(start, end, minor1), 5, stroke_width=0.2, side=side))
-	g.append(make_ticks(radius, frange(start, end, major),  10, stroke_width=0.4, side=side))
+		g.append(make_ticks(radius, frange(start, end, minor3), ticksize-9, stroke_width=0.1, side=side))
+	g.append(make_ticks(radius, frange(start, end, minor2), ticksize-6, stroke_width=0.1, side=side))
+	g.append(make_ticks(radius, frange(start, end, minor1), ticksize-5, stroke_width=0.2, side=side))
+	g.append(make_ticks(radius, frange(start, end, major),  ticksize, stroke_width=0.4, side=side))
 	g.append(make_labels(radius, major, start, end, fmt, pos=pos, size=size, side=side))
 	return g
 
@@ -1308,20 +1308,22 @@ def make_ninety_minus(radius, show_labels=True):
 	g = draw.Group()
 
 	# make the rule with no numbers
-	g.append(make_rule(radius, 360/60, 360/120, 360/360,
+	g.append(make_rule(radius, 360/60, 360/120, 360/360, minor3=360/720,
 		fmt=lambda x: "", # "%.0f" % (90 - x/360*60),
-		side=1,
-		pos=(1.5,+10),
-		size=8,
+		side=3,
+		pos=(+2,+14),
+		size=9,
+		ticksize=12,
 	))
 
 	# red numbers going reverse around the circle
 	g.append(make_labels(radius, 360/60, 6, 360,
 		lambda x: "<-N" if x == 0 else "%.0f" % (90-x//6),
-		pos=(-2,+10),
-		size=8,
+		pos=(-2,-7),
+		size=9,
 		text_anchor="end",
 		fill="red",
+		font_style="italic",
 	))
 
 	if not show_labels:
@@ -1330,11 +1332,10 @@ def make_ninety_minus(radius, show_labels=True):
 	# black numebrs going forwards
 	g.append(make_labels(radius, 360/60, 6, 360,
 		lambda x: "S->" if x == 0 else "%.0f" % (30+x//6),
-		pos=(+2,+10),
-		size=8,
+		pos=(+2,+12),
+		size=9,
 		text_anchor="start",
 		fill="black",
-		font_style="italic",
 	))
 
 
@@ -1343,15 +1344,15 @@ def make_ninety_minus(radius, show_labels=True):
 	# by hand
 	g.append(make_labels(radius, 6, 0, 6,
 		lambda x: "<-N",
-		size=8,
-		pos=(-2,10),
+		size=9,
+		pos=(-2,12),
 		fill="black",
 		text_anchor="end",
 	))
 	g.append(make_labels(radius, 6, 0, 6,
 		lambda x: "S->",
 		size=8,
-		pos=(+2,10),
+		pos=(+2,-7),
 		fill="red",
 		text_anchor="start",
 	))
@@ -1361,15 +1362,16 @@ def make_ninety_minus(radius, show_labels=True):
 def make_fractional_minutes(radius):
 	g = draw.Group()
 	g.append(make_rule(radius, 360/100, 360/200, 360/1000,
-		fmt=lambda x: "%.0f" % (x/360*100),
+		fmt=lambda x: "%02.0f" % (x/360*100),
 		side=1,
 		pos=(1.5,+10),
 		size=8,
+		ticksize=18,
 	))
 
 	# red numbers going reverse around the circle
 	g.append(make_labels(radius, 360/100, 0, 360,
-		lambda x: "%.0f" % (((360-x) * 100 / 360) % 100),
+		lambda x: "%02.0f" % (((360-x) * 100 / 360) % 100),
 		pos=(-2,+10),
 		size=8,
 		text_anchor="end",
@@ -1748,11 +1750,11 @@ outer_cut = 500
 outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer", class_="spinner")
 inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_="spinner")
 
-outer.append(make_minutes(cut, side=2))
-inner.append(make_minutes(cut, side=1))
+outer.append(make_minutes(cut, side=2, divisions2=None))
+inner.append(make_minutes(cut, side=1, divisions2=None))
 
-outer.append(make_ninety_minus(cut + 40))
-outer.append(make_fractional_minutes(cut + 78))
+outer.append(make_ninety_minus(cut + 48))
+outer.append(make_fractional_minutes(cut + 88))
 
 #inner.append(make_rule(400, 360/60, 360/120, 360/600))
 # add an reverse scale for the inner ring
@@ -1783,14 +1785,17 @@ front.append(pointer)
 front.append(outer)
 front.append(inner)
 
-img_sz = 800
+img_sz = cut*2
 inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=True))
 
 
 
 ####
 #### Reverse side
+#### uses a smaller inner disc
 ####
+cut = 410
+img_sz = cut * 2
 back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 back.append(pointer)
 
@@ -1866,6 +1871,8 @@ mirror_pointer.append(pointer)
 
 d.append(front)
 d.append(back)
+
+
 
 
 if output_file.endswith(".png"):
