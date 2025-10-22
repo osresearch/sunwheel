@@ -1844,30 +1844,34 @@ back.append(outer)
 back.append(inner)
 
 # paper pointer until a better one can be made
+
 pointer_diam = 35
 pointer = draw.Group(class_="spinner")
 pointer.append(axle)
 pointer.append(draw.Circle(0,0,pointer_diam, fill="none", stroke="black", stroke_width=2))
 pointer.append(draw.Lines(
 	+pointer_diam,0,
-	+460,0,
-	+480,pointer_diam/2,
-	+460,pointer_diam,
+	+outer_cut,0,
+	+outer_cut+20,pointer_diam/2,
+	+outer_cut,pointer_diam,
 	0,pointer_diam,
 	fill="white", stroke="black", stroke_width=2, closed=True,
 ))
 pointer.append(draw.Line(
 	+pointer_diam,5,
-	+460,5,
+	+outer_cut,5,
 	stroke="red",
 	stroke_width=10,
 ))
 
-mirror_pointer = draw.Group(transform="scale(1,-1)")
-mirror_pointer.append(pointer)
+#mirror_pointer = draw.Group(transform="scale(1,-1)")
+#mirror_pointer.append(pointer)
 
 #front.append(pointer)
 #back.append(mirror_pointer)
+
+# Use a pointer image
+#d.append(draw.Image(0, 0, 1000+20+pointer_diam*2, 75, path="pointer.svg", embed=False, name="paper-pointer"))
 
 d.append(front)
 d.append(back)
