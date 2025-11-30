@@ -34,7 +34,7 @@ def compute_xy(r,a):
 	return (r * sin(a), r * cos(a))
 
 
-d = draw.Drawing(1000,1000, origin=(0,0))
+d = draw.Drawing(1200,1000, origin=(0,0))
 d.append_css("""
 .label {
 	fill: #000;
@@ -188,11 +188,23 @@ def make_compass(r):
 	))
 
 	# heading markings
-	for a in range(10,361,10):
-		g.append(draw.Text("%d" % (a), 10,
-			0, 5,
-			transform="rotate(%d) translate(%.3f) rotate(%d)" % (a - 90, r+12, +0),
-			text_anchor="start",
+	labels = {
+		0: ("N",90,"middle"),
+		90: ("E",0,"start"),
+		180: ("S",90,"middle"),
+		270: ("W",-180,"end"),
+	}
+	for a in range(0,360,10):
+		(t,rot,anchor) = labels.get(a, (
+			"%d" % (a),
+			0 if a < 180 else -180,
+			"start" if a < 180 else "end",
+		))
+		g.append(draw.Text(t, 10,
+			0, 0,
+			transform="rotate(%d) translate(%.3f) rotate(%d)" % (a - 90, r+13, rot),
+			text_anchor=anchor,
+			dominant_baseline="middle",
 			class_="label",
 		))
 	return g
@@ -213,14 +225,16 @@ def make_chart(lat):
 
 x = 0
 y = 0
-for lat in range(0,60,10):
+for lat in range(0,60,5):
 	print(lat)
-	g = draw.Group(transform="translate(%d %d) scale(0.1) translate(500 500)" % (x,y))
+	g = draw.Group(transform="translate(%d %d) scale(0.3) translate(500 500)" % (x,y))
 	g.append(make_chart(lat))
 	d.append(g)
 
-	x += 100
-	y += 0
+	x += 300
+	if x > 900:
+		x = 0
+		y += 300
 
 d.append(center)
 d.save_svg("hczn.svg")
