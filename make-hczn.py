@@ -31,6 +31,7 @@ def compute_hczn(lat,dec,lha):
 
 
 def compute_xy(r,a):
+	a += radians(180)
 	return (r * sin(a), r * cos(a))
 
 
@@ -47,7 +48,7 @@ d.append_css("""
 }
 .thin-red {
 	stroke: #f00;
-	stroke-width: 0.1;
+	stroke-width: 0.5;
 	fill: none;
 }
 .thick {
@@ -69,23 +70,23 @@ d.append_css("""
 
 center = draw.Group(transform="translate(500 500)")
 
-lat = 40
-dec_max = 30
-lha_max = 170
+lat = 60
+dec_max = 60
+lha_max = 180
 scale = 300
 
 
 def make_hczn(lat):
 	g = draw.Group()
+	hc_scale = lambda hc: (radians(90) - hc) * scale
 	for dec in range(-dec_max,dec_max+1):
 		pts = []
-		for lha in range(-lha_max,lha_max+1):
-			if lha == 0:
-				continue
+		for lha in range(-lha_max,lha_max):
 			(hc,zn) = compute_hczn(radians(lat), radians(dec), radians(lha))
 			if hc < 0:
 				continue
-			pts += compute_xy((radians(90) - hc)*scale,zn)
+			pts += compute_xy(hc_scale(hc),zn)
+			#pts += compute_xy(zn*50, hc * 2)
 		if len(pts) == 0:
 			continue
 
@@ -93,11 +94,13 @@ def make_hczn(lat):
 			c = "extra-thick"
 		elif dec % 5 == 0:
 			c = "thick"
+		elif dec == 23 or dec == -23:
+			c = "thin-red"
 		else:
 			c = "thin"
 		g.append(draw.Lines(*pts, class_=c))
 
-	for lha in range(-lha_max,lha_max+1):
+	for lha in range(-lha_max,lha_max):
 		if lha == 0:
 			continue
 		pts = []
@@ -105,7 +108,8 @@ def make_hczn(lat):
 			(hc,zn) = compute_hczn(radians(lat), radians(dec), radians(lha))
 			if hc < 0:
 				continue
-			pts += compute_xy((radians(90) - hc)*scale,zn)
+			pts += compute_xy(hc_scale(hc),zn)
+			#pts += compute_xy(zn*50, hc * 2)
 
 		if len(pts) == 0:
 			continue
@@ -113,32 +117,32 @@ def make_hczn(lat):
 
 	# label the top of the chart
 	for lha in range(-lha_max,lha_max+1,10):
-		if lha == 0:
+		if lha == 0 or lha == 180 or lha == -180:
 			continue
 
-		(hc,zn) = compute_hczn(radians(lat), radians(-dec_max-1), radians(lha))
+		(hc,zn) = compute_hczn(radians(lat), radians(dec_max+2), radians(lha))
 		if hc < radians(5):
 			continue
-		g.append(draw.Text("%+d" % (lha), 10,
-			*compute_xy((radians(90) - hc)*scale, zn),
+		g.append(draw.Text("%+d" % (-lha), 10,
+			*compute_xy(hc_scale(hc), zn),
 			class_="label",
 			text_anchor="middle",
 		))
 
 	# label the declinations
-	for lha in [-60,0,+60]:
-		for dec in range(-dec_max+5,dec_max,5):
-			if dec == 0:
+	for lha in range(-lha_max,lha_max+1,30): #[-90,-60,-30,0,+30,+60,+90]:
+		for dec in range(-dec_max+10,dec_max,10):
+			if dec == 0 or lha == 180:
 				continue
 			(hc,zn) = compute_hczn(radians(lat), radians(dec), radians(lha))
-			if hc < 0:
+			if hc < radians(1):
 				continue
-			(x,y) = compute_xy((radians(90) - hc)*scale, zn)
-			g.append(draw.Text("%+d" % (-dec), 10,
-				x - 2, y,
+			(x,y) = compute_xy(hc_scale(hc), zn)
+			g.append(draw.Text("%+d" % (dec), 10,
+				x, y,
 				class_="label",
-				text_anchor="end",
-				dominant_baseline="auto" if dec > 0 else "hanging",
+				text_anchor="end" if lha > 0 else "start",
+				dominant_baseline="auto" if dec < 0 else "hanging",
 			))
 	return g
 
@@ -211,7 +215,7 @@ def make_compass(r):
 
 def make_chart(lat):
 	g = draw.Group()
-	g.append(make_hczn(-lat))
+	g.append(make_hczn(lat))
 	g.append(make_compass(scale*radians(90)))
 	g.append(draw.Circle(r=5, cx=0, cy=0, fill="#000"))
 
