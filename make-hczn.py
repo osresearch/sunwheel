@@ -1,0 +1,228 @@
+#!/usr/bin/python3
+# Generate a circular web diagram of a given lattitude
+# that allows Hc and Zn to be read directly.
+import drawsvg as draw
+from math import radians, cos, sin, acos, asin, degrees
+
+def haversine(x):
+	return (1 - cos(x))/2
+def ahaversine(y):
+	if y < 0:
+		y = 0
+	if y > 1:
+		y = 1
+	return acos(1 - 2 * y)
+
+def compute_hczn(lat,dec,lha):
+	hav_hc = haversine(lha) * cos(lat) * cos(dec) + haversine(lat - dec)
+	#print(f"{lat=} {dec=} {lha=} => {hav_hc=}")
+	hc = radians(90) - ahaversine(hav_hc)
+
+	hav_zn = (cos(lat - hc) - sin(dec)) / (2 * cos(lat) * cos(hc))
+	zn = ahaversine(hav_zn)
+
+	# if the sun was to the west of us,
+	# our local hour angle will be positive
+	# and we have to adjust our computed heading
+	if lha > 0:
+		zn = radians(360) - zn
+
+	return (hc,zn)
+
+
+def compute_xy(r,a):
+	return (r * sin(a), r * cos(a))
+
+
+d = draw.Drawing(1000,1000, origin=(0,0))
+d.append_css("""
+.label {
+	fill: #000;
+	stroke: none;
+}
+.thin {
+	stroke: #000;
+	stroke-width: 0.1;
+	fill: none;
+}
+.thin-red {
+	stroke: #f00;
+	stroke-width: 0.1;
+	fill: none;
+}
+.thick {
+	stroke: #000;
+	stroke-width: 0.5;
+	fill: none;
+}
+.extra-thick {
+	stroke: #000;
+	stroke-width: 2;
+	fill: none;
+}
+.thick-red {
+	stroke: #f00;
+	stroke-width: 0.5;
+	fill: none;
+}
+""")
+
+center = draw.Group(transform="translate(500 500)")
+
+lat = 40
+dec_max = 30
+lha_max = 170
+scale = 300
+
+
+def make_hczn(lat):
+	g = draw.Group()
+	for dec in range(-dec_max,dec_max+1):
+		pts = []
+		for lha in range(-lha_max,lha_max+1):
+			if lha == 0:
+				continue
+			(hc,zn) = compute_hczn(radians(lat), radians(dec), radians(lha))
+			if hc < 0:
+				continue
+			pts += compute_xy((radians(90) - hc)*scale,zn)
+		if len(pts) == 0:
+			continue
+
+		if dec == 0:
+			c = "extra-thick"
+		elif dec % 5 == 0:
+			c = "thick"
+		else:
+			c = "thin"
+		g.append(draw.Lines(*pts, class_=c))
+
+	for lha in range(-lha_max,lha_max+1):
+		if lha == 0:
+			continue
+		pts = []
+		for dec in range(-dec_max,dec_max+1):
+			(hc,zn) = compute_hczn(radians(lat), radians(dec), radians(lha))
+			if hc < 0:
+				continue
+			pts += compute_xy((radians(90) - hc)*scale,zn)
+
+		if len(pts) == 0:
+			continue
+		g.append(draw.Lines(*pts, class_="thin" if lha % 10 else "thick"))
+
+	# label the top of the chart
+	for lha in range(-lha_max,lha_max+1,10):
+		if lha == 0:
+			continue
+
+		(hc,zn) = compute_hczn(radians(lat), radians(-dec_max-1), radians(lha))
+		if hc < radians(5):
+			continue
+		g.append(draw.Text("%+d" % (lha), 10,
+			*compute_xy((radians(90) - hc)*scale, zn),
+			class_="label",
+			text_anchor="middle",
+		))
+
+	# label the declinations
+	for lha in [-60,0,+60]:
+		for dec in range(-dec_max+5,dec_max,5):
+			if dec == 0:
+				continue
+			(hc,zn) = compute_hczn(radians(lat), radians(dec), radians(lha))
+			if hc < 0:
+				continue
+			(x,y) = compute_xy((radians(90) - hc)*scale, zn)
+			g.append(draw.Text("%+d" % (-dec), 10,
+				x - 2, y,
+				class_="label",
+				text_anchor="end",
+				dominant_baseline="auto" if dec > 0 else "hanging",
+			))
+	return g
+
+def make_compass(r):
+	g = draw.Group()
+	g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
+
+	for a in range(0,360):
+		if a % 45 == 0:
+			c = "extra-thick"
+			l = 10
+		elif a % 10 == 0:
+			c = "thick"
+			l = 10
+		else:
+			c = "thin"
+			l = 5
+		g.append(draw.Lines(
+			*compute_xy(r,radians(a)),
+			*compute_xy(r+l,radians(a)),
+			class_=c,
+		))
+	# LHA=0 vertical line
+	g.append(draw.Lines(
+		0,-r - 10,
+		0,+r + 10,
+		class_="extra-thick",
+	))
+
+	# east/west lines are split so they
+	# don't overlap with the grid
+	g.append(draw.Lines(
+		-r - 10,0,
+		-r + 50,0,
+		class_="extra-thick",
+	))
+	g.append(draw.Lines(
+		+r - 50,0,
+		+r + 10,0,
+		class_="extra-thick",
+	))
+
+	g.append(draw.Lines(
+		-50,0,
+		+50,0,
+		class_="extra-thick",
+	))
+
+	# heading markings
+	for a in range(10,361,10):
+		g.append(draw.Text("%d" % (a), 10,
+			0, 5,
+			transform="rotate(%d) translate(%.3f) rotate(%d)" % (a - 90, r+12, +0),
+			text_anchor="start",
+			class_="label",
+		))
+	return g
+
+def make_chart(lat):
+	g = draw.Group()
+	g.append(make_hczn(-lat))
+	g.append(make_compass(scale*radians(90)))
+	g.append(draw.Circle(r=5, cx=0, cy=0, fill="#000"))
+
+	g.append(draw.Text("Lat %d" % (lat), 30,
+		-450,-450,
+		class_="label",
+		font_weight="bold",
+	))
+	return g
+
+
+x = 0
+y = 0
+for lat in range(0,60,10):
+	print(lat)
+	g = draw.Group(transform="translate(%d %d) scale(0.1) translate(500 500)" % (x,y))
+	g.append(make_chart(lat))
+	d.append(g)
+
+	x += 100
+	y += 0
+
+d.append(center)
+d.save_svg("hczn.svg")
+
+
