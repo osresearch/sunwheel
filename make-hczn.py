@@ -38,7 +38,11 @@ def compute_xy(r,a):
 	return (r * sin(a), r * cos(a))
 
 
-d = draw.Drawing(1200,1000, origin=(0,0))
+size = 1500
+d = draw.Drawing(size,size, origin=(0,0))
+d.append(draw.Rectangle(0, 0, size, size, fill='#fff'))
+center = draw.Group(transform="translate(%d %d) scale(%.3f)" % (size/2, size/2, size/1000))
+
 d.append_css("""
 .label {
 	fill: #000;
@@ -76,9 +80,8 @@ d.append_css("""
 }
 """)
 
-center = draw.Group(transform="translate(500 500)")
 
-lat = 12
+lat = 20
 dec_max = 60
 lha_max = 180
 scale = 450
@@ -126,12 +129,24 @@ def make_hczn(lat):
 		if lha == 0 or lha == 180 or lha == -180:
 			continue
 
-		(hc,zn) = compute_hczn(lat, dec_max+2, lha)
-		if hc < 5:
+		(hc,zn) = compute_hczn(lat, dec_max+1, lha)
+		if hc < 2:
 			continue
 		g.append(draw.Text("%+d" % (-lha), 10,
 			*compute_xy(hc_scale(hc), zn),
 			class_="label",
+			text_anchor="middle",
+		))
+	for lha in range(0,lha_max+1,10):
+		if lha == 0 or lha == 180 or lha == -180:
+			continue
+
+		(hc,zn) = compute_hczn(lat, dec_max+3, lha)
+		if hc < 2:
+			continue
+		g.append(draw.Text("%+d" % (lha), 10,
+			*compute_xy(hc_scale(hc), zn),
+			class_="red-label",
 			text_anchor="middle",
 		))
 
@@ -213,10 +228,10 @@ def make_compass(r):
 			"start" if a < 180 else "end",
 		))
 		g.append(draw.Text(t, 10,
-			0, -2,
-			transform="rotate(%d) translate(%.3f) rotate(%d)" % (a - 90, r+13, rot),
+			0, 0,
+			transform="rotate(%d) translate(%.3f) rotate(%d)" % (a - 90+0, r+13, rot),
 			text_anchor=anchor,
-			dominant_baseline="bottom",
+			dominant_baseline="hanging",
 			class_="label",
 		))
 
@@ -224,14 +239,14 @@ def make_compass(r):
 	for a in range(190,360,10):
 		(t,rot,anchor) = labels.get(a, (
 			"%d" % (a),
-			0 if a < 180 else -180,
-			"start" if a < 180 else "end",
+			0,
+			"start",
 		))
 		g.append(draw.Text(t, 10,
-			0, -2,
-			transform="rotate(%d) translate(%.3f) rotate(%d)" % (-a-90, r+13, rot),
+			0, 0,
+			transform="rotate(%d) translate(%.3f) rotate(%d)" % (-a-90-0, r+13, rot),
 			text_anchor=anchor,
-			dominant_baseline="bottom",
+			dominant_baseline="auto",
 			class_="red-label",
 		))
 	return g
@@ -240,16 +255,19 @@ def make_height(r):
 	g = draw.Group()
 	g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
 
-	for a in range(0,90):
-		if a % 10 == 0:
-			c = "thick"
+	for a in range(0,90*3):
+		if a % (10*3) == 0:
+			c = "extra-thick"
 			l = 10
+		elif a % 3 == 0:
+			c = "thick"
+			l = 8
 		else:
 			c = "thin"
 			l = 5
 		g.append(draw.Lines(
-			*compute_xy(r,2*a),
-			*compute_xy(r+l,2*a),
+			*compute_xy(r,2*a/3),
+			*compute_xy(r+l,2*a/3),
 			class_=c,
 			))
 
@@ -258,7 +276,7 @@ def make_height(r):
 		rot = 180
 		anchor = "end"
 		g.append(draw.Text(t, 10,
-			0, 0,
+			0, -3,
 			transform="rotate(%d) translate(%.3f) rotate(%d)" % (2*a+90, r+5, rot),
 			text_anchor=anchor,
 			dominant_baseline="bottom",
@@ -330,20 +348,38 @@ def make_hc(lat):
 			c = "extra-thick"
 		elif dec % 5 == 0:
 			c = "thick"
-		elif dec == 23 or dec == -23:
-			c = "thin-red"
 		else:
 			c = "thin"
 
 		g.append(draw.Lines(*pts, class_=c))
-	g.append(draw.Circle(r=scale, cx=0, cy=0, class_="thin"))
-	g.append(draw.Circle(r=5, cx=0, cy=0, fill="#000"))
+
+	for lha in [0,30,60,90]:
+		for dec in range(-20,21,5):
+			(hc,zn) = compute_hczn(lat, dec, lha)
+			if hc < 0 or dec == 0:
+				continue
+			g.append(draw.Text("%+d" % (dec), 10,
+				*compute_xy(scale_zn(dec), 180 - hc * 2),
+				text_anchor="end",
+				class_="label" if dec > 0 else "red-label",
+			))
+	dec = -max_dec
+	for lha in range(10,90,10):
+		(hc,zn) = compute_hczn(lat, dec, lha)
+		if hc < 0:
+			continue
+		g.append(draw.Text("%d" % (lha), 10,
+			*compute_xy(scale_zn(dec), 180 - hc * 2),
+			class_="label",
+		))
 	return g
 
-#center.append(make_chart(lat))
-d.append(make_lots())
+center.append(make_chart(lat))
+#d.append(make_lots())
 
 d.append(center)
 d.save_svg("hczn.svg")
+
+d.save_png("hczn.png")
 
 
