@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+# Replace pub 249 with some diagrams
 # Generate a circular web diagram of a given lattitude
 # that allows Hc and Zn to be read directly.
 import drawsvg as draw
-from math import radians, cos, sin, acos, asin, degrees
+from math import radians, cos, sin, acos, asin, degrees, log, floor, modf
+import re
 
 def haversine(x):
 	return (1 - cos(x))/2
@@ -39,14 +41,27 @@ def compute_xy(r,a):
 
 
 size = 1500
-d = draw.Drawing(size,size, origin=(0,0))
-d.append(draw.Rectangle(0, 0, size, size, fill='#fff'))
-center = draw.Group(transform="translate(%d %d) scale(%.3f)" % (size/2, size/2, size/1000))
+d = draw.Drawing(4*size,size, origin=(0,0))
+d.append(draw.Rectangle(0, 0, 4*size, size, fill='#fff'))
+center = draw.Group(transform="translate(%d %d) scale(%.3f)" % (100, size/2, size/1000))
 
 d.append_css("""
 .label {
 	fill: #000;
 	stroke: none;
+}
+.hc {
+	fill: #000;
+	stroke: none;
+	font-family: monospace;
+	text-anchor: end;
+}
+.hc-label {
+	fill: #000;
+	stroke: none;
+	font-family: monospace;
+	font-style: bold;
+	text-anchor: end;
 }
 .red-label {
 	fill: #f00;
@@ -81,7 +96,7 @@ d.append_css("""
 """)
 
 
-lat = 20
+lat = 60
 dec_max = 60
 lha_max = 180
 scale = 450
@@ -165,12 +180,39 @@ def make_hczn(lat):
 				text_anchor="end" if lha > 0 else "start",
 				dominant_baseline="auto" if dec < 0 else "hanging",
 			))
+
+	# side ticks for the Zn readout
+	for hc in range(0,90):
+		if hc % 10 == 0:
+			c = "extra-thick"
+			l = 10
+		elif hc % 5 == 0:
+			c = "thick"
+			l = 8
+		else:
+			c = "thin"
+			l = 5
+		(x,y) = compute_xy(hc_scale(hc), 0)
+		g.append(draw.Line(
+			x, -y,
+			x-l, -y,
+			class_ = c,
+		))
+
+		if hc % 10 == 0:
+			g.append(draw.Text("%d" % (hc), 10,
+				x-5, -y-1,
+				text_anchor="end",
+				class_="label",
+			))
+			
 	return g
 
 def make_compass(r):
 	g = draw.Group()
-	g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
+	#g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
 
+	pts = []
 	for a in range(180,360):
 		if a % 45 == 0:
 			c = "extra-thick"
@@ -186,6 +228,10 @@ def make_compass(r):
 			*compute_xy(r+l,a),
 			class_=c,
 		))
+		pts += compute_xy(r,a)
+
+	g.append(draw.Lines(*pts, class_="thick"))
+
 	# LHA=0 vertical line
 	g.append(draw.Lines(
 		0,-r - 10,
@@ -200,12 +246,13 @@ def make_compass(r):
 #		-r + 50,0,
 #		class_="extra-thick",
 #	))
-	g.append(draw.Lines(
-		+r - 50,0,
-		+r + 10,0,
-		class_="extra-thick",
-	))
+#	g.append(draw.Lines(
+#		+r - 50,0,
+#		+r + 10,0,
+#		class_="extra-thick",
+#	))
 
+	g.append(draw.Circle(0,0, 10, fill="#000", stroke="none"))
 	g.append(draw.Lines(
 		-50,0,
 		+50,0,
@@ -286,19 +333,34 @@ def make_height(r):
 
 def make_chart(lat):
 	g = draw.Group()
-	g.append(make_hczn(lat))
-	g.append(make_compass(scale))
-
-	g.append(make_hc(lat))
-	g.append(make_height(scale))
-
-	g.append(draw.Circle(r=5, cx=0, cy=0, fill="#000"))
-
-	g.append(draw.Text("Lat %d" % (lat), 30,
-		-450,-450,
+	g.append(draw.Text("Lat %d N" % (lat), 30,
+		250,-450,
 		class_="label",
 		font_weight="bold",
 	))
+	g.append(draw.Text("Lat %d S" % (lat), 30,
+		-250,-450,
+		transform="rotate(180)",
+		class_="label",
+		font_weight="bold",
+		text_anchor="end",
+	))
+	g.append(make_hczn(lat))
+	g.append(make_compass(scale))
+
+	g.append(make_logscale(800, 500, -400))
+	g.append(make_logscale(800, 500, -400, direction=-1))
+	return g
+
+	#g.append(make_hc(lat))
+	#g.append(make_height(scale))
+	x = 0
+	for a in range(0,90,15):
+		g.append(make_linear_hc(lat, a, a+15, -25, 25, offset=(x,0)))
+		x += 410
+
+	g.append(draw.Circle(r=5, cx=0, cy=0, fill="#000"))
+
 	return g
 
 
@@ -321,8 +383,11 @@ def make_lots():
 def make_hc(lat):
 	g = draw.Group()
 	max_dec = 23
+	min_hc = 0
+	inner_r = 150
 
-	scale_zn = lambda dec: (dec + max_dec) * (scale-150) / (2*max_dec) + 150
+	scale_zn = lambda dec: (dec + max_dec) * (scale-inner_r) / (2*max_dec) + inner_r
+	scale_hc = lambda hc: 180 - hc * 2
 
 	for lha in range(0,180):
 		pts = []
@@ -330,17 +395,21 @@ def make_hc(lat):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < 0:
 				continue
-			pts += compute_xy(scale_zn(dec), 180 - hc * 2)
+			if hc < min_hc:
+				continue
+			pts += compute_xy(scale_zn(dec), scale_hc(hc))
 		if len(pts) == 0:
 			continue
-		g.append(draw.Lines(*pts, class_="thick" if lha % 10 == 0 else "thin"))
+		g.append(draw.Lines(*pts, class_="extra-thick" if (lha % 30 == 0) and (lha != 0) else "thick" if lha % 10 == 0 else "thin"))
 	for dec in range(-max_dec,max_dec+1):
 		pts = []
 		for lha in range(0,180):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < 0:
 				continue
-			pts += compute_xy(scale_zn(dec), 180 - hc * 2)
+			if hc < min_hc:
+				continue
+			pts += compute_xy(scale_zn(dec), scale_hc(hc))
 		if len(pts) == 0:
 			continue
 
@@ -358,8 +427,10 @@ def make_hc(lat):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < 0 or dec == 0:
 				continue
+			if hc < min_hc:
+				continue
 			g.append(draw.Text("%+d" % (dec), 10,
-				*compute_xy(scale_zn(dec), 180 - hc * 2),
+				*compute_xy(scale_zn(dec), scale_hc(hc)),
 				text_anchor="end",
 				class_="label" if dec > 0 else "red-label",
 			))
@@ -368,13 +439,228 @@ def make_hc(lat):
 		(hc,zn) = compute_hczn(lat, dec, lha)
 		if hc < 0:
 			continue
+		if hc < min_hc:
+			continue
 		g.append(draw.Text("%d" % (lha), 10,
-			*compute_xy(scale_zn(dec), 180 - hc * 2),
+			*compute_xy(scale_zn(dec), scale_hc(hc)),
 			class_="label",
 		))
 	return g
 
+
+def make_linear_hc(lat,min_hc,max_hc,min_dec,max_dec, offset=(0,0)):
+	g = draw.Group(transform="translate(%.3f %.3f)" % (offset[0], offset[1]))
+
+	scale = 400
+	scale_x = 0
+	center_x = 800
+	offset = 200
+	mid_hc = (max_hc + min_hc) / 2
+	hc_range = (max_hc - min_hc)
+
+	def scale_hc(hc):
+		return -(hc - mid_hc) / hc_range * scale*2
+	def compute_pt(hc,zn):
+		
+		hc_y = scale_hc(hc)
+
+		# the x is based solely on the declination
+		pt_x = (dec - min_dec) / (max_dec - min_dec) * (center_x-offset) + offset
+		#pt_x = zn/180 * (center_x - offset) + offset
+
+		# the y solves for the point where the line from
+		# (0,0) passes through (pt_x,pt_y) and (hc_y,center_x)
+		# slope is hc_y / center_x
+		# pt_y = pt_x * slope
+		pt_y = pt_x * hc_y / center_x
+		return (pt_x, pt_y)
+	def compute_pt_lha(hc,zn):
+		
+		hc_y = -(hc - mid_hc) / hc_range * scale*2
+
+		# the x is based solely on the LHA
+		pt_x = (lha - 0) / 90 * (center_x-offset) + offset
+
+		# the y solves for the point where the line from
+		# (0,0) passes through (pt_x,pt_y) and (hc_y,center_x)
+		# slope is hc_y / center_x
+		# pt_y = pt_x * slope
+		pt_y = pt_x * hc_y / center_x
+		return (pt_x, pt_y)
+
+
+	for dec in range(min_dec,max_dec+1):
+		pts = []
+		for lha in range(0,120+1):
+			(hc,zn) = compute_hczn(lat, dec, lha)
+			if hc < min_hc-1 or hc > max_hc + 1:
+				continue
+
+			pts += compute_pt(hc,zn)
+
+		if len(pts) == 0:
+			continue
+		g.append(draw.Lines(*pts, class_="extra-thick" if dec == 0 else "thick" if dec % 5 == 0 else "thin"))
+
+	for lha in range(0,120+1):
+		pts = []
+		for dec in range(min_dec,max_dec+1):
+			(hc,zn) = compute_hczn(lat, dec, lha)
+			if hc < min_hc-1 or hc > max_hc+1:
+				continue
+
+			pts += compute_pt(hc,zn)
+
+		if len(pts) == 0:
+			continue
+		g.append(draw.Lines(*pts, class_="extra-thick" if lha % 10 == 0 else "thin"))
+
+	g.append(draw.Circle(0, 0, 5, fill="#000"))
+	g.append(draw.Line(center_x,-scale, center_x,+scale, class_="thick"))
+	for hcp in range(min_hc*6, max_hc*6+1):
+		hc_y = scale_hc(hcp/6)
+		if hcp % 6 == 0:
+			c = "extra-thick"
+			l = 10
+			g.append(draw.Text("%d" % (hcp//6), 10,
+				center_x+10,
+				hc_y,
+			))
+		elif hcp % 3 == 0:
+			c = "thick"
+			l = 8
+		else:
+			c = "thin"
+			l = 5
+		g.append(draw.Lines(
+			center_x, hc_y,
+			center_x+l, hc_y,
+			class_=c,
+		))
+
+	return g
+
+def make_logscale(r,x,y,max_v=60,direction=1):
+	g = draw.Group(transform="translate(%.3f %.3f)" % (x,y))
+	g.append(draw.Lines(0, 0, 0, r, class_="thick"))
+
+	def scale_v(v):
+		lv = (log(v) / log(max_v))
+		if direction == 1:
+			return lv * r
+		return r - lv*r
+
+	if direction > 0:
+		text_anchor = "start"
+		text_offset = +10
+	else:
+		text_anchor = "end"
+		text_offset = -10
+		
+	for v in range(10,max_v*10+1):
+		lv = scale_v(v/10)
+		if v % 100 == 0:
+			c = "extra-thick"
+		elif v % 10 == 0:
+			c = "thick"
+		else:
+			c = "thin"
+		if v < 100 or v % 10 == 0:
+			g.append(draw.Lines(0, lv, text_offset, lv, class_=c))
+		if v % 10 != 0:
+			continue
+		elif v > 400:
+			if v % 50 != 0:
+				continue
+		elif v > 200:
+			if v % 20 != 0:
+				continue
+		g.append(draw.Text("%d" % (v//10), 10, text_offset, lv, class_="label", text_anchor=text_anchor))
+
+	return g
+
+def make_hc_table(lat,min_dec=-23,max_dec=23, pos=(0,0)):
+	# a4 size
+	width = 297 * 6
+	height = 210 * 6
+	text_size = 5.5
+
+	dec_scale = lambda dec: (dec - min_dec) / (max_dec - min_dec) * width + pos[0]
+
+	g = draw.Group()
+	max_lha = 0
+
+	for dec in range(min_dec,max_dec+1):
+		x = dec_scale(dec if dec < 0 else dec + 1)
+		col = draw.Group(transform="translate(%.3f %.3f)" % (x, pos[1]))
+
+		col.append(draw.Text("%+3d" % (dec), 12, 0, 0,
+			font_family="bold",
+			class_="hc",
+		))
+		vals = ''
+		dels = ''
+		for lha in range(0,180):
+			(hc,zn) = compute_hczn(lat,dec,lha)
+			(hc2,zn2) = compute_hczn(lat,dec,lha+1)
+
+			# round hc up to nearest minute
+			hc += 0.5 / 60
+			if hc < 0:
+				break
+
+			# step between this and the next one
+			d = floor((hc2 - hc) * 60)
+			(mins,degs) = modf(hc)
+			mins *= 60
+
+			if lha % 10 == 0 and lha != 0:
+				vals += "---\n"
+			vals += "% 2d %02d %+03d\n" % (degs,mins,d)
+
+			if max_lha < lha:
+				max_lha = lha
+
+		col.append(draw.Text(vals, text_size,
+			0, 12,
+			transform="scale(1 1.5)",
+			class_="hc",
+		))
+
+		g.append(col)
+
+	lha_col = draw.Group()
+	lha_col.append(draw.Text("LHA", 12, 0, 0,
+		class_="hc-label",
+	))
+	vals = ''
+	for lha in range(0,max_lha+1):
+		if lha % 10 == 0 and lha != 0:
+			vals += "---\n"
+		vals += "% 3d\n" % (lha)
+	lha_col.append(draw.Text(vals, text_size,
+		0, 12,
+		transform="scale(1 1.5)",
+		class_="hc-label",
+	))
+
+	g.append(lha_col)
+
+	lha_col1 = draw.Group(transform="translate(%.3f %.3f)" %(dec_scale(min_dec-1), pos[1]))
+	lha_col2 = draw.Group(transform="translate(%.3f %.3f)" %(dec_scale(-0.25), pos[1]))
+	lha_col3 = draw.Group(transform="translate(%.3f %.3f)" %(dec_scale(max_dec+1.5), pos[1]))
+	lha_col1.append(lha_col)
+	lha_col2.append(lha_col)
+	lha_col3.append(lha_col)
+	g.append(lha_col1)
+	g.append(lha_col2)
+	g.append(lha_col3)
+	
+	return g
+	
+
 center.append(make_chart(lat))
+d.append(make_hc_table(lat, pos=(1000,100)))
 #d.append(make_lots())
 
 d.append(center)
