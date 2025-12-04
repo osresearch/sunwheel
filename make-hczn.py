@@ -7,12 +7,22 @@ from math import radians, cos, sin, acos, asin, degrees, log, floor, modf
 import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib.units import mm
+from reportlab.lib.units import mm, inch
 from reportlab.lib.colors import black, red, HexColor
 gray = HexColor(0xC0C0C0)
 
 pagesize = A4
+margin = 5*mm
 pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
+
+lat = 20
+dec_max = 40
+lha_max = 170
+scale = 450
+
+extra_thick = 3
+thick = 1
+thin = 0.1
 
 def haversine(x):
 	return (1 - cos(x))/2
@@ -23,6 +33,8 @@ def ahaversine(y):
 		y = 1
 	return acos(1 - 2 * y)
 
+# sin(Hc) = Sin(Lat) * Sin(Dec) + Cos(Lat) * Cos(Dec) * Cos(LHA))
+# hav(90-Hc) = hav(LHA) * cos(lat) * cos(Dec) + hav(lat-dec)
 def compute_hczn(lat,dec,lha):
 	lat = radians(lat)
 	dec = radians(dec)
@@ -49,14 +61,6 @@ def compute_xy(r,a):
 
 
 
-lat = 52
-dec_max = 60
-lha_max = 170
-scale = 450
-
-extra_thick = 3
-thick = 1
-thin = 0.1
 
 def pdf_lines(pts, width=1, color=black):
 	pdf.setLineWidth(width)
@@ -546,12 +550,48 @@ def make_linear_hc(lat,min_hc,max_hc,min_dec,max_dec, offset=(0,0)):
 
 	return g
 
-def make_logscale(r,x,y,max_v=60,direction=1):
-	g = draw.Group(transform="translate(%.3f %.3f)" % (x,y))
-	g.append(draw.Lines(0, 0, 0, r, class_="thick"))
-
+def make_linearscale(r,max_v=60,x=0, side=1, steps=2):
+	pdf_lines([x,0, x, r], width=thick)
 	def scale_v(v):
-		lv = (log(v) / log(max_v))
+		return v / max_v * r
+
+	text_offset = 10
+	if side == 1:
+		text_anchor = "start"
+	else:
+		text_anchor = "end"
+
+	for v in range(0,max_v*steps+1):
+		lv = scale_v(v/steps)
+		if v % (10*steps) == 0:
+			w = thick * 0.5
+			c = black
+			l = text_offset
+		elif v % (5*steps) == 0:
+			w = thick * 0.5
+			c = black
+			l = text_offset - 4
+		elif v % steps == 0:
+			w = thick * 0.5
+			c = gray
+			l = text_offset - 4
+		else:
+			w = thin * 0.5
+			c = gray
+			l = text_offset - 6
+
+		pdf_lines([x, lv, x+l*side, lv], width=w, color=c)
+		if v % (5*steps) != 0:
+			continue
+		pdf_text("%d" % (v//steps), 8, x+text_offset*side, lv, text_anchor=text_anchor)
+
+def make_scale(r,max_v=60,direction=1, logscale=None):
+	pdf_lines([0,0, 0, r], width=thick)
+	def scale_v(v):
+		if logscale:
+			lv = (log(v) / log(max_v))
+		else:
+			lv = v / max_v
 		if direction == 1:
 			return lv * r
 		return r - lv*r
@@ -562,17 +602,29 @@ def make_logscale(r,x,y,max_v=60,direction=1):
 	else:
 		text_anchor = "end"
 		text_offset = -10
+
+	bottom = 10 if logscale else 0
 		
-	for v in range(10,max_v*10+1):
+	for v in range(bottom,max_v*10+1):
 		lv = scale_v(v/10)
+		c = black
+		l = text_offset
 		if v % 100 == 0:
-			c = "extra-thick"
+			w = thick
 		elif v % 10 == 0:
-			c = "thick"
+			w = thick
+			c = gray
+			l = text_offset - 4
 		else:
-			c = "thin"
+			w = thin
+			c = gray
+			l = text_offset - 6
+
+		if v == 450 or v == 550:
+			l = text_offset
+
 		if v < 100 or v % 10 == 0:
-			g.append(draw.Lines(0, lv, text_offset, lv, class_=c))
+			pdf_lines([0, lv, l, lv], width=w, color=c)
 		if v % 10 != 0:
 			continue
 		elif v > 400:
@@ -581,22 +633,20 @@ def make_logscale(r,x,y,max_v=60,direction=1):
 		elif v > 200:
 			if v % 20 != 0:
 				continue
-		g.append(draw.Text("%d" % (v//10), 10, text_offset, lv, class_="label", text_anchor=text_anchor))
+		pdf_text("%d" % (v//10), 8, text_offset, lv, text_anchor=text_anchor)
 
-	return g
 
 def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 	# a4 size
-	margin = 5 * mm
 	width = pagesize[0] - 2 * margin
-	height = pagesize[1] - 20*mm
+	height = pagesize[1] - margin
 	text_size = 5
 
 	dec_width = width / (1 + max_dec - min_dec)
 	dec_scale = lambda dec: (1+max_dec - dec) * dec_width + margin
 
 	this_max_lha = 0
-	dy = (height-20*mm) / 90
+	dy = (height-35*mm) / 90
 
 
 	# TODO: have the LHA numbers follow the bottom of the
@@ -673,6 +723,17 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 	draw_lha(dec_scale(max_dec + 1))
 
 	return
+
+def make_latlon_scale(r, lat, x=0, steps=2):
+	make_linearscale(r, max_v = 60, side=1, x=x, steps=steps)
+	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, x=x, steps=steps)
+
+def make_gunter(scale):
+	make_scale(scale, logscale=True)
+	#pdf.rotate(180)
+	#pdf.translate(0,-scale)
+	#make_logscale(scale)
+	
 	
 
 #center.append(make_chart(lat))
@@ -690,24 +751,45 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 #pdf.output("pub249.pdf")
 
 make_hc_table(lat, min_lha=0, max_lha=90, min_dec=-23, max_dec=0)
+
+# finish up any tables from the other page
+pdf.saveState()
+pdf.rotate(180)
+pdf.translate(-pagesize[0], -pagesize[1])
+make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
+pdf.restoreState()
+
 pdf.showPage()
 make_hc_table(lat, min_lha=0, max_lha=90, min_dec=0, max_dec=23)
 pdf.showPage()
 
-# finish up any tables from the other page
-make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
-pdf.showPage()
 
+# The page with the globe needs to rescale based on page size
 pdf.saveState()
-pdf.translate(pagesize[0]/2,pagesize[1]/2)
+pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
 scaling = (pagesize[0] - 15 * mm) / (2 * scale)
 pdf.scale(scaling, scaling)
 make_hczn(lat)
 make_compass(scale)
 
-pdf_text("Lat %d N" % (lat), 30, 0, scale + 100, text_anchor="middle")
-pdf.rotate(180)
-pdf_text("Lat %d S" % (lat), 30, 0, scale + 100, text_anchor="middle")
+for hemi in ["N","S"]:
+	if hemi == "S":
+		pdf.rotate(180)
+	pdf_text("Lat %d %s" % (lat,hemi), 30, scale-80, scale - 60, text_anchor="middle")
+
+pdf.restoreState()
+
+pdf.saveState()
+pdf.translate(margin, 4*margin)
+pdf.rotate(-90)
+make_gunter(pagesize[0]-2*margin)
+
+make_latlon_scale(6*inch, lat, x=-15*mm)
+make_latlon_scale(3*inch, lat, x=-35*mm)
+make_latlon_scale(1.5*inch, lat, x=-55*mm, steps=1)
+
+
+
 pdf.restoreState()
 
 
