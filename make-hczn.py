@@ -5,6 +5,14 @@
 import drawsvg as draw
 from math import radians, cos, sin, acos, asin, degrees, log, floor, modf
 import re
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.units import mm
+from reportlab.lib.colors import black, red, HexColor
+gray = HexColor(0xC0C0C0)
+
+pagesize = landscape(A4)
+pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
 
 def haversine(x):
 	return (1 - cos(x))/2
@@ -40,70 +48,42 @@ def compute_xy(r,a):
 	return (r * sin(a), r * cos(a))
 
 
-size = 1500
-d = draw.Drawing(4*size,size, origin=(0,0))
-d.append(draw.Rectangle(0, 0, 4*size, size, fill='#fff'))
-center = draw.Group(transform="translate(%d %d) scale(%.3f)" % (100, size/2, size/1000))
-
-d.append_css("""
-.label {
-	fill: #000;
-	stroke: none;
-}
-.hc {
-	fill: #000;
-	stroke: none;
-	font-family: monospace;
-	text-anchor: end;
-}
-.hc-label {
-	fill: #000;
-	stroke: none;
-	font-family: monospace;
-	font-style: bold;
-	text-anchor: end;
-}
-.red-label {
-	fill: #f00;
-	stroke: none;
-	font-style: italic;
-}
-.thin {
-	stroke: #000;
-	stroke-width: 0.1;
-	fill: none;
-}
-.thin-red {
-	stroke: #f00;
-	stroke-width: 0.5;
-	fill: none;
-}
-.thick {
-	stroke: #000;
-	stroke-width: 0.5;
-	fill: none;
-}
-.extra-thick {
-	stroke: #000;
-	stroke-width: 2;
-	fill: none;
-}
-.thick-red {
-	stroke: #f00;
-	stroke-width: 0.5;
-	fill: none;
-}
-""")
-
 
 lat = 60
 dec_max = 60
 lha_max = 180
 scale = 450
 
+extra_thick = 3
+thick = 1
+thin = 0.1
+
+def pdf_lines(pts, width=1, color=black):
+	pdf.setLineWidth(width)
+	pdf.setStrokeColor(color)
+	lines = []
+	for i in range(0,len(pts)-2,2):
+		lines += (pts[i:i+4],)
+	pdf.lines(lines)
+
+
+def pdf_text(txt, sz, x, y, text_angle=0, text_anchor="middle", font='Courier', color=black):
+	pdf.saveState()
+	pdf.translate(x,y)
+	pdf.setFillColor(color)
+	if text_angle:
+		pdf.rotate(text_angle)
+	pdf.setFont(font, sz)
+	if text_anchor == "middle":
+		pdf.drawCentredString(0, 0, txt)
+	elif text_anchor == "end":
+		pdf.drawRightString(0, 0, txt)
+	else:
+		pdf.drawString(0, 0, txt)
+	pdf.restoreState()
 
 def make_hczn(lat):
-	g = draw.Group()
+	#g = draw.Group()
 	hc_scale = lambda hc: (90 - hc) * scale / 90
 	for dec in range(-dec_max,dec_max+1):
 		pts = []
@@ -115,15 +95,18 @@ def make_hczn(lat):
 		if len(pts) == 0:
 			continue
 
+		w = thin
+		c = black
 		if dec == 0:
-			c = "extra-thick"
+			w = extra_thick
 		elif dec % 5 == 0:
-			c = "thick"
+			w = thick
 		elif dec == 23 or dec == -23:
-			c = "thin-red"
+			c = red
 		else:
-			c = "thin"
-		g.append(draw.Lines(*pts, class_=c))
+			c = gray
+		pdf_lines(pts, width=w, color=c)
+		#g.append(draw.Lines(*pts, class_=c))
 
 	for lha in range(0,lha_max):
 		if lha == 0:
@@ -137,33 +120,42 @@ def make_hczn(lat):
 
 		if len(pts) == 0:
 			continue
-		g.append(draw.Lines(*pts, class_="thin" if lha % 10 else "thick"))
+		#g.append(draw.Lines(*pts, class_="thin" if lha % 10 else "thick"))
+		if lha % 10 == 0:
+			w = thick
+			c = black
+		else:
+			w = thin
+			c = gray
+		pdf_lines(pts, width=w, color=c)
 
 	# label the top of the chart
 	for lha in range(0,lha_max+1,10):
 		if lha == 0 or lha == 180 or lha == -180:
 			continue
 
-		(hc,zn) = compute_hczn(lat, dec_max+1, lha)
+		(hc,zn) = compute_hczn(lat, dec_max+2, lha)
 		if hc < 2:
 			continue
-		g.append(draw.Text("%+d" % (-lha), 10,
+		pdf_text(
+			"%d" % (lha), 10,
 			*compute_xy(hc_scale(hc), zn),
-			class_="label",
-			text_anchor="middle",
-		))
-	for lha in range(0,lha_max+1,10):
-		if lha == 0 or lha == 180 or lha == -180:
-			continue
+			text_angle = -90,
+			text_anchor = "middle",
+		)
+			
 
-		(hc,zn) = compute_hczn(lat, dec_max+3, lha)
-		if hc < 2:
-			continue
-		g.append(draw.Text("%+d" % (lha), 10,
-			*compute_xy(hc_scale(hc), zn),
-			class_="red-label",
-			text_anchor="middle",
-		))
+	#for lha in range(0,lha_max+1,10):
+		#if lha == 0 or lha == 180 or lha == -180:
+			#continue
+#
+		#(hc,zn) = compute_hczn(lat, dec_max+3, lha)
+		#if hc < 2:
+			#continue
+		#pdf_text("%+d" % (lha), 10,
+			#*compute_xy(hc_scale(hc), zn),
+			#text_anchor="middle",
+		#)
 
 	# label the declinations
 	for lha in range(0,lha_max+1,30): #[-90,-60,-30,0,+30,+60,+90]:
@@ -174,70 +166,77 @@ def make_hczn(lat):
 			if hc < radians(1):
 				continue
 			(x,y) = compute_xy(hc_scale(hc), zn)
-			g.append(draw.Text("%+d" % (dec), 10,
+			pdf_text("%+d" % (dec), 10,
 				x, y,
-				class_="label",
+				#class_="label",
 				text_anchor="end" if lha > 0 else "start",
-				dominant_baseline="auto" if dec < 0 else "hanging",
-			))
+				text_angle = -90,
+				#dominant_baseline="auto" if dec < 0 else "hanging",
+			)
 
 	# side ticks for the Zn readout
-	for hc in range(0,90):
+	for hc in range(0,90+1):
 		if hc % 10 == 0:
-			c = "extra-thick"
+			w = thick
 			l = 10
+			c = black
 		elif hc % 5 == 0:
-			c = "thick"
+			w = thick
 			l = 8
+			c = black
 		else:
-			c = "thin"
+			w = thin
 			l = 5
+			c = gray
 		(x,y) = compute_xy(hc_scale(hc), 0)
-		g.append(draw.Line(
-			x, -y,
-			x-l, -y,
-			class_ = c,
-		))
+		pdf_lines([x,y, x-l, y], width=w, color=c)
 
-		if hc % 10 == 0:
-			g.append(draw.Text("%d" % (hc), 10,
-				x-5, -y-1,
+		if hc % 10 == 0 and hc != 0:
+			pdf_text("%d" % (hc), 10,
+				x-5, y-8,
 				text_anchor="end",
-				class_="label",
-			))
+				#class_="label",
+			)
 			
-	return g
+	return
 
 def make_compass(r):
-	g = draw.Group()
 	#g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
 
 	pts = []
 	for a in range(180,360):
+		c = black
 		if a % 45 == 0:
-			c = "extra-thick"
+			w = extra_thick
 			l = 10
 		elif a % 10 == 0:
-			c = "thick"
+			w = thick
 			l = 10
-		else:
-			c = "thin"
+		elif a % 5 == 0:
+			w = thick
 			l = 5
-		g.append(draw.Lines(
+		else:
+			w = thin
+			l = 5
+			c = gray
+		pdf_lines([
 			*compute_xy(r,a),
 			*compute_xy(r+l,a),
-			class_=c,
-		))
+			],
+			width = w,
+			color = c,
+		)
 		pts += compute_xy(r,a)
 
-	g.append(draw.Lines(*pts, class_="thick"))
+	pdf_lines(pts, width=thick)
 
 	# LHA=0 vertical line
-	g.append(draw.Lines(
+	pdf_lines([
 		0,-r - 10,
 		0,+r + 10,
-		class_="extra-thick",
-	))
+		],
+		width = extra_thick
+	)
 
 	# east/west lines are split so they
 	# don't overlap with the grid
@@ -252,51 +251,58 @@ def make_compass(r):
 #		class_="extra-thick",
 #	))
 
-	g.append(draw.Circle(0,0, 10, fill="#000", stroke="none"))
-	g.append(draw.Lines(
-		-50,0,
-		+50,0,
-		class_="extra-thick",
-	))
+	pdf.setLineWidth(thick)
+	pdf.circle(0, 0, 5)
+	#g.append(draw.Circle(0,0, 10, fill="#000", stroke="none"))
+#	pdf_lines([
+#		-50,0,
+#		+50,0,
+#		],
+#		width=extra_thick,
+#	)
 
 	# heading markings
 	labels = {
-		0: ("N",90,"middle"),
-		90: ("E",0,"start"),
-		180: ("S",90,"middle"),
-		270: ("W",-180,"end"),
+		#0: ("N",90,"middle"),
+		#90: ("E",0,"start"),
+		#180: ("S",90,"middle"),
+		#270: ("W",-180,"end"),
 	}
 
 	# black going one way
 	for a in range(0,181,10):
-		(t,rot,anchor) = labels.get(a, (
-			"%d" % (a),
-			0 if a < 180 else -180,
-			"start" if a < 180 else "end",
-		))
-		g.append(draw.Text(t, 10,
-			0, 0,
-			transform="rotate(%d) translate(%.3f) rotate(%d)" % (a - 90+0, r+13, rot),
+		if a < 90:
+			# put these above the mark
+			offset = 0
+			rot = 270
+			anchor = "start"
+		else:
+			offset = 1
+			rot = 90
+			anchor = "end"
+		pdf_text("%d" % (a), 10,
+			*compute_xy(scale+10, -(a+offset)),
 			text_anchor=anchor,
-			dominant_baseline="hanging",
-			class_="label",
-		))
+			text_angle=rot+(a+offset),
+		)
 
 	# red going the other
 	for a in range(190,360,10):
-		(t,rot,anchor) = labels.get(a, (
-			"%d" % (a),
-			0,
-			"start",
-		))
-		g.append(draw.Text(t, 10,
-			0, 0,
-			transform="rotate(%d) translate(%.3f) rotate(%d)" % (-a-90-0, r+13, rot),
+		if a < 270:
+			offset = 0
+			rot = 90
+			anchor = "end"
+		else:
+			offset = 1
+			rot = -90
+			anchor = "start"
+		pdf_text("%d" % (a), 10,
+			*compute_xy(scale+10, +(a+offset)),
 			text_anchor=anchor,
-			dominant_baseline="auto",
-			class_="red-label",
-		))
-	return g
+			text_angle=rot-(a+offset),
+			color = red,
+		)
+	return
 
 def make_height(r):
 	g = draw.Group()
@@ -579,28 +585,35 @@ def make_logscale(r,x,y,max_v=60,direction=1):
 
 	return g
 
-def make_hc_table(lat,min_dec=-23,max_dec=23, pos=(0,0)):
+def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 	# a4 size
-	width = 297 * 6
-	height = 210 * 6
-	text_size = 5.5
+	width = pagesize[0] - 15 * mm
+	height = pagesize[1] - 10*mm
+	text_size = 3.5
 
-	dec_scale = lambda dec: (dec - min_dec) / (max_dec - min_dec) * width + pos[0]
+	dec_scale = lambda dec: (max_dec - dec) / (max_dec - min_dec) * width
 
-	g = draw.Group()
-	max_lha = 0
+	this_max_lha = 0
+	dy = (height-20*mm) / 90
+
+
+	# TODO: have the LHA numbers follow the bottom of the
+	# Hc when they run out
 
 	for dec in range(min_dec,max_dec+1):
-		x = dec_scale(dec if dec < 0 else dec + 1)
-		col = draw.Group(transform="translate(%.3f %.3f)" % (x, pos[1]))
-
-		col.append(draw.Text("%+3d" % (dec), 12, 0, 0,
-			font_family="bold",
-			class_="hc",
-		))
+		# check to see if this needs a column header
+		(hc,zn) = compute_hczn(lat,dec,min_lha)
+		if hc < 0.5:
+			continue
+		
+		pdf.saveState()
+		x = dec_scale(dec if dec > 0 else dec - 1)
+		y = 0
+		pdf.translate(x, height)
+		pdf_text("%+3d" % (dec), 7, 0, 0)
 		vals = ''
 		dels = ''
-		for lha in range(0,180):
+		for lha in range(min_lha, max_lha):
 			(hc,zn) = compute_hczn(lat,dec,lha)
 			(hc2,zn2) = compute_hczn(lat,dec,lha+1)
 
@@ -615,57 +628,76 @@ def make_hc_table(lat,min_dec=-23,max_dec=23, pos=(0,0)):
 			mins *= 60
 
 			if lha % 10 == 0 and lha != 0:
-				vals += "---\n"
-			vals += "% 2d %02d %+03d\n" % (degs,mins,d)
+				y -= dy/2
+			y -= dy
 
-			if max_lha < lha:
-				max_lha = lha
+			pdf_text(
+				"% 2d %02d" %(degs,mins),
+				text_size,
+				0, y,
+				text_anchor="end",
+			)
 
-		col.append(draw.Text(vals, text_size,
-			0, 12,
-			transform="scale(1 1.5)",
-			class_="hc",
-		))
+			pdf_text(
+				"%d" % (d),
+				text_size-1,
+				0, y,
+				text_anchor="start",
+			)
+				
 
-		g.append(col)
+			if this_max_lha < lha:
+				this_max_lha = lha
 
-	lha_col = draw.Group()
-	lha_col.append(draw.Text("LHA", 12, 0, 0,
-		class_="hc-label",
-	))
-	vals = ''
-	for lha in range(0,max_lha+1):
+
+		pdf.restoreState()
+
+	lha_x = dec_scale(0)
+	y = height
+	pdf_text("LHA", 10, lha_x, y)
+	for lha in range(min_lha,this_max_lha+1):
 		if lha % 10 == 0 and lha != 0:
-			vals += "---\n"
-		vals += "% 3d\n" % (lha)
-	lha_col.append(draw.Text(vals, text_size,
-		0, 12,
-		transform="scale(1 1.5)",
-		class_="hc-label",
-	))
+			y -= dy/2
+		y -= dy
+		pdf_text("%d" % (lha), text_size+1, lha_x, y)
 
-	g.append(lha_col)
-
-	lha_col1 = draw.Group(transform="translate(%.3f %.3f)" %(dec_scale(min_dec-1), pos[1]))
-	lha_col2 = draw.Group(transform="translate(%.3f %.3f)" %(dec_scale(-0.25), pos[1]))
-	lha_col3 = draw.Group(transform="translate(%.3f %.3f)" %(dec_scale(max_dec+1.5), pos[1]))
-	lha_col1.append(lha_col)
-	lha_col2.append(lha_col)
-	lha_col3.append(lha_col)
-	g.append(lha_col1)
-	g.append(lha_col2)
-	g.append(lha_col3)
-	
-	return g
+	return
 	
 
-center.append(make_chart(lat))
-d.append(make_hc_table(lat, pos=(1000,100)))
+#center.append(make_chart(lat))
+#d.append(make_hc_table(lat, pos=(1000,100)))
 #d.append(make_lots())
 
-d.append(center)
-d.save_svg("hczn.svg")
+#center.append(make_chart(lat))
+#d.append(center)
+#
+#d.save_svg("hczn.svg")
+#
+#pdf = fpdf.FPDF(orientation="landscape", format="A4")
+#pdf.add_page()
+#pdf.image("hczn.svg")
+#pdf.output("pub249.pdf")
 
-d.save_png("hczn.png")
+make_hc_table(lat, min_lha=0, max_lha=90)
+pdf.showPage()
+
+pdf.saveState()
+pdf.translate(pagesize[0]/2,10 * mm) #pagesize[1])
+pdf.rotate(90)
+scaling = (pagesize[0] - 15 * mm) / (2 * scale)
+pdf.scale(scaling, scaling)
+make_hczn(lat)
+make_compass(scale)
+pdf.restoreState()
+
+make_hc_table(lat, min_lha=90, max_lha=180)
+
+pdf.showPage()
+
+
+
+pdf.save()
+
+#d.save_png("hczn.png")
 
 
