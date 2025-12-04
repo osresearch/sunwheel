@@ -11,7 +11,7 @@ from reportlab.lib.units import mm
 from reportlab.lib.colors import black, red, HexColor
 gray = HexColor(0xC0C0C0)
 
-pagesize = landscape(A4)
+pagesize = A4
 pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
 
 def haversine(x):
@@ -44,14 +44,14 @@ def compute_hczn(lat,dec,lha):
 
 
 def compute_xy(r,a):
-	a = radians(a + 180)
+	a = radians(a)
 	return (r * sin(a), r * cos(a))
 
 
 
-lat = 60
+lat = 52
 dec_max = 60
-lha_max = 180
+lha_max = 170
 scale = 450
 
 extra_thick = 3
@@ -87,7 +87,7 @@ def make_hczn(lat):
 	hc_scale = lambda hc: (90 - hc) * scale / 90
 	for dec in range(-dec_max,dec_max+1):
 		pts = []
-		for lha in range(0,lha_max):
+		for lha in range(-lha_max,lha_max+1):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < 0:
 				continue
@@ -108,7 +108,7 @@ def make_hczn(lat):
 		pdf_lines(pts, width=w, color=c)
 		#g.append(draw.Lines(*pts, class_=c))
 
-	for lha in range(0,lha_max):
+	for lha in range(-lha_max,lha_max+1):
 		if lha == 0:
 			continue
 		pts = []
@@ -130,7 +130,7 @@ def make_hczn(lat):
 		pdf_lines(pts, width=w, color=c)
 
 	# label the top of the chart
-	for lha in range(0,lha_max+1,10):
+	for lha in range(-lha_max,lha_max+1,10):
 		if lha == 0 or lha == 180 or lha == -180:
 			continue
 
@@ -158,7 +158,7 @@ def make_hczn(lat):
 		#)
 
 	# label the declinations
-	for lha in range(0,lha_max+1,30): #[-90,-60,-30,0,+30,+60,+90]:
+	for lha in range(-lha_max,lha_max+1,30): #[-90,-60,-30,0,+30,+60,+90]:
 		for dec in range(-dec_max+10,dec_max,10):
 			if dec == 0 or lha == 180:
 				continue
@@ -204,7 +204,7 @@ def make_compass(r):
 	#g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
 
 	pts = []
-	for a in range(180,360):
+	for a in range(0,360):
 		c = black
 		if a % 45 == 0:
 			w = extra_thick
@@ -270,34 +270,34 @@ def make_compass(r):
 	}
 
 	# black going one way
-	for a in range(0,181,10):
-		if a < 90:
+	for a in range(10,360+1,10):
+		if a < 180:
 			# put these above the mark
-			offset = 0
-			rot = 270
+			offset = -0.25
+			rot = 90
 			anchor = "start"
 		else:
-			offset = 1
-			rot = 90
+			offset = 0.25
+			rot = 270
 			anchor = "end"
-		pdf_text("%d" % (a), 10,
-			*compute_xy(scale+10, -(a+offset)),
+		pdf_text("%03d" % (a), 10,
+			*compute_xy(scale+10, (a+offset)),
 			text_anchor=anchor,
-			text_angle=rot+(a+offset),
+			text_angle=rot-(a+offset),
 		)
 
 	# red going the other
-	for a in range(190,360,10):
-		if a < 270:
-			offset = 0
+	for a in range(0,360,10):
+		if a <= 180:
+			offset = -0.25
+			rot = 270
+			anchor = "start"
+		else:
+			offset = +0.25
 			rot = 90
 			anchor = "end"
-		else:
-			offset = 1
-			rot = -90
-			anchor = "start"
-		pdf_text("%d" % (a), 10,
-			*compute_xy(scale+10, +(a+offset)),
+		pdf_text("%03d" % (a), 10,
+			*compute_xy(scale+10, 180+(a+offset)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
 			color = red,
@@ -587,11 +587,13 @@ def make_logscale(r,x,y,max_v=60,direction=1):
 
 def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 	# a4 size
-	width = pagesize[0] - 15 * mm
-	height = pagesize[1] - 10*mm
-	text_size = 3.5
+	margin = 5 * mm
+	width = pagesize[0] - 2 * margin
+	height = pagesize[1] - 20*mm
+	text_size = 5
 
-	dec_scale = lambda dec: (max_dec - dec) / (max_dec - min_dec) * width
+	dec_width = width / (1 + max_dec - min_dec)
+	dec_scale = lambda dec: (1+max_dec - dec) * dec_width + margin
 
 	this_max_lha = 0
 	dy = (height-20*mm) / 90
@@ -607,10 +609,10 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 			continue
 		
 		pdf.saveState()
-		x = dec_scale(dec if dec > 0 else dec - 1)
+		x = dec_scale(dec)
 		y = 0
 		pdf.translate(x, height)
-		pdf_text("%+3d" % (dec), 7, 0, 0)
+		pdf_text("%+3d" % (dec), 7, 0, 0, text_anchor="end")
 		vals = ''
 		dels = ''
 		for lha in range(min_lha, max_lha):
@@ -650,16 +652,19 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 				this_max_lha = lha
 
 
+		pdf_lines([dec_width/3, 0, dec_width/3, y], width=thin, color=gray)
 		pdf.restoreState()
 
-	lha_x = dec_scale(0)
-	y = height
-	pdf_text("LHA", 10, lha_x, y)
-	for lha in range(min_lha,this_max_lha+1):
-		if lha % 10 == 0 and lha != 0:
-			y -= dy/2
-		y -= dy
-		pdf_text("%d" % (lha), text_size+1, lha_x, y)
+	def draw_lha(lha_x):
+		y = height
+		pdf_text("LHA", 10, lha_x, y)
+		for lha in range(min_lha,this_max_lha+1):
+			if lha % 10 == 0 and lha != 0:
+				y -= dy/2
+			y -= dy
+			pdf_text("%d" % (lha), text_size+1, lha_x, y)
+	draw_lha(dec_scale(min_dec - 1))
+	draw_lha(dec_scale(max_dec + 1))
 
 	return
 	
@@ -678,19 +683,27 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 #pdf.image("hczn.svg")
 #pdf.output("pub249.pdf")
 
-make_hc_table(lat, min_lha=0, max_lha=90)
+make_hc_table(lat, min_lha=0, max_lha=90, min_dec=-23, max_dec=0)
+pdf.showPage()
+make_hc_table(lat, min_lha=0, max_lha=90, min_dec=0, max_dec=23)
+pdf.showPage()
+
+# finish up any tables from the other page
+make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
 pdf.showPage()
 
 pdf.saveState()
-pdf.translate(pagesize[0]/2,10 * mm) #pagesize[1])
-pdf.rotate(90)
+pdf.translate(pagesize[0]/2,pagesize[1]/2)
 scaling = (pagesize[0] - 15 * mm) / (2 * scale)
 pdf.scale(scaling, scaling)
 make_hczn(lat)
 make_compass(scale)
+
+pdf_text("Lat %d N" % (lat), 30, 0, scale + 100, text_anchor="middle")
+pdf.rotate(180)
+pdf_text("Lat %d S" % (lat), 30, 0, scale + 100, text_anchor="middle")
 pdf.restoreState()
 
-make_hc_table(lat, min_lha=90, max_lha=180)
 
 pdf.showPage()
 
