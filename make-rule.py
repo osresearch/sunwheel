@@ -63,9 +63,7 @@ def draw_spiral(radius, pts, log_scale, stroke='black', stroke_width=0.1, spiral
 	arcs = []
 	for angle in pts:
 		(r,a) = compute_position(radius,angle,10,log_scale,spiral)
-		(x,y) = compute_xy(r,a)
-		arcs.append(x)
-		arcs.append(y)
+		arcs += compute_xy(r,a)
 	return draw.Lines(*arcs,
 		fill='none',
 		stroke=stroke,
@@ -160,20 +158,27 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 def height_of_eye(H_e):
 	return 1.76 * sqrt(H_e) * 6
 
+# compute the height of eye required to see that distance in km,
+# then convert that to a angle with height_of_eye
+# cos(angle) = 
+def horizon_distance(km):
+	height = (km / 3.56972) ** 2
+	return height_of_eye(height)
+
 def make_height_of_eye(radius,angle):
 	g = draw.Group(transform="rotate(%.3f)" % (angle))
-	major = [height_of_eye(H_e) for H_e in frange(0,25.1,1)]
-	minor1 = [height_of_eye(H_e) for H_e in frange(0,25,0.5)]
+	major = [height_of_eye(H_e) for H_e in frange(0,40.1,1)]
+	minor1 = [height_of_eye(H_e) for H_e in frange(0,40,0.5)]
 	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
 	minor2 += [height_of_eye(H_e) for H_e in frange(5,10,0.25)]
 
-	g.append(make_ticks(radius-10, minor2, 4, stroke_width=0.1))
-	g.append(make_ticks(radius-10, minor1, 8, stroke_width=0.2))
-	g.append(make_ticks(radius-10, major,  15, stroke_width=0.3))
+	g.append(make_ticks(radius-10, minor2, 2, stroke_width=0.1))
+	g.append(make_ticks(radius-10, minor1, 5, stroke_width=0.2))
+	g.append(make_ticks(radius-10, major,  10, stroke_width=0.3))
 
 	# Meters
 	labels = [[height_of_eye(h_e), "%.0f" % (h_e)] for h_e in
-		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]]
+		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40]]
 
 	g.append(make_tick_labels(
 		radius-10,
@@ -183,7 +188,7 @@ def make_height_of_eye(radius,angle):
 	))
 	g.append(make_tick_labels(
 		radius-10,
-		[[height_of_eye(26.5), "m"]],
+		[[height_of_eye(42.5), "m"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		#stroke="red",
@@ -194,14 +199,14 @@ def make_height_of_eye(radius,angle):
 	# Feet
 	ft_radius = radius - 50
 	ft_per_m = 3.281
-	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,80.1,5)]
-	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,80.1,1)]
+	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,130.1,5)]
+	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,130.1,1)]
 
 	labels = [[height_of_eye(h_e/ft_per_m), "%.0f" % (h_e)] for h_e in
-		[5,10,15,20,25,30,35,40,45,50,60,70,80]]
+		[5,10,15,20,25,30,35,40,45,50,60,70,80,90,100,110,120,130]]
 
-	g.append(make_ticks(ft_radius, minor1,  8, stroke_width=0.2))
-	g.append(make_ticks(ft_radius, major,  15, stroke_width=0.3))
+	g.append(make_ticks(ft_radius, minor1,  5, stroke_width=0.2))
+	g.append(make_ticks(ft_radius, major,  10, stroke_width=0.3))
 	g.append(make_tick_labels(
 		ft_radius,
 		labels,
@@ -210,14 +215,66 @@ def make_height_of_eye(radius,angle):
 	))
 	g.append(make_tick_labels(
 		ft_radius,
-		[[height_of_eye(26.5), "ft"]],
+		[[height_of_eye(42.5), "ft"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		#stroke="red",
 		#length=8,
 		#stroke_width=0.4,
 	))
-		
+
+	# as a helpful reference, add the distance to the horizon
+	dist_radius = ft_radius - 80
+	dist_max = 22 + 0.01
+	major = [horizon_distance(x) for x in frange(1, dist_max, 1)]
+	minor1 = [horizon_distance(x) for x in frange(1, dist_max, 0.5)]
+	minor2 = [horizon_distance(x) for x in frange(1, dist_max, 0.25)]
+	g.append(make_ticks(dist_radius, minor2, 3, stroke_width=0.2))
+	g.append(make_ticks(dist_radius, minor1, 5, stroke_width=0.2))
+	g.append(make_ticks(dist_radius, major,  8, stroke_width=0.3))
+	g.append(make_tick_labels(
+		dist_radius,
+		[[horizon_distance(_),"%.0f" % _] for _ in frange(1,dist_max,1)],
+		pos=(+10,+3),
+		text_anchor="start",
+	))
+	g.append(make_tick_labels(
+		dist_radius,
+		[[horizon_distance(dist_max+1), "km"]],
+		pos=(+5,+0),
+		text_anchor="start",
+		#stroke="red",
+		#length=8,
+		#stroke_width=0.4,
+	))
+
+	# and do it in km as well, even though most folks arne't metric
+	dist_radius = dist_radius - 20
+	dist_max = 12 + 0.01
+	nm_per_km = 1.852
+	major = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 1)]
+	minor1 = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 0.5)]
+	minor2 = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 0.25)]
+	g.append(make_ticks(dist_radius, minor2,  3, stroke_width=0.2))
+	g.append(make_ticks(dist_radius, minor1,  5, stroke_width=0.2))
+	g.append(make_ticks(dist_radius, major,   8, stroke_width=0.3))
+	g.append(make_tick_labels(
+		dist_radius,
+		[[horizon_distance(_*nm_per_km),"%.0f" % _] for _ in frange(1,dist_max,1)],
+		pos=(-10,+3),
+		text_anchor="end",
+	))
+	g.append(make_tick_labels(
+		dist_radius,
+		[[horizon_distance(dist_max*nm_per_km+1), "nm"]],
+		pos=(-5,+0),
+		text_anchor="end",
+		#stroke="red",
+		#length=8,
+		#stroke_width=0.4,
+	))
+
+
 	return g
 
 
@@ -225,8 +282,8 @@ def make_arcs(pts, func, fill="none", stroke="black", stroke_width=1, **style):
 	points = []
 	for t in pts:
 		(r,a) = func(t)
-		points.append(r*cos(radians(a)))
-		points.append(r*sin(radians(a)))
+		points += compute_xy(r,a)
+
 	return draw.Lines(*points, fill=fill, stroke=stroke, stroke_width=stroke_width, **style)
 
 # Refraction for normal conditions (10C 1010hPa)
@@ -1452,9 +1509,7 @@ def make_equation_of_time(radius):
 	c = decl_color(0)
 	for d in range(0, 366):
 		minutes = equation_of_time(d)
-		(x,y) = compute_xy(r(d), minutes*6)
-		pts.append(x)
-		pts.append(y)
+		pts += compute_xy(r(d), minutes*6)
 		nc = decl_color(d)
 		if nc != c or d == 365:
 			g.append(draw.Lines(*pts, stroke=c, stroke_width=1, fill="none"))
@@ -1553,9 +1608,7 @@ def make_declination(radius):
 	c = decl_color(0)
 	for d in range(0, 366):
 		minutes = declination(d)
-		(x,y) = compute_xy(r(d), minutes*6)
-		pts.append(x)
-		pts.append(y)
+		pts += compute_xy(r(d), minutes*6)
 		nc = decl_color(d)
 		if nc != c or d == 365:
 			g.append(draw.Lines(*pts, stroke=c, stroke_width=1, fill="none"))
@@ -1737,6 +1790,89 @@ def make_360_clock(radius):
 
 	return g
 
+
+#
+# This is a lookup table for 0 - 60 times 0 - 60
+# and is used to compute the offsets from the increment table
+#
+def make_offsets(radius, end=60):
+	g = draw.Group()
+	r_func = lambda d,m: radius - (end - d) * 3
+	a_func = lambda d,m: d*m / 60 * 6
+
+	for d in frange(0,end-0.01,5):
+		pts = []
+		for m in frange(0,60+0.01, 0.1):
+			pts += compute_xy(r_func(d,m), a_func(d,m))
+
+		# add a tail that sticks out so that it is easier
+		# to find where the divisions stop
+		pts += compute_xy(r_func(d,m) - 10, a_func(d,m))
+
+		g.append(draw.Lines(*pts,
+			fill="none",
+			stroke="red",
+			stroke_width=0.5 if d % 10 == 0 else 0.1,
+		))
+
+	for m in frange(0,60+0.01, 1):
+		pts = []
+		for d in frange(0,end+0.01,0.5):
+			pts += compute_xy(r_func(d,m), a_func(d,m))
+		g.append(draw.Lines(*pts,
+			fill="none",
+			stroke="black",
+			stroke_width = 0.5 if m % 5 == 0 else 0.1,
+		))
+
+		# also add the perpendicular hashes
+			
+	return g
+
+def log60_scales(inner,outer):
+	inner.append(make_logscale(cut, "",
+		frange(2,50,1) + frange(50,60,2),
+		frange(1,60.01,0.5),
+		frange(1,60.01,0.1),
+		[],
+		[],
+		log_scale=-log(60),
+		side=1,
+		pos=(2,+12),
+		#fmt=lambda x: "%d" % (floor(6*x+0.5)),
+	))
+	inner.append(draw_marker("1", cut, 180))
+	outer.append(make_logscale(cut, "",
+		frange(2,50,1) + frange(50,60,2),
+		frange(1,5,0.1) + frange(5,60.01,0.5),
+		frange(1,5,0.01) + frange(5,60.01,0.1),
+		[],
+		[],
+		log_scale=+log(60),
+		side=2,
+		#fmt=lambda x: "%d" % (floor(6*x+0.5)),
+		#fmt=lambda x: "%.1f" % (floor(6*x+0.5)),
+		pos=(2,-5),
+		extra_labels=[[_, "%.1f" % (_)] for _ in frange(1.1,2,0.1) + [2.5,3.5, 4.5]],
+	))
+
+	# add a base 10 outer log scale that can be used to convert from base 60
+	outer.append(make_logscale(cut + 30, "",
+		frange(2,50,1) + frange(50,60,2),
+		frange(1,10.01,0.5),
+		frange(1,2, 0.01) + frange(2,10.01,0.1),
+		[],
+		[],
+		log_scale=+log(60),
+		side=3,
+		#fmt=lambda x: "%d" % (floor(6*x+0.5)),
+		#fmt=lambda x: "%.1f" % (floor(6*x+0.5)),
+		pos=(2,-5),
+		fmt=lambda x: "%.1f" % (x * 100/60),
+		extra_labels=[[_, "%.1f" % (_)] for _ in frange(1.1,2,0.1)],
+	))
+	outer.append(draw_marker("1", cut, 0))
+
 ####
 #### Front side
 ####
@@ -1801,7 +1937,7 @@ back.append(pointer)
 
 outer = draw.Group(id="back_outer")
 inner = draw.Group(id="back_inner")
-inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
+#inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
 
 inner.append(axle)
 outer.append(axle)
@@ -1810,17 +1946,19 @@ outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_wid
 
 # Make the minutes seconds rings with divisions every 5 seconds
 inner.append(make_minutes(cut, side=1, divisions=60*6, divisions2=60*6*2))
+outer.append(make_minutes(cut, side=2, divisions=60*6, divisions2=60*6*2))
 
-outer.append(make_minutes(cut, side=2, red_offset=90, divisions=60*6, divisions2=60*6*2))
-#outer.append(make_fractional_minutes(468))
+
+outer.append(make_fractional_minutes(cut + 88))
 #outer.append(make_ninety_minus(450, False))
-outer.append(make_sine_nolog(cut+45))
-outer.append(make_haversine(cut+75))
+#outer.append(make_sine_nolog(cut+45))
+#outer.append(make_haversine(cut+75))
 
 # rule for 360 degree circle with reverse angles as well
-inner.append(make_fifteen_degrees(cut-35))
+outer.append(make_fifteen_degrees(cut-40))
 inner.append(make_360_clock(cut-60))
 inner.append(make_equation_of_time(cut-180))
+#inner.append(make_offsets(cut - 25))
 
 # 90 degree circle and sine/cosine tables
 #back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
