@@ -617,10 +617,16 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 		dels = ''
 		for lha in range(min_lha, max_lha):
 			(hc,zn) = compute_hczn(lat,dec,lha)
-			(hc2,zn2) = compute_hczn(lat,dec,lha+1)
+
+			if min_dec < 0:
+				dec2 = dec - 1
+			else:
+				dec2 = dec + 1
+			(hc2,zn2) = compute_hczn(lat,dec2,lha)
 
 			# round hc up to nearest minute
-			hc += 0.5 / 60
+			hc = floor(hc*60) / 60
+			hc2 = floor(hc2*60) / 60
 			if hc < 0:
 				break
 
@@ -641,7 +647,7 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 			)
 
 			pdf_text(
-				"%d" % (d),
+				"%+d" % (d),
 				text_size-1,
 				0, y,
 				text_anchor="start",
