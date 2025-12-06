@@ -9,6 +9,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.units import mm, inch
 from reportlab.lib.colors import black, red, HexColor
+from contextlib import contextmanager
 gray = HexColor(0xC0C0C0)
 
 pagesize = A4
@@ -61,6 +62,32 @@ def compute_xy(r,a):
 	return (r * sin(a), r * cos(a))
 
 
+@contextmanager
+def pdf_translate(x,y):
+	pdf.saveState()
+	pdf.translate(x,y)
+	yield
+	pdf.restoreState()
+@contextmanager
+def pdf_rotate(a):
+	pdf.saveState()
+	pdf.rotate(a)
+	yield
+	pdf.restoreState()
+@contextmanager
+def pdf_scale(x,y=None):
+	pdf.saveState()
+	pdf.scale(x, y if y else x)
+	yield
+	pdf.restoreState()
+@contextmanager
+def pdf_transform(x=0,y=0,a=0,sx=1,sy=None):
+	pdf.saveState()
+	pdf.translate(x,y)
+	pdf.rotate(a)
+	pdf.scale(sx, sy if sy else sx)
+	yield
+	pdf.restoreState()
 
 
 def pdf_lines(pts, width=1, color=black):
@@ -73,19 +100,17 @@ def pdf_lines(pts, width=1, color=black):
 
 
 def pdf_text(txt, sz, x, y, text_angle=0, text_anchor="middle", font='Courier', color=black):
-	pdf.saveState()
-	pdf.translate(x,y)
-	pdf.setFillColor(color)
-	if text_angle:
-		pdf.rotate(text_angle)
-	pdf.setFont(font, sz)
-	if text_anchor == "middle":
-		pdf.drawCentredString(0, 0, txt)
-	elif text_anchor == "end":
-		pdf.drawRightString(0, 0, txt)
-	else:
-		pdf.drawString(0, 0, txt)
-	pdf.restoreState()
+	with pdf_translate(x,y):
+		pdf.setFillColor(color)
+		if text_angle:
+			pdf.rotate(text_angle)
+		pdf.setFont(font, sz)
+		if text_anchor == "middle":
+			pdf.drawCentredString(0, 0, txt)
+		elif text_anchor == "end":
+			pdf.drawRightString(0, 0, txt)
+		else:
+			pdf.drawString(0, 0, txt)
 
 def make_hczn(lat):
 	#g = draw.Group()
@@ -569,9 +594,7 @@ def make_round_hc(lat,inner_r,min_dec,max_dec,min_hc,max_hc):
 			continue
 		pdf_lines(pts)
 
-def make_linearscale(r,max_v=60, x=0, y=0, side=1, steps=2):
-	pdf.saveState()
-	pdf.translate(x,y)
+def make_linearscale(r,max_v=60, side=1, steps=2):
 	pdf_lines([0,0, 0, r], width=thick)
 	def scale_v(v):
 		return v / max_v * r
@@ -605,8 +628,6 @@ def make_linearscale(r,max_v=60, x=0, y=0, side=1, steps=2):
 		if v % (5*steps) != 0:
 			continue
 		pdf_text("%d" % (v//steps), 8, text_offset*side, lv, text_anchor=text_anchor)
-
-	pdf.restoreState()
 
 def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 	pdf_lines([0,0, 0, r], width=thick)
@@ -659,7 +680,6 @@ def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 		pdf_text("%d" % (v//10), 8, text_offset, lv, text_anchor=text_anchor)
 
 	for tick in extra_ticks:
-		print("extra tick", tick)
 		lv = scale_v(tick/10)
 		pdf_lines([0, lv, -text_offset, lv], width=thick)
 
@@ -752,40 +772,38 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 
 	return
 
-def make_latlon_scale(r, lat, x=0, y=0, steps=2):
-	make_linearscale(r, max_v = 60, side=1, x=x, y=y, steps=steps)
-	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, x=x, y=y, steps=steps)
+def make_latlon_scale(r, lat, steps=2):
+	make_linearscale(r, max_v = 60, side=1, steps=steps)
+	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, steps=steps)
 
 def make_latlon_circle(r, lat, x=0, y=0, steps=2):
 	lon_scale = cos(radians(lat))
-	pdf.saveState()
-	pdf.translate(x,y+5*mm)
-	make_linearscale(r*lon_scale, max_v = 60, side=1, steps=steps)
+	with pdf_translate(x,y+5*mm):
+		make_linearscale(r*lon_scale, max_v = 60, side=1, steps=steps)
 
-	for dr in range(5,61,5):
-		pts = []
-		for a in range(0,91,2):
-			(x,y) = compute_xy(dr * r / 60,a)
-			#(hc,zn) = compute_hczn(lat, lat + del_lat/60, del_lon/60)
-			pts += [-y,x*lon_scale]
-		if dr % 10 == 0:
-			w = thin
-			c = black
-		else:
+		for dr in range(5,61,5):
+			pts = []
+			for a in range(0,91,2):
+				(x,y) = compute_xy(dr * r / 60,a)
+				#(hc,zn) = compute_hczn(lat, lat + del_lat/60, del_lon/60)
+				pts += [-y,x*lon_scale]
+			if dr % 10 == 0:
+				w = thin
+				c = black
+			else:
+				w = thin
+				c = gray
+			pdf_lines(pts, width=w, color=c)
+
+		for a in range(10,90,10):
+			(x,y) = compute_xy(r,a)
 			w = thin
 			c = gray
-		pdf_lines(pts, width=w, color=c)
-
-	for a in range(10,90,10):
-		(x,y) = compute_xy(r,a)
-		w = thin
-		c = gray
-		pdf_lines([0,0, -y, x*lon_scale], width=w, color=c)
+			pdf_lines([0,0, -y, x*lon_scale], width=w, color=c)
 
 
-	pdf.rotate(90)
-	make_linearscale(r, max_v=60, side=-1, steps=steps)
-	pdf.restoreState()
+		pdf.rotate(90)
+		make_linearscale(r, max_v=60, side=-1, steps=steps)
 
 
 def make_gunter(scale, lat):
@@ -794,17 +812,13 @@ def make_gunter(scale, lat):
 	#pdf.translate(0,-scale)
 	#make_logscale(scale)
 	
-	
 
 def make_tables(lat):
-	make_hc_table(lat, min_lha=0, max_lha=90, min_dec=-23, max_dec=0)
+	make_hc_table(lat, min_lha=0, max_lha=60, min_dec=-23, max_dec=0)
 
 	# finish up any tables from the other page
-	pdf.saveState()
-	pdf.rotate(180)
-	pdf.translate(-pagesize[0], -pagesize[1])
-	make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
-	pdf.restoreState()
+	with pdf_transform(pagesize[0], pagesize[1], 180):
+		make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
 
 	pdf.showPage()
 	make_hc_table(lat, min_lha=0, max_lha=90, min_dec=0, max_dec=23)
@@ -829,14 +843,20 @@ def make_chart(lat):
 	pdf.saveState()
 	pdf.translate(margin, 2*margin)
 	pdf.rotate(-90)
-	make_gunter((6 + 1.5 + 0.25)*inch, lat)
 
-	make_latlon_circle(3*inch, lat, x=-28*mm)
+	with pdf_translate(0,0):
+		make_gunter((6 + 1.5 + 0.25)*inch, lat)
 
-	make_latlon_scale(6*inch, lat, x=-10*mm)
-	make_latlon_scale(1.5*inch, lat, x=-10*mm, steps=1, y=6.25*inch)
+	with pdf_translate(-28*mm, 0):
+		make_latlon_circle(3*inch, lat)
+
+	with pdf_translate(-10*mm, 0):
+		make_latlon_scale(6*inch, lat)
+	with pdf_translate(-10*mm, 6.25*inch):
+		make_latlon_scale(1.5*inch, lat, steps=1)
 
 	pdf.restoreState()
+
 	pdf.showPage()
 
 def make_latitude(lat):
