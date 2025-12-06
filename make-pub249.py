@@ -12,12 +12,12 @@ from reportlab.lib.colors import black, red, HexColor
 from contextlib import contextmanager
 gray = HexColor(0xC0C0C0)
 
-pagesize = A4
+pagesize = landscape(A4)
 margin = 5*mm
 pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
 pdf.setTitle("Sight Reduction Tables")
 
-lat = 52
+lat = 0
 dec_max = 40
 lha_max = 170
 scale = 500
@@ -80,11 +80,16 @@ def pdf_scale(x,y=None):
 	pdf.scale(x, y if y else x)
 	yield
 	pdf.restoreState()
+
+# Apply a translation, a centered rotation, and a scale
+# in that order
 @contextmanager
-def pdf_transform(x=0,y=0,a=0,sx=1,sy=None):
+def pdf_transform(x=0,y=0,a=0,cx=0,cy=0,sx=1,sy=None):
 	pdf.saveState()
 	pdf.translate(x,y)
+	pdf.translate(cx,cy)
 	pdf.rotate(a)
+	pdf.translate(-cx,-cy)
 	pdf.scale(sx, sy if sy else sx)
 	yield
 	pdf.restoreState()
@@ -680,7 +685,7 @@ def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 		pdf_text("%d" % (v//10), 8, text_offset, lv, text_anchor=text_anchor)
 
 	for tick in extra_ticks:
-		lv = scale_v(tick/10)
+		lv = scale_v(tick)
 		pdf_lines([0, lv, -text_offset, lv], width=thick)
 
 
@@ -688,17 +693,31 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 	# a4 size
 	width = pagesize[0] - 2 * margin
 	height = pagesize[1] - margin
-	text_size = 5
+	text_size = 6
 
-	dec_width = width / (1 + max_dec - min_dec)
+	dec_width = width / (2 + max_dec - min_dec)
 	dec_scale = lambda dec: (1+max_dec - dec) * dec_width + margin
 
-	this_max_lha = 0
-	dy = (height-35*mm) / 90
+	min_max_lha = 0
+	max_max_lha = 0
 
+	start_y = -5*mm
+	dy = (height-35*mm) / (max_lha - min_lha)
 
 	# TODO: have the LHA numbers follow the bottom of the
 	# Hc when they run out
+
+	# label the standalone pages and shift to make space
+	if min_lha == 0:
+		start_y = -15*mm
+		pdf_text("Lattitude %d (%s Name)" % (
+			lat,
+			"Contrary" if min_dec < 0 else "Same"),
+			18,
+			pagesize[0]/2, pagesize[1] + start_y + 9,
+			font="Helvetica",
+			text_anchor="middle",
+		)
 
 	for dec in range(min_dec,max_dec+1):
 		# check to see if this needs a column header
@@ -708,9 +727,14 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 		
 		pdf.saveState()
 		x = dec_scale(dec)
-		y = 0
+		y = start_y
 		pdf.translate(x, height)
-		pdf_text("%+3d" % (dec), 7, 0, 0, text_anchor="end")
+
+		# special case the "-0" for min dec
+		txt = "%+3d" % (dec)
+		if dec == 0 and max_dec == 0:
+			txt = "-0"
+		pdf_text(txt, 7, 0, y, text_anchor="end")
 		vals = ''
 		dels = ''
 		for lha in range(min_lha, max_lha):
@@ -752,23 +776,28 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 			)
 				
 
-			if this_max_lha < lha:
-				this_max_lha = lha
+			if max_max_lha < lha and dec == max_dec:
+				max_max_lha = lha
+			if min_max_lha < lha and dec == min_dec:
+				min_max_lha = lha
 
 
-		pdf_lines([dec_width/3, 0, dec_width/3, y], width=thin, color=gray)
+		pdf_lines([dec_width/3, start_y, dec_width/3, y], width=thin, color=gray)
 		pdf.restoreState()
 
-	def draw_lha(lha_x):
-		y = height
+	def draw_lha(lha_x,max_lha):
+		y = height + start_y
+		if min_lha > max_lha:
+			return
 		pdf_text("LHA", 10, lha_x, y)
-		for lha in range(min_lha,this_max_lha+1):
+		for lha in range(min_lha,max_lha+1):
 			if lha % 10 == 0 and lha != 0:
 				y -= dy/2
 			y -= dy
 			pdf_text("%d" % (lha), text_size+1, lha_x, y)
-	draw_lha(dec_scale(min_dec - 1))
-	draw_lha(dec_scale(max_dec + 1))
+
+	draw_lha(dec_scale(max_dec + 1), max_max_lha)
+	draw_lha(dec_scale(min_dec - 1), min_max_lha)
 
 	return
 
@@ -814,48 +843,47 @@ def make_gunter(scale, lat):
 	
 
 def make_tables(lat):
-	make_hc_table(lat, min_lha=0, max_lha=60, min_dec=-23, max_dec=0)
+	dec = 23
 
-	# finish up any tables from the other page
-	with pdf_transform(pagesize[0], pagesize[1], 180):
-		make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
-
+	# negative declination pages
+	make_hc_table(lat, min_lha=0, max_lha=60, min_dec=-dec, max_dec=0)
 	pdf.showPage()
-	make_hc_table(lat, min_lha=0, max_lha=90, min_dec=0, max_dec=23)
+
+	# fixup page is half and half
+	make_hc_table(lat, min_lha=60, max_lha=120, min_dec=-dec, max_dec=0)
+	with pdf_transform(a=180, cx=pagesize[0]/2, cy=pagesize[1]/2):
+		make_hc_table(lat, min_lha=60, max_lha=120, min_dec=0, max_dec=dec)
+	pdf.showPage()
+
+	# positive declination page, flipped to match above
+	with pdf_transform(a=180, cx=pagesize[0]/2, cy=pagesize[1]/2):
+		make_hc_table(lat, min_lha=0, max_lha=60, min_dec=0, max_dec=dec)
 	pdf.showPage()
 
 def make_chart(lat):
 	# The page with the globe needs to rescale based on page size
-	pdf.saveState()
-	pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
-	scaling = (pagesize[0] - 35 * mm) / (2 * scale)
-	pdf.scale(scaling, scaling)
-	make_hczn(lat)
-	make_compass(scale)
+	scaling = (pagesize[1] - 5 * margin) / (2 * scale)
+	with pdf_transform(pagesize[0]/2+10*mm,pagesize[1]/2, 0, sx=scaling):
+		make_hczn(lat)
+		make_compass(scale)
 
-	for hemi in ["N","S"]:
-		if hemi == "S":
-			pdf.rotate(180)
-		pdf_text("Lat %d %s" % (lat,hemi), 30, -scale+80, scale - 60, text_anchor="middle")
+		for hemi in ["N","S"]:
+			if hemi == "S":
+				pdf.rotate(180)
+			pdf_text("Lat %d %s" % (lat,hemi), 30, -scale+80, scale - 60, text_anchor="middle")
 
-	pdf.restoreState()
 
-	pdf.saveState()
-	pdf.translate(margin, 2*margin)
-	pdf.rotate(-90)
+	left = pagesize[0] - 3 * margin
 
-	with pdf_translate(0,0):
-		make_gunter((6 + 1.5 + 0.25)*inch, lat)
-
-	with pdf_translate(-28*mm, 0):
+	with pdf_transform(1*margin, 2*margin, -90):
 		make_latlon_circle(3*inch, lat)
 
-	with pdf_translate(-10*mm, 0):
+	with pdf_translate(left, margin):
+		make_gunter((6 + 1.5 + 0.25)*inch, lat)
+	with pdf_translate(left - 15*mm, margin):
 		make_latlon_scale(6*inch, lat)
-	with pdf_translate(-10*mm, 6.25*inch):
+	with pdf_translate(left - 15*mm, 6.25*inch + margin):
 		make_latlon_scale(1.5*inch, lat, steps=1)
-
-	pdf.restoreState()
 
 	pdf.showPage()
 
@@ -864,21 +892,19 @@ def make_latitude(lat):
 	pdf.bookmarkPage(key)
 	pdf.addOutlineEntry("Latitude %d" % (lat), key, 0, 0)
 
-	if lat % 2 == 0:
-		make_tables(lat)
-		make_chart(lat)
-	else:
-		make_chart(lat)
-		make_tables(lat)
-
-
+	make_chart(lat)
+	make_tables(lat)
 
 def make_book(min_lat=0,max_lat=60):
+	# title page
+	# intro page
+	# and then the latitude pages
 	for lat in range(min_lat,max_lat):
 		print("making %d" % (lat))
 		make_latitude(lat)
 
-make_latitude(lat)
+make_latitude(0)
+make_latitude(52)
 
 #pdf.saveState()
 #pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
