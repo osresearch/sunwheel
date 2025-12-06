@@ -14,11 +14,12 @@ gray = HexColor(0xC0C0C0)
 pagesize = A4
 margin = 5*mm
 pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
+pdf.setTitle("Sight Reduction Tables")
 
-lat = 20
+lat = 52
 dec_max = 40
 lha_max = 170
-scale = 450
+scale = 500
 
 extra_thick = 3
 thick = 1
@@ -550,8 +551,28 @@ def make_linear_hc(lat,min_hc,max_hc,min_dec,max_dec, offset=(0,0)):
 
 	return g
 
-def make_linearscale(r,max_v=60,x=0, side=1, steps=2):
-	pdf_lines([x,0, x, r], width=thick)
+def make_round_hc(lat,inner_r,min_dec,max_dec,min_hc,max_hc):
+	total_arc = 360
+
+	scale_r = lambda dec: inner_r + (dec - min_dec) / (max_dec - min_dec) * (scale - inner_r)
+
+	for lha in range(0,120):
+		pts = []
+		for dec in range(min_dec,max_dec+1):
+			(hc,zn) = compute_hczn(lat,dec,lha)
+			if hc < min_hc  or max_hc < hc:
+				continue
+			r = scale_r(dec)
+			a = (hc - min_hc) * total_arc / (max_hc - min_hc)
+			pts += compute_xy(r, a)
+		if len(pts) < 2:
+			continue
+		pdf_lines(pts)
+
+def make_linearscale(r,max_v=60, x=0, y=0, side=1, steps=2):
+	pdf.saveState()
+	pdf.translate(x,y)
+	pdf_lines([0,0, 0, r], width=thick)
 	def scale_v(v):
 		return v / max_v * r
 
@@ -580,12 +601,14 @@ def make_linearscale(r,max_v=60,x=0, side=1, steps=2):
 			c = gray
 			l = text_offset - 6
 
-		pdf_lines([x, lv, x+l*side, lv], width=w, color=c)
+		pdf_lines([0, lv, l*side, lv], width=w, color=c)
 		if v % (5*steps) != 0:
 			continue
-		pdf_text("%d" % (v//steps), 8, x+text_offset*side, lv, text_anchor=text_anchor)
+		pdf_text("%d" % (v//steps), 8, text_offset*side, lv, text_anchor=text_anchor)
 
-def make_scale(r,max_v=60,direction=1, logscale=None):
+	pdf.restoreState()
+
+def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 	pdf_lines([0,0, 0, r], width=thick)
 	def scale_v(v):
 		if logscale:
@@ -634,6 +657,11 @@ def make_scale(r,max_v=60,direction=1, logscale=None):
 			if v % 20 != 0:
 				continue
 		pdf_text("%d" % (v//10), 8, text_offset, lv, text_anchor=text_anchor)
+
+	for tick in extra_ticks:
+		print("extra tick", tick)
+		lv = scale_v(tick/10)
+		pdf_lines([0, lv, -text_offset, lv], width=thick)
 
 
 def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
@@ -724,78 +752,125 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 
 	return
 
-def make_latlon_scale(r, lat, x=0, steps=2):
-	make_linearscale(r, max_v = 60, side=1, x=x, steps=steps)
-	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, x=x, steps=steps)
+def make_latlon_scale(r, lat, x=0, y=0, steps=2):
+	make_linearscale(r, max_v = 60, side=1, x=x, y=y, steps=steps)
+	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, x=x, y=y, steps=steps)
 
-def make_gunter(scale):
-	make_scale(scale, logscale=True)
+def make_latlon_circle(r, lat, x=0, y=0, steps=2):
+	lon_scale = cos(radians(lat))
+	pdf.saveState()
+	pdf.translate(x,y+5*mm)
+	make_linearscale(r*lon_scale, max_v = 60, side=1, steps=steps)
+
+	for dr in range(5,61,5):
+		pts = []
+		for a in range(0,91,2):
+			(x,y) = compute_xy(dr * r / 60,a)
+			#(hc,zn) = compute_hczn(lat, lat + del_lat/60, del_lon/60)
+			pts += [-y,x*lon_scale]
+		if dr % 10 == 0:
+			w = thin
+			c = black
+		else:
+			w = thin
+			c = gray
+		pdf_lines(pts, width=w, color=c)
+
+	for a in range(10,90,10):
+		(x,y) = compute_xy(r,a)
+		w = thin
+		c = gray
+		pdf_lines([0,0, -y, x*lon_scale], width=w, color=c)
+
+
+	pdf.rotate(90)
+	make_linearscale(r, max_v=60, side=-1, steps=steps)
+	pdf.restoreState()
+
+
+def make_gunter(scale, lat):
+	make_scale(scale, logscale=True, extra_ticks = [cos(radians(lat)) * 60])
 	#pdf.rotate(180)
 	#pdf.translate(0,-scale)
 	#make_logscale(scale)
 	
 	
 
-#center.append(make_chart(lat))
-#d.append(make_hc_table(lat, pos=(1000,100)))
-#d.append(make_lots())
+def make_tables(lat):
+	make_hc_table(lat, min_lha=0, max_lha=90, min_dec=-23, max_dec=0)
 
-#center.append(make_chart(lat))
-#d.append(center)
-#
-#d.save_svg("hczn.svg")
-#
-#pdf = fpdf.FPDF(orientation="landscape", format="A4")
-#pdf.add_page()
-#pdf.image("hczn.svg")
-#pdf.output("pub249.pdf")
+	# finish up any tables from the other page
+	pdf.saveState()
+	pdf.rotate(180)
+	pdf.translate(-pagesize[0], -pagesize[1])
+	make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
+	pdf.restoreState()
 
-make_hc_table(lat, min_lha=0, max_lha=90, min_dec=-23, max_dec=0)
+	pdf.showPage()
+	make_hc_table(lat, min_lha=0, max_lha=90, min_dec=0, max_dec=23)
+	pdf.showPage()
 
-# finish up any tables from the other page
-pdf.saveState()
-pdf.rotate(180)
-pdf.translate(-pagesize[0], -pagesize[1])
-make_hc_table(lat, min_lha=90, max_lha=180, min_dec=0, max_dec=23)
-pdf.restoreState()
+def make_chart(lat):
+	# The page with the globe needs to rescale based on page size
+	pdf.saveState()
+	pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
+	scaling = (pagesize[0] - 35 * mm) / (2 * scale)
+	pdf.scale(scaling, scaling)
+	make_hczn(lat)
+	make_compass(scale)
 
-pdf.showPage()
-make_hc_table(lat, min_lha=0, max_lha=90, min_dec=0, max_dec=23)
-pdf.showPage()
+	for hemi in ["N","S"]:
+		if hemi == "S":
+			pdf.rotate(180)
+		pdf_text("Lat %d %s" % (lat,hemi), 30, -scale+80, scale - 60, text_anchor="middle")
 
+	pdf.restoreState()
 
-# The page with the globe needs to rescale based on page size
-pdf.saveState()
-pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
-scaling = (pagesize[0] - 15 * mm) / (2 * scale)
-pdf.scale(scaling, scaling)
-make_hczn(lat)
-make_compass(scale)
+	pdf.saveState()
+	pdf.translate(margin, 2*margin)
+	pdf.rotate(-90)
+	make_gunter((6 + 1.5 + 0.25)*inch, lat)
 
-for hemi in ["N","S"]:
-	if hemi == "S":
-		pdf.rotate(180)
-	pdf_text("Lat %d %s" % (lat,hemi), 30, scale-80, scale - 60, text_anchor="middle")
+	make_latlon_circle(3*inch, lat, x=-28*mm)
 
-pdf.restoreState()
+	make_latlon_scale(6*inch, lat, x=-10*mm)
+	make_latlon_scale(1.5*inch, lat, x=-10*mm, steps=1, y=6.25*inch)
 
-pdf.saveState()
-pdf.translate(margin, 4*margin)
-pdf.rotate(-90)
-make_gunter(pagesize[0]-2*margin)
+	pdf.restoreState()
+	pdf.showPage()
 
-make_latlon_scale(6*inch, lat, x=-15*mm)
-make_latlon_scale(3*inch, lat, x=-35*mm)
-make_latlon_scale(1.5*inch, lat, x=-55*mm, steps=1)
+def make_latitude(lat):
+	key = "lat%d" % (lat)
+	pdf.bookmarkPage(key)
+	pdf.addOutlineEntry("Latitude %d" % (lat), key, 0, 0)
 
-
-
-pdf.restoreState()
-
-
-pdf.showPage()
+	if lat % 2 == 0:
+		make_tables(lat)
+		make_chart(lat)
+	else:
+		make_chart(lat)
+		make_tables(lat)
 
 
+
+def make_book(min_lat=0,max_lat=60):
+	for lat in range(min_lat,max_lat):
+		print("making %d" % (lat))
+		make_latitude(lat)
+
+make_latitude(lat)
+
+#pdf.saveState()
+#pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
+#scaling = (pagesize[0] - 15 * mm) / (2 * scale)
+#pdf.scale(scaling/2, scaling/2)
+#pdf.translate(0,scale)
+#make_round_hc(lat,100,-23,23,0,30)
+#pdf.translate(0,-scale)
+#make_round_hc(lat,100,-23,23,30,60)
+#pdf.translate(scale,2*scale)
+#make_round_hc(lat,100,-23,23,60,90)
+#pdf.restoreState()
 
 pdf.save()
 
