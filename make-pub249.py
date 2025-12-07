@@ -13,7 +13,7 @@ from contextlib import contextmanager
 gray = HexColor(0xC0C0C0)
 
 pagesize = landscape(A4)
-margin = 5*mm
+margin = 8*mm
 pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
 pdf.setTitle("Sight Reduction Tables")
 
@@ -708,7 +708,7 @@ def make_tables(lat):
 
 def make_chart(lat):
 	# The page with the globe needs to rescale based on page size
-	scaling = (pagesize[1] - 5 * margin) / (2 * scale)
+	scaling = (pagesize[1] - 4 * margin) / (2 * scale)
 	with pdf_transform(pagesize[0]/2+10*mm,pagesize[1]/2, 0, sx=scaling):
 		make_hczn(lat)
 		make_compass(scale)
@@ -741,6 +741,60 @@ def make_chart(lat):
 
 	pdf.showPage()
 
+
+def make_times():
+	key = "time60"
+	pdf.bookmarkPage(key)
+	pdf.addOutlineEntry("Times table", key, 0, 0)
+
+	dx = (pagesize[0] - 2 * margin) / (60 + 0)
+	dy = (pagesize[1] - 2 * margin) / (60 + 0)
+
+	with pdf_translate(margin,pagesize[1] - margin):
+		for a in range(1,60):
+			# left axis
+			pdf_text("%2d" % (a), 9, dx*0.75 , -a*dy-1, font="Helvetica", text_anchor="end")
+			# bottom axis
+			pdf_text("%2d" % (a), 9, a * dx, -60.25*dy, font="Helvetica", text_anchor="middle")
+			for b in range(a,60):
+				pdf_text("%2d" % (a * b / 60),
+					8,
+					a*dx, -b*dy,
+					text_anchor="middle",
+				)
+
+			# don't include the last lines
+			if a == 59:
+				break
+
+			x1 = dx
+			x2 = (a + 0.5) * dx
+			y1 = -a * dy - 2
+			y2 = -59 * dy
+			c = gray
+			w = thin
+
+			if a % 10 == 9:
+				c = black
+				w = thick
+				y2 = -60.5*dy
+				x1 = 0
+			elif a % 5 == 4:
+				c = black
+
+			# vertical lines (start mid way down)
+			pdf_lines(
+				[x2, y1, x2, y2],
+				color=c, width=w,
+			)
+
+			# horizontal lines (start left axis)
+			pdf_lines(
+				[x1, y1, x2, y1],
+				color=c, width=w)
+			
+	pdf.showPage()
+
 def make_latitude(lat):
 	key = "lat%d" % (lat)
 	pdf.bookmarkPage(key)
@@ -757,6 +811,7 @@ def make_book(min_lat=0,max_lat=60):
 		print("making %d" % (lat))
 		make_latitude(lat)
 
+make_times()
 make_latitude(0)
 make_latitude(52)
 
