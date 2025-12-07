@@ -3,7 +3,7 @@
 # Generate a circular web diagram of a given lattitude
 # that allows Hc and Zn to be read directly.
 import drawsvg as draw
-from math import radians, cos, sin, acos, asin, degrees, log, floor, modf, atan2, sqrt
+from math import radians, cos, sin, acos, asin, degrees, log, floor, modf, atan2, sqrt, fabs
 import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
@@ -19,7 +19,7 @@ pdf.setTitle("Sight Reduction Tables")
 
 lat = 0
 dec_max = 40
-lha_max = 170
+lha_max = 150
 scale = 500
 
 extra_thick = 3
@@ -133,7 +133,6 @@ def pdf_text(txt, sz, x, y, text_angle=0, line_size=None, text_anchor="middle", 
 	return y
 
 def make_hczn(lat):
-	#g = draw.Group()
 	hc_scale = lambda hc: (90 - hc) * scale / 90
 	for dec in range(-dec_max,dec_max+1):
 		pts = []
@@ -188,9 +187,9 @@ def make_hczn(lat):
 		if hc < 2:
 			continue
 		pdf_text(
-			"%d" % (lha), 10,
+			"%d" % (fabs(lha)), 15,
 			*compute_xy(hc_scale(hc), zn),
-			text_angle = -90,
+			#text_angle = -90,
 			text_anchor = "middle",
 		)
 			
@@ -216,11 +215,11 @@ def make_hczn(lat):
 			if hc < radians(1):
 				continue
 			(x,y) = compute_xy(hc_scale(hc), zn)
-			pdf_text("%+d" % (dec), 10,
+			pdf_text("%+d" % (dec), 15,
 				x, y,
 				#class_="label",
 				text_anchor="end" if lha > 0 else "start",
-				text_angle = -90,
+				#text_angle = -90,
 				#dominant_baseline="auto" if dec < 0 else "hanging",
 			)
 
@@ -242,8 +241,8 @@ def make_hczn(lat):
 		pdf_lines([x,y, x-l, y], width=w, color=c)
 
 		if hc % 10 == 0 and hc != 0:
-			pdf_text("%d" % (hc), 10,
-				x-5, y-8,
+			pdf_text("%d" % (hc), 12,
+				x-5, y-9,
 				text_anchor="end",
 				#class_="label",
 			)
@@ -354,57 +353,6 @@ def make_compass(r):
 		)
 	return
 
-def make_height(r):
-	g = draw.Group()
-	g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
-
-	for a in range(0,90*3):
-		if a % (10*3) == 0:
-			c = "extra-thick"
-			l = 10
-		elif a % 3 == 0:
-			c = "thick"
-			l = 8
-		else:
-			c = "thin"
-			l = 5
-		g.append(draw.Lines(
-			*compute_xy(r,2*a/3),
-			*compute_xy(r+l,2*a/3),
-			class_=c,
-			))
-
-	for a in range(0,90,1):
-		t = "%d" % (a)
-		rot = 180
-		anchor = "end"
-		g.append(draw.Text(t, 10,
-			0, -3,
-			transform="rotate(%d) translate(%.3f) rotate(%d)" % (2*a+90, r+5, rot),
-			text_anchor=anchor,
-			dominant_baseline="bottom",
-			class_="label",
-		  ))
-	return g
-
-
-def make_round_hc(lat,inner_r,min_dec,max_dec,min_hc,max_hc):
-	total_arc = 360
-
-	scale_r = lambda dec: inner_r + (dec - min_dec) / (max_dec - min_dec) * (scale - inner_r)
-
-	for lha in range(0,120):
-		pts = []
-		for dec in range(min_dec,max_dec+1):
-			(hc,zn) = compute_hczn(lat,dec,lha)
-			if hc < min_hc  or max_hc < hc:
-				continue
-			r = scale_r(dec)
-			a = (hc - min_hc) * total_arc / (max_hc - min_hc)
-			pts += compute_xy(r, a)
-		if len(pts) < 2:
-			continue
-		pdf_lines(pts)
 
 def make_linearscale(r,max_v=60, side=1, steps=2):
 	pdf_lines([0,0, 0, r], width=thick)
