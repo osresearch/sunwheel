@@ -3,7 +3,7 @@
 # Generate a circular web diagram of a given lattitude
 # that allows Hc and Zn to be read directly.
 import drawsvg as draw
-from math import radians, cos, sin, acos, asin, degrees, log, floor, modf
+from math import radians, cos, sin, acos, asin, degrees, log, floor, modf, atan2, sqrt
 import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
@@ -104,7 +104,7 @@ def pdf_lines(pts, width=1, color=black):
 	pdf.lines(lines)
 
 
-def pdf_text(txt, sz, x, y, text_angle=0, line_size=None, text_anchor="middle", font='Courier', color=black):
+def pdf_text(txt, sz, x, y, text_angle=0, line_size=None, text_anchor="middle", font='Courier', vert_align="bottom", color=black):
 	if not line_size:
 		line_size = sz
 
@@ -114,7 +114,13 @@ def pdf_text(txt, sz, x, y, text_angle=0, line_size=None, text_anchor="middle", 
 			pdf.rotate(text_angle)
 		pdf.setFont(font, sz)
 
-		y = 0
+		if vert_align == "middle":
+			y = -sz/2 + 2 # how to find baseline?
+		elif vert_align == "top":
+			y = -sz
+		else:
+			y = 0
+
 		for line in txt.split("\n"):
 			if text_anchor == "middle":
 				pdf.drawCentredString(0, y, line)
@@ -651,34 +657,56 @@ def make_latlon_scale(r, lat, steps=2):
 	make_linearscale(r, max_v = 60, side=1, steps=steps)
 	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, steps=steps)
 
-def make_latlon_circle(r, lat, x=0, y=0, steps=2):
+
+# A circular scale with lat on one side and lon on the other
+# to allow measurement of minutes at this latitude
+def make_latlon_circle(r, lat, steps=2):
 	lon_scale = cos(radians(lat))
-	with pdf_translate(x,y+5*mm):
-		make_linearscale(r*lon_scale, max_v = 60, side=1, steps=steps)
+	make_linearscale(r*lon_scale, max_v = 60, side=1, steps=steps)
 
-		for dr in range(5,61,5):
-			pts = []
-			for a in range(0,91,2):
-				(x,y) = compute_xy(dr * r / 60,a)
-				#(hc,zn) = compute_hczn(lat, lat + del_lat/60, del_lon/60)
-				pts += [-y,x*lon_scale]
-			if dr % 10 == 0:
-				w = thin
-				c = black
-			else:
-				w = thin
-				c = gray
-			pdf_lines(pts, width=w, color=c)
+	for dr in range(5,61,5):
+		pts = []
+		for a in range(0,91,1):
+			pr = dr * r / 60
+			(x,y) = compute_xy(pr,a)
+			px = x * lon_scale
+			#(hc,zn) = compute_hczn(lat, lat + del_lat/60, del_lon/60)
+			pts += [-y,px]
 
-		for a in range(10,90,10):
-			(x,y) = compute_xy(r,a)
+			if a % 20 != 15 or a == 0 or a == 90 or dr == 60 or dr <= 10:
+				continue
+
+			# back compute the display angle
+			a2 = degrees(atan2(y,px))
+			r2 = sqrt(px*px+y*y)
+			with pdf_rotate(a2):
+				pdf_text("%d" % (dr),
+					5,
+					0,
+					r2 + 2,
+					color=gray,
+					text_angle=90-(a2+a),
+				)
+					
+		
+		if dr % 10 == 0:
+			w = thin
+			c = black
+		else:
 			w = thin
 			c = gray
-			pdf_lines([0,0, -y, x*lon_scale], width=w, color=c)
+		pdf_lines(pts, width=w, color=c)
+			
+
+	for a in range(10,90,10):
+		(x,y) = compute_xy(r,a)
+		w = thin
+		c = gray
+		pdf_lines([0,0, -y, x*lon_scale], width=w, color=c)
 
 
-		pdf.rotate(90)
-		make_linearscale(r, max_v=60, side=-1, steps=steps)
+	pdf.rotate(90)
+	make_linearscale(r, max_v=60, side=-1, steps=steps)
 
 
 def make_gunter(scale, lat):
@@ -741,11 +769,113 @@ def make_chart(lat):
 
 	pdf.showPage()
 
+def make_gha(r):
+	inner_r = r - 50
+
+	pdf.setLineWidth(thick)
+	pdf.setStrokeColor(black)
+	pdf.circle(0, 0, r)
+	pdf.circle(0, 0, inner_r)
+
+
+	for hour in range(0,24):
+		a = hour * 360/24 - 180
+		with pdf_rotate(-a):
+			pdf_text("%02d" % (hour),
+				10, 0, r - 8,
+				text_angle=a,
+				text_anchor='middle',
+				vert_align="middle",
+			)
+
+	for minute in range(0,24*60,10):
+		a = minute * 360 / (24*60) - 180
+		l = 5
+		w = thin
+		c = gray
+		if minute % 60 == 0:
+			# hour
+			w = thick
+			c = black
+			l = 8
+		elif minute % 30 == 0:
+			c = black
+
+		if a < -1:
+			text_angle = -90
+			text_anchor = "end"
+			text_offset = +0.5
+		else:
+			text_angle = 90
+			text_anchor = "start"
+			text_offset = -0.5
+
+		with pdf_rotate(-a):
+			pdf_lines([0,r,0,r+l], color=c, width=w)
+
+		(mins,degs) = modf(a)
+		if mins < 0:
+			mins *= -60
+		else:
+			mins *= +60
+		txt = "%+d°%02d'" % (degs,mins)
+		
+		with pdf_rotate(-a + text_offset):
+			pdf_text(txt,
+				5, 0, r+10,
+				text_angle=text_angle,
+				text_anchor=text_anchor,
+			)
+
+	for minute in range(0,60,1):
+		a = minute * 360 / 60
+		with pdf_rotate(-a):
+			if a % 5 == 0:
+				pdf_text("%02d" % (minute),
+					10, 0, inner_r - 8,
+					text_angle=a,
+					text_anchor='middle',
+					vert_align="middle",
+				)
+				w = thick
+				c = black
+			else:
+				w = thin
+				c = gray
+			pdf_lines([0, inner_r, 0, inner_r+5], width=w, color=c)
+		(mins,degs) = modf(minute * 15 / 60)
+		mins *= +60
+		txt = "%d°%02d'" % (degs,mins)
+
+		if a < 180:
+			text_angle = +90
+			text_anchor = "start"
+			text_offset = -0.5
+		else:
+			text_angle = -90
+			text_anchor = "end"
+			text_offset = +0.5
+
+		with pdf_rotate(-a+text_offset):
+			pdf_text(txt,
+				5, 0, inner_r + 6,
+				text_angle=text_angle,
+				text_anchor=text_anchor,
+			)
+		
+		
+
 
 def make_times():
 	key = "time60"
 	pdf.bookmarkPage(key)
 	pdf.addOutlineEntry("Times table", key, 0, 0)
+
+	with pdf_translate(pagesize[0]*0.75,pagesize[1]*0.75-2*margin):
+		make_gha(pagesize[1] * 0.25)
+
+	#pdf.showPage()
+	#return
 
 	dx = (pagesize[0] - 2 * margin) / (60 + 0)
 	dy = (pagesize[1] - 2 * margin) / (60 + 0)
