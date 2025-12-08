@@ -1,0 +1,206 @@
+#!/usr/bin/python3
+from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, modf, floor, trunc, fabs
+import datetime
+import sys
+import re
+import ephem
+
+# TODO: use the more recent skyfield library?
+#import skyfield
+
+def parse_dms(x):
+	if g := re.match(r"([-+]?\d+)([NSEW])(\d+[.]?\d*)?", x):
+		print(g[3])
+		degs = int(g[1])
+		mins = float(g[3])
+		sign = -1 if g[2] == "S" or g[2] == "W" else +1
+		return (degs + mins / 60) * sign 
+	return float(x)
+
+# Amsterdam 52°21'48.8"N 4°54'07.9"E
+# East is positive
+if len(sys.argv) > 2:
+	lat = parse_dms(sys.argv[1])
+	lon = parse_dms(sys.argv[2])
+else:
+	lat = +(52 + 21/60 + 48.8/3600)
+	lon = +(4 + 54/60 + 7.9/3600)
+dr_lat = trunc(lat)
+dr_lon = trunc(lon)
+
+#lat = 24.581199
+#lon = -20.42402
+#lon = +15
+#lat = +(8 + 4/60)
+
+def fmt_deg(x, zero_deg=False):
+	return "%+ 8.3f" % (x)
+	return "%+ 8.3f" % (degrees(x))
+	x = degrees(x)
+	if x < 0:
+		neg = '-'
+		x = -x
+	else:
+		neg = ''
+
+	(m,d) = modf(x)
+	m *= 60
+
+	if d == 0 and not zero_deg:
+		return "%s%.1f'" % (neg,m)
+	return "%+4d°%04.1f'" % (-d if neg else d,m)
+
+
+def haversine(x):
+	return (1 - cos(x))/2
+def ahaversine(y):
+	return acos(1 - 2 * y)
+
+
+# The ephem library always wants UTC
+def ephem_date(when):
+	date = when.isoformat()
+	date = re.sub(r"T"," ", date)
+	date = re.sub(r"-","/", date)
+	return date
+
+
+# Given a timestamp in UTC, compute the position of the sun
+# note that the GHA is positive going west, while longitude
+# is positive going east!
+def sun_position(when):
+	sun = ephem.Sun(ephem_date(when))
+	gha = degrees(sun.ha)
+	if gha > 180:
+		gha -= 360
+	return (degrees(sun.dec),gha)
+	
+
+# double check with the epehm library
+def compute_hc_ephem(lat,lon,when):
+	pos = ephem.Observer()
+	pos.lat = radians(lat)
+	pos.lon = radians(lon)
+	pos.elevation = 0
+	pos.pressure = 0
+	pos.date = ephem_date(when)
+	sun = ephem.Sun(pos)
+	return (fmt_deg(degrees(sun.alt)), fmt_deg(degrees(sun.az)))
+
+# sin(Hc) = Sin(Lat) * Sin(Dec) + Cos(Lat) * Cos(Dec) * Cos(LHA))
+# hav(90-Hc) = hav(LHA) * cos(lat) * cos(Dec) + hav(lat-dec)
+def compute_hczn(lat,dec,lha):
+	lat = radians(lat)
+	dec = radians(dec)
+	lha = radians(lha)
+	hav_hc = haversine(lha) * cos(lat) * cos(dec) + haversine(lat - dec)
+	#print(f"{lat=} {dec=} {lha=} => {hav_hc=}")
+	hc = radians(90) - ahaversine(hav_hc)
+
+	hav_zn = (cos(lat - hc) - sin(dec)) / (2 * cos(lat) * cos(hc))
+	zn = degrees(ahaversine(hav_zn))
+
+	# if the sun was to the west of us,
+	# our local hour angle will be positive
+	# and we have to adjust our computed heading
+	if lha > 0:
+		zn = 360 - zn
+
+	return (degrees(hc),zn)
+
+def hczn_table(lat, dec, lha):
+	# round all of the values in the correct directions
+	lat = floor(lat)
+	dec = trunc(dec)
+	lha = trunc(lha)
+	#print(f"table {lat=} {dec=} {lha=}", file=sys.stderr)
+	(hc1,zn) = compute_hczn(lat,dec,lha)
+
+	# compute the d value
+	if dec < 0:
+		dec -= 1
+	else:
+		dec += 1
+	(hc2,_) = compute_hczn(lat,dec,lha)
+	return (hc1,zn,floor((hc2 - hc1) * 100))
+	
+
+# Given a lat/lon and time, compute the height of the sun at that position
+def compute_hc(lat, lon, when):
+	(sun_dec,sun_gha) = sun_position(when)
+	# note that longitude is increasing going east,
+	# but the sun hour angle is increasing going west.
+	# so the angle between them is the sum, not the difference
+	lha = lon - (-sun_gha)
+	(hc,zn) = compute_hczn(lat, sun_dec, lha)
+
+	return (hc,zn,sun_dec,sun_gha,lha)
+
+	lat = radians(lat)
+	lon = radians(lon)
+
+	#print("lha", fmt_deg(lha), "= lon", fmt_deg(lon), "gha", fmt_deg(sun_gha))
+	#hav_hc = haversine(lat - sun_dec) + cos(lat) * cos(sun_dec) * haversine(lha)
+	hav_hc = haversine(lha) * cos(lat) * cos(sun_dec) + haversine(lat - sun_dec)
+	hc = radians(90) - ahaversine(hav_hc)
+
+	hav_zn = (cos(lat - hc) - sin(sun_dec)) / (2 * cos(lat) * cos(hc))
+	zn = ahaversine(hav_zn)
+
+	# if the sun was to the west of us,
+	# our local hour angle will be positive
+	# and we have to adjust our computed heading
+	if lha > 0:
+		zn = radians(360) - zn
+
+	# could also compute the sun's heading with
+	#zn = radians(180) - atan2(sin(lha), sin(lat)*cos(lha) - cos(lat)*tan(sun_dec))
+	#zn = atan2(sin(lha), sin(lat)*cos(lha) - cos(lat)*tan(sun_dec))
+
+	return (hc,zn,sun_dec,sun_gha,lha)
+	
+
+
+tz = datetime.timezone(datetime.timedelta(hours=1))
+day = datetime.datetime(2025, 11, 29, 0, 0)
+(_,_,noon_decl,noon_gha,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12))
+
+print("Location", fmt_deg(lat), fmt_deg(lon))
+print("DR  ", fmt_deg(dr_lat), fmt_deg(dr_lon))
+print("EOT ", fmt_deg(noon_gha), "DECL", fmt_deg(noon_decl))
+
+#print(compute_hczn(52,-21, -26))
+#print(compute_hczn(52,-21, +44))
+
+
+for h in range(9,16):
+	for m in [0,15,30,45]:
+		d = day + datetime.timedelta(hours=h, minutes=m)
+		(hc,zn,decl,gha,lha) = compute_hc(lat,lon, d)
+		#(hc2,zn2) = compute_hc_ephem(lat,lon, d)
+
+		# use the DR position to compute the LHA,
+		# since the actual lon is unknown when taking the sights
+		dr_lha = dr_lon - (-gha)
+
+		(decl_remainder,_) = modf(decl)
+
+		# round decl towards interger part,
+		# round lha towards larger value
+		#table_dec = trunc(decl)
+		#table_lha = trunc(fabs(lha) + 0.5)
+		#(hc2,_) = compute_hczn(dr_lat, table_dec, table_lha)
+
+		# lookup the table values and compute the
+		# expected value for the computation
+		(hc2,_,d) = hczn_table(dr_lat, decl, dr_lha)
+		hc3 = hc2 + d * fabs(decl_remainder) / 100
+
+		print("%02d:%02d" % (h,m),
+			"%.0f %5.2f" % (zn, hc),
+			"%5.2f %+4d" % (hc2, d),
+			"%5.2f %+6.2f" % (hc3, hc - hc3),
+			fmt_deg(gha),
+			fmt_deg(dr_lha),
+			fmt_deg(decl),
+		)

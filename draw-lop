@@ -1,0 +1,104 @@
+#!/usr/bin/python3
+import drawsvg as draw
+from math import cos, radians, degrees, sin, atan2, modf, fabs
+import sys
+import re
+import matplotlib.colors as mcolors
+
+sights = []
+pos = []
+
+colors = [
+"blue", "orange", "green", "red", "purple", "brown", "pink", "gray", "olive", "cyan", "coral", "palegreen", "plum", "teal", "indigo", "chocolate", "tomato", "azure", "yellow", "lime", "steelblue", "gold", "thistle",
+]
+
+# read the output of predict height
+while line := sys.stdin.readline():
+	words = line.split()
+	if words[0] == "Location":
+		pos = [ float(words[1]), float(words[2])]
+		continue
+	if words[0] == "DR" or words[0] == "EOT":
+		continue
+
+	#print(words)
+	# ignore any below the horizon or bizarre off scale
+	hc = float(words[2])
+	if hc < 1:
+		continue
+	hc_delta = float(words[6])
+	if hc_delta > 2:
+		continue
+	sights.append([
+		float(words[1]), # Zn
+		hc_delta,
+		float(words[8]), # LHA
+	])
+
+lat_scale = cos(radians(pos[0]))
+px_per_deg = 500
+print(f"{lat_scale=} {px_per_deg=}")
+
+
+
+d = draw.Drawing(1000,1000)
+d.append_css("""
+.faint {
+	stroke: #888;
+	stroke-width: 0.5;
+	fill: none;
+}
+.thin {
+	/*stroke: #222;*/
+	stroke-width: 0.2
+	fill: none;
+}
+.thick {
+	/*stroke: #000;*/
+	stroke-width: 2;
+	fill: none;
+}
+""")
+
+g = draw.Group(transform="translate(500 500)")
+g.append(draw.Circle(0, 0, px_per_deg, class_="faint"))
+g.append(draw.Line(0, -px_per_deg, 0, +px_per_deg, class_="faint"))
+g.append(draw.Line(-px_per_deg * lat_scale, 0, +px_per_deg*lat_scale, 0, class_="faint"))
+
+i = 0
+for s in sights:
+	(a,h,lha) = s
+	c = "red"
+	(dy,dx) = (-cos(radians(a)), sin(radians(a)))
+	lha_offset = modf(lha)[0]
+	offset = -lha_offset * lat_scale * px_per_deg
+	#offset = 0
+	g2 = draw.Group(transform="translate(%.3f 0)" % (offset))
+
+	lop_len = 1000 * px_per_deg
+	g2.append(draw.Text("%d" % (a), 10, dx*300, dy*300))
+
+	g2.append(draw.Line(-dx*500, -dy*500, dx*500, dy*500, class_="thin", stroke=colors[i]))
+
+	cx = dx * h * px_per_deg  # * lat_scale
+	cy = dy * h * px_per_deg
+	print(f"{dx=} {dy=} {cx=} {cy=} {h=}")
+
+	g2.append(draw.Line(
+		cx - lop_len * dy, cy + lop_len * dx,
+		cx + lop_len * dy, cy - lop_len * dx,
+		class_="thick", stroke=colors[i]))
+	g.append(g2)
+
+	i += 1
+	if i == len(colors):
+		break
+
+
+# finally draw a circle for the actual location
+px = modf(pos[1])[0] * px_per_deg * lat_scale
+py = -modf(pos[0])[0] * px_per_deg
+g.append(draw.Circle(px, py, 5, class_="thick", stroke="black"))
+
+d.append(g)
+d.save_svg("lop.svg")
