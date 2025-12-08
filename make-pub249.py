@@ -21,6 +21,7 @@ lat = 0
 dec_max = 40
 lha_max = 150
 scale = 500
+decimal = True
 
 extra_thick = 3
 thick = 1
@@ -329,7 +330,7 @@ def make_compass(r):
 			offset = 0.25
 			rot = 270
 			anchor = "end"
-		pdf_text("%03d" % (a), 10,
+		pdf_text("%03d" % (a), 15,
 			*compute_xy(scale+10, (a+offset)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
@@ -345,7 +346,7 @@ def make_compass(r):
 			offset = +0.25
 			rot = 90
 			anchor = "end"
-		pdf_text("%03d" % (a), 10,
+		pdf_text("%03d" % (a), 15,
 			*compute_xy(scale+10, 180+(a+offset)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
@@ -365,7 +366,7 @@ def make_linearscale(r,max_v=60, side=1, steps=2):
 	else:
 		text_anchor = "end"
 
-	for v in range(0,max_v*steps+1):
+	for v in range(0,int(max_v*steps)+1):
 		lv = scale_v(v/steps)
 		if v % (10*steps) == 0:
 			w = thick * 0.5
@@ -444,7 +445,7 @@ def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 		pdf_lines([0, lv, -text_offset, lv], width=thick)
 
 def make_checklist(lat):
-	fs = 12
+	fs = 10
 	ls = 10
 	x = 35 * mm
 	y = 0
@@ -538,17 +539,17 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 		vals = ''
 		dels = ''
 		for lha in range(min_lha, max_lha):
-			(hc,zn) = compute_hczn(lat,dec,lha)
+			(hc_orig,zn) = compute_hczn(lat,dec,lha)
 
 			if min_dec < 0:
 				dec2 = dec - 1
 			else:
 				dec2 = dec + 1
-			(hc2,zn2) = compute_hczn(lat,dec2,lha)
+			(hc2_orig,zn2) = compute_hczn(lat,dec2,lha)
 
 			# round hc up to nearest minute
-			hc = floor(hc*60) / 60
-			hc2 = floor(hc2*60) / 60
+			hc = floor(hc_orig*60) / 60
+			hc2 = floor(hc2_orig*60) / 60
 			if hc < 0:
 				break
 
@@ -561,15 +562,26 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 				y -= dy/2
 			y -= dy
 
-			pdf_text(
-				"% 2d %02d" %(degs,mins),
+			if decimal:
+				d_decimal = (hc2_orig - hc_orig) * 100
+				if d_decimal > 99:
+					d_decimal = 99
+				if d_decimal < -99:
+					d_decimal = -99
+				txt = " %5.2f" % (hc_orig)
+				d_txt = "%+3d" % (d_decimal)
+			else:
+				txt = "% 2d %02d" % (degs,mins)
+				d_txt = "%+d" % (d)
+
+			pdf_text(txt,
 				text_size,
 				0, y,
 				text_anchor="end",
 			)
 
 			pdf_text(
-				"%+d" % (d),
+				d_txt,
 				text_size-1,
 				0, y,
 				text_anchor="start",
@@ -601,27 +613,30 @@ def make_hc_table(lat,min_dec=-22,max_dec=22,min_lha=0,max_lha=90):
 
 	return
 
-def make_latlon_scale(r, lat, steps=2):
-	make_linearscale(r, max_v = 60, side=1, steps=steps)
-	make_linearscale(r*cos(radians(lat)), max_v = 60, side=-1, steps=steps)
+def make_latlon_scale(r, lat, steps=2, max_v=60):
+	make_linearscale(r, max_v = max_v, side=1, steps=steps)
+	make_linearscale(r*cos(radians(lat)), max_v = max_v, side=-1, steps=steps)
 
 
 # A circular scale with lat on one side and lon on the other
 # to allow measurement of minutes at this latitude
-def make_latlon_circle(r, lat, steps=2):
+def make_latlon_circle(r, lat, steps=2, max_v = 60):
 	lon_scale = cos(radians(lat))
-	make_linearscale(r*lon_scale, max_v = 60, side=1, steps=steps)
+	make_linearscale(r*lon_scale, max_v = max_v, side=1, steps=steps)
+	if decimal:
+		with pdf_translate(+22, 0):
+			make_linearscale(r*lon_scale, max_v=60, side=1, steps=steps)
 
-	for dr in range(5,61,5):
+	for dr in range(5,max_v+1,5):
 		pts = []
 		for a in range(0,91,1):
-			pr = dr * r / 60
+			pr = dr * r / max_v
 			(x,y) = compute_xy(pr,a)
 			px = x * lon_scale
 			#(hc,zn) = compute_hczn(lat, lat + del_lat/60, del_lon/60)
 			pts += [-y,px]
 
-			if a % 20 != 15 or a == 0 or a == 90 or dr == 60 or dr <= 10:
+			if a % 20 != 15 or a == 0 or a == 90 or dr == max_v or dr <= 10:
 				continue
 
 			# back compute the display angle
@@ -654,11 +669,18 @@ def make_latlon_circle(r, lat, steps=2):
 
 
 	pdf.rotate(90)
-	make_linearscale(r, max_v=60, side=-1, steps=steps)
+	make_linearscale(r, max_v=max_v, side=-1, steps=steps)
+	if decimal:
+		with pdf_translate(-22, 0):
+			make_linearscale(r, max_v=60, side=-1, steps=steps)
 
 
 def make_gunter(scale, lat):
-	make_scale(scale, logscale=True, extra_ticks = [cos(radians(lat)) * 60])
+	if decimal:
+		max_v = 100
+	else:
+		max_v = 60
+	make_scale(scale, max_v=max_v, logscale=True, extra_ticks = [cos(radians(lat)) * max_v])
 	#pdf.rotate(180)
 	#pdf.translate(0,-scale)
 	#make_logscale(scale)
@@ -700,30 +722,39 @@ def make_chart(lat):
 			)
 
 
-	left = pagesize[0] - 3 * margin
+	left = pagesize[0] - 2 * margin
 
-	with pdf_transform(1*margin, 2*margin, -90):
-		make_latlon_circle(3*inch, lat)
+	if decimal:
+		max_v = 100
+		small_steps = 0.5
+	else:
+		max_v = 60
+		small_steps = 1
+
+	with pdf_transform(2*margin, 2*margin, -90):
+		make_latlon_circle(3*inch, lat, max_v=max_v)
 
 	with pdf_translate(left, margin):
-		make_gunter((6 + 1.5 + 0.25)*inch, lat)
+		make_gunter((6 + 1.5 + 0.15)*inch, lat)
 	with pdf_translate(left - 15*mm, margin):
-		make_latlon_scale(6*inch, lat)
-	with pdf_translate(left - 15*mm, 6.25*inch + margin):
-		make_latlon_scale(1.5*inch, lat, steps=1)
+		make_latlon_scale(6*inch, lat, max_v=max_v)
+	with pdf_translate(left - 15*mm, 6.15*inch + margin):
+		make_latlon_scale(1.5*inch, lat, max_v=max_v, steps=small_steps)
 
 	with pdf_translate(margin, pagesize[1] - margin):
 		make_checklist(lat)
 
 	pdf.showPage()
 
+# 24-hour clock with GHA
 def make_gha(r):
-	inner_r = r - 50
+	inner_r = r - 40
 
 	pdf.setLineWidth(thick)
 	pdf.setStrokeColor(black)
 	pdf.circle(0, 0, r)
 	pdf.circle(0, 0, inner_r)
+	pdf.circle(0, 0, 1)
 
 
 	for hour in range(0,24):
@@ -766,11 +797,23 @@ def make_gha(r):
 			mins *= -60
 		else:
 			mins *= +60
-		txt = "%+d°%02d'" % (degs,mins)
+
+		sz = 5
+		txt_offset = 6
+
+		if a % 15 == 0:
+			sz = 8
+			txt = "%+.0f" % (a)
+			txt_offset = 10
+		elif decimal:
+			txt = "%+.1f" % (a)
+		else:
+			txt = "%+d°%02d'" % (degs,mins)
 		
 		with pdf_rotate(-a + text_offset):
 			pdf_text(txt,
-				5, 0, r+10,
+				5 if a % 15 else 8,
+				0, r+txt_offset,
 				text_angle=text_angle,
 				text_anchor=text_anchor,
 			)
@@ -778,22 +821,28 @@ def make_gha(r):
 	for minute in range(0,60,1):
 		a = minute * 360 / 60
 		with pdf_rotate(-a):
+			w = thin
+			c = gray
 			if a % 5 == 0:
+				w = thick
+				c = black
 				pdf_text("%02d" % (minute),
 					10, 0, inner_r - 8,
 					text_angle=a,
 					text_anchor='middle',
 					vert_align="middle",
 				)
-				w = thick
-				c = black
-			else:
-				w = thin
-				c = gray
 			pdf_lines([0, inner_r, 0, inner_r+5], width=w, color=c)
 		(mins,degs) = modf(minute * 15 / 60)
 		mins *= +60
-		txt = "%d°%02d'" % (degs,mins)
+		sz = 5
+		if mins == 0:
+			txt = "%.0f" % (degs)
+			sz = 8
+		elif decimal:
+			txt = "%.2f" % (minute * 15 / 60)
+		else:
+			txt = "%d°%02d'" % (degs,mins)
 
 		if a < 180:
 			text_angle = +90
@@ -806,15 +855,23 @@ def make_gha(r):
 
 		with pdf_rotate(-a+text_offset):
 			pdf_text(txt,
-				5, 0, inner_r + 6,
+				sz, 0, inner_r + 6,
 				text_angle=text_angle,
 				text_anchor=text_anchor,
 			)
+			if a % 5 == 0:
+				continue
+			pdf_text("%02d" % (minute),
+				5, 0, inner_r - 8,
+				text_angle=text_angle,
+				text_anchor=text_anchor,
+			)
+				
 		
 		
 
 
-def make_times():
+def make_times(scale=60,sz=8):
 	key = "time60"
 	pdf.bookmarkPage(key)
 	pdf.addOutlineEntry("Times table", key, 0, 0)
@@ -825,37 +882,37 @@ def make_times():
 	#pdf.showPage()
 	#return
 
-	dx = (pagesize[0] - 2 * margin) / (60 + 0)
-	dy = (pagesize[1] - 2 * margin) / (60 + 0)
+	dx = (pagesize[0] - 2 * margin) / (scale + 0)
+	dy = (pagesize[1] - 2 * margin) / (scale + 0)
 
 	with pdf_translate(margin,pagesize[1] - margin):
-		for a in range(1,60):
+		for a in range(1,scale+1):
 			# left axis
-			pdf_text("%2d" % (a), 9, dx*0.75 , -a*dy-1, font="Helvetica", text_anchor="end")
+			pdf_text("%2d" % (a), sz+1, dx*0.75 , -a*dy-1, font="Helvetica", text_anchor="end")
 			# bottom axis
-			pdf_text("%2d" % (a), 9, a * dx, -60.25*dy, font="Helvetica", text_anchor="middle")
-			for b in range(a,60):
-				pdf_text("%2d" % (a * b / 60),
-					8,
+			pdf_text("%2d" % (a), sz+1, a * dx, -(scale+0.25)*dy, font="Helvetica", text_anchor="middle")
+			for b in range(a,scale):
+				pdf_text("%2d" % (a * b / scale),
+					sz,
 					a*dx, -b*dy,
 					text_anchor="middle",
 				)
 
 			# don't include the last lines
-			if a == 59:
+			if a == scale-1:
 				break
 
 			x1 = dx
 			x2 = (a + 0.5) * dx
 			y1 = -a * dy - 2
-			y2 = -59 * dy
+			y2 = -(scale-1) * dy
 			c = gray
 			w = thin
 
 			if a % 10 == 9:
 				c = black
 				w = thick
-				y2 = -60.5*dy
+				y2 = -(scale+0.5)*dy
 				x1 = 0
 			elif a % 5 == 4:
 				c = black
@@ -889,7 +946,10 @@ def make_book(min_lat=0,max_lat=60):
 		print("making %d" % (lat))
 		make_latitude(lat)
 
-make_times()
+if decimal:
+	make_times(100, 5)
+else:
+	make_times()
 make_latitude(0)
 make_latitude(52)
 
