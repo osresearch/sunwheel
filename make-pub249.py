@@ -1014,15 +1014,26 @@ def make_book(min_lat=0,max_lat=60):
 
 # generate the pages of haversine and log(haversine)
 # they are scaled to be in the range 0.00000 to 1.00000
-def make_haversine():
-	sz = 6
-	line_sz = 5.25
-	col_size = 30 * mm
-	steps = 10
+def make_haversine(min_a = 0, max_a=90, steps=10):
+	sz = 8
+	line_sz = 7.5
+	col_size = 35 * mm
 	rows = 100
 	x = 2*margin
 	y = 0
-	for i in range(0,90*steps,1):
+	y_offset = pagesize[0] - margin
+	pdf.circle(0,0,10)
+	for i in range(min_a*steps,max_a*steps,1):
+		if i % rows == 0:
+			# add a column header
+			pdf_text("θ  Hav   LogHav", sz,
+				x, y_offset - y + 2,
+				text_anchor="start",
+			)
+			pdf_lines([x, y_offset - y + 1, x+col_size-10*mm, y_offset - y + 1],
+				width=thin, color=black
+			)
+
 		a = i / steps
 		ac = 90 - a
 		h = haversine(radians(a))
@@ -1037,15 +1048,15 @@ def make_haversine():
 		a_frac = i % steps
 		ac_frac = modf(ac)[0] * 10
 		if a_frac == 0:
-			y += 2
-		py = pagesize[1] - margin - y
+			y += 5
+		py = y_offset - y
 
 		if a_frac == 0:
 			pdf_text("%d" % (a),
-				sz+2, x-1, py-1,
+				sz+3, x-1, py-1,
 				text_anchor="end",
 			)
-		pdf_text("%d %05d %05d" % (a_frac, h, hl),
+		pdf_text("%d  %05d  %05d" % (a_frac, h, hl),
 			sz,
 			x,
 			py,
@@ -1056,8 +1067,6 @@ def make_haversine():
 		if i % rows == rows - 1:
 			y = 0
 			x += col_size
-		
-	pdf.showPage()
 
 # Generate the lookup table for the declinations at this latitude
 def make_haversine_list(lat):
@@ -1065,25 +1074,84 @@ def make_haversine_list(lat):
 	sz = 9
 	y = 0
 
-	pdf_text("Dec  CCL   Hav+  Hav-", sz, 0, y, text_anchor="start")
-                 # xx 12345 12345 12345
+	pdf_text("Dec CCL    Hav+   d   Hav-   d",
+                #  xx 12345  12345 +xx  12345 xxx
+		sz, 0, y, text_anchor="start")
 	y -= sz
 
 	for dec in range(0,23+1):
 		cc = cos(radians(lat)) * cos(radians(dec))
 		ccl = log(cc) * -10000
 		h_same = haversine(radians(lat - dec)) * 100000
+		h2_same = haversine(radians(lat - dec - 1)) * 100000
 		h_contrary = haversine(radians(lat + dec)) * 100000
+		h2_contrary = haversine(radians(lat + dec + 1)) * 100000
 
-		pdf_text("%3d %05d %05d %05d" % (dec, ccl, h_same, h_contrary),
+		d1 = (h2_same - h_same) / 10
+		d2 = (h2_contrary - h_contrary) / 10
+
+		pdf_text("%3d %05d  %05d %+02d  %05d %+02d" % (dec, ccl, h_same, d1, h_contrary, d2),
 			sz,
 			0,
 			y  - dec * sz,
 			text_anchor="start",
 		)
 
-make_haversine()
+def make_gha_table():
+	sz = 6
+	line_sz = 5.25
+	y = 0
+	col_x = 25*mm
 
+	for x in [0,col_x]:
+		pdf_text("UTC  Angle",
+			sz + 2,
+			x-10, y + sz + 1,
+			text_anchor="start",
+		)
+		pdf_lines([x-10, y+sz, x+col_x-10*mm, y+sz], width=thin)
+			
+	for hour in range(0, 12):
+		pdf_text("%02d:" % (hour), sz + 2,
+			0, y,
+			text_anchor="end",
+		)
+		pdf_text("%02d:" % (hour+12), sz + 2,
+			col_x, y,
+			text_anchor="end",
+		)
+		for minute in range(0,60,5):
+			a1 = (hour + minute/60) * 15 - 180
+			a2 = a1 + 180
+			pdf_text("%02d % +7.2f" % (minute,a1),
+				sz,
+				0, y,
+				text_anchor="start",
+			)
+			pdf_text("%02d % +7.2f" % (minute,a2),
+				sz,
+				col_x, y,
+				text_anchor="start",
+			)
+			y -= line_sz
+		y -= 3
+
+def make_haversine_pages():
+	# first page is angles 0 to 50
+	with pdf_rotate(90):
+		with pdf_translate(0,-pagesize[0]):
+			make_haversine(0, 50)
+	pdf.showPage()
+
+	# second page is 50 to 90 and the UTC to hour angle chart
+	with pdf_rotate(90):
+		with pdf_translate(0,-pagesize[0]):
+			make_haversine(50, 90)
+		with pdf_translate(160*mm,-margin-5):
+			make_gha_table()
+	pdf.showPage()
+
+make_haversine_pages()
 
 if decimal:
 	make_times(100, 5)
