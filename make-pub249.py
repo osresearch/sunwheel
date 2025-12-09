@@ -135,6 +135,8 @@ def pdf_text(txt, sz, x, y, text_angle=0, line_size=None, text_anchor="middle", 
 
 def make_hczn(lat):
 	hc_scale = lambda hc: (90 - hc) * scale / 90
+	pdf.setLineWidth(thick)
+	pdf.circle(0, 0, 5)
 	for dec in range(-dec_max,dec_max+1):
 		pts = []
 		for lha in range(-lha_max,lha_max+1):
@@ -250,12 +252,12 @@ def make_hczn(lat):
 			
 	return
 
-def make_compass(r):
+def make_compass(r, draw_red = True, fs=15, faint=False):
 	#g.append(draw.Circle(r=r, cx=0, cy=0, class_="thin"))
 
 	pts = []
 	for a in range(0,360):
-		c = black
+		c = gray if faint else black
 		if a % 45 == 0:
 			w = extra_thick
 			l = 10
@@ -278,15 +280,16 @@ def make_compass(r):
 		)
 		pts += compute_xy(r,a)
 
-	pdf_lines(pts, width=thick)
+	pdf_lines(pts, width=thick, color=gray if faint else black)
 
 	# LHA=0 vertical line
-	pdf_lines([
-		0,-r - 10,
-		0,+r + 10,
-		],
-		width = extra_thick
-	)
+	if draw_red:
+		pdf_lines([
+			0,-r - 10,
+			0,+r + 10,
+			],
+			width = extra_thick
+		)
 
 	# east/west lines are split so they
 	# don't overlap with the grid
@@ -301,8 +304,6 @@ def make_compass(r):
 #		class_="extra-thick",
 #	))
 
-	pdf.setLineWidth(thick)
-	pdf.circle(0, 0, 5)
 	#g.append(draw.Circle(0,0, 10, fill="#000", stroke="none"))
 #	pdf_lines([
 #		-50,0,
@@ -330,13 +331,19 @@ def make_compass(r):
 			offset = 0.25
 			rot = 270
 			anchor = "end"
-		pdf_text("%03d" % (a), 15,
-			*compute_xy(scale+10, (a+offset)),
+		if not draw_red:
+			offset *= -2
+		pdf_text("%03d" % (a), fs,
+			*compute_xy(r+10, (a+offset)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
+			color=gray if faint else black,
 		)
 
 	# red going the other
+	if not draw_red:
+		return
+
 	for a in range(0,360,10):
 		if a <= 180:
 			offset = -0.25
@@ -346,8 +353,8 @@ def make_compass(r):
 			offset = +0.25
 			rot = 90
 			anchor = "end"
-		pdf_text("%03d" % (a), 15,
-			*compute_xy(scale+10, 180+(a+offset)),
+		pdf_text("%03d" % (a), fs,
+			*compute_xy(r+10, 180+(a+offset)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
 			color = red,
@@ -355,8 +362,11 @@ def make_compass(r):
 	return
 
 
-def make_linearscale(r,max_v=60, side=1, steps=2):
-	pdf_lines([0,0, 0, r], width=thick)
+def make_linearscale(r,max_v=60, side=1, steps=2, faint=False, fs=8):
+	default_color = gray if faint else black
+
+	pdf_lines([0,0, 0, r], width=thick, color=default_color)
+
 	def scale_v(v):
 		return v / max_v * r
 
@@ -370,11 +380,11 @@ def make_linearscale(r,max_v=60, side=1, steps=2):
 		lv = scale_v(v/steps)
 		if v % (10*steps) == 0:
 			w = thick * 0.5
-			c = black
+			c = default_color
 			l = text_offset
 		elif v % (5*steps) == 0:
 			w = thick * 0.5
-			c = black
+			c = default_color
 			l = text_offset - 4
 		elif v % steps == 0:
 			w = thick * 0.5
@@ -388,7 +398,13 @@ def make_linearscale(r,max_v=60, side=1, steps=2):
 		pdf_lines([0, lv, l*side, lv], width=w, color=c)
 		if v % (5*steps) != 0:
 			continue
-		pdf_text("%d" % (v//steps), 8, text_offset*side, lv, text_anchor=text_anchor)
+
+		pdf_text("%d" % (v//steps), fs,
+			text_offset*side,
+			lv,
+			text_anchor=text_anchor,
+			color=default_color,
+		)
 
 def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 	pdf_lines([0,0, 0, r], width=thick)
@@ -447,45 +463,61 @@ def make_scale(r,max_v=60,direction=1, logscale=None,extra_ticks=[]):
 def make_checklist(lat):
 	fs = 10
 	ls = 10
-	x = 35 * mm
+	x = 30 * mm
 	y = 0
-	y += pdf_text("""
-Height
-+IC
--Eye
--Temp/Refr
-+Lower/-Upper
-----
-Ho
-""",
-		fs, x, y,
-		text_anchor="end",
-	)
 
-	y += pdf_text("""
-Time (UTC)
-Noon Decl
-Observed Decl
+	def text(s):
+		return pdf_text(s, fs, x, y, text_anchor="end")
+	def line(x1=50,x2=0,y_offset=2):
+		pdf_lines([x+x1,y+fs-y_offset,x+x2,y+fs-y_offset], width=thin)
 
-GHA
-+ EOT
-- DR Lon
-----
-LHA
+	y += text("""
+Date:
+EOT:
+Decl & d:
+DR Lat/Lon:
 
-Zn
-DR Height
-+/- d
----
-Hc
-""",
-		fs, x, y,
-		text_anchor="end",
-	)
+Apparent Height=
++ Index Error:
+- Eye / Dip:
+- Refraction:""")
 
-	y += pdf_text("Ho < Hc => Away",
-		fs-1, x, y,
-		text_anchor="end",
+	line(50)
+	y += text("Hs=\n+Lower/-Upper:")
+	line(50)
+	y += text("Ho=")
+
+	line(-50,50,8)
+
+	y += text("""
+Time (UTC):
+Hour Angle:
++ EOT:
+DR Lon (+W/-E):""")
+	line(50)
+
+	y += text("LHA=")
+
+	line(-50,50,8)
+
+	y += text("""
+Zn Lat/Dec/LHA:
+
+Hu Lat/Dec/LHA:
+Dec frac _____:
+LHA frac _____:""")
+	line(50)
+
+	y += text("""Hc=
+Ho=""")
+	line(50)
+
+	y += text("Intercept=")
+
+	y += pdf_text("""Ho < Hc => Away
+Ho > Hc => Towards""",
+		fs-4, x, y,
+		text_anchor="start",
 	)
 	
 
@@ -742,7 +774,8 @@ def make_chart(lat):
 		make_latlon_scale(1.5*inch, lat, max_v=max_v, steps=small_steps)
 
 	with pdf_translate(margin, pagesize[1] - margin):
-		make_checklist(lat)
+		#make_checklist(lat)
+		make_haversine_list(lat)
 
 	pdf.showPage()
 
@@ -938,6 +971,39 @@ def make_latitude(lat):
 	make_chart(lat)
 	make_tables(lat)
 
+
+def make_worksheet(scale):
+	# draw the list of things to fill in
+	with pdf_translate(margin, pagesize[1] - 5):
+		with pdf_scale(0.6):
+			make_checklist(lat)
+
+	# ensure that the big compass is in the center
+	line_width = (pagesize[0]/2) - margin
+	with pdf_translate(pagesize[0]/2, pagesize[1]/2):
+		for y in range(0, 10):
+			py = scale/2 * y
+			if py > pagesize[1]/2:
+				break
+			pdf_lines([-line_width,py, +line_width,py],
+				color=gray,
+				width=thin,
+			)
+			pdf_lines([-line_width,-py, +line_width,-py],
+				color=gray,
+				width=thin,
+			)
+		pdf_lines([0, -pagesize[1]/2, 0, +pagesize[1]/2],
+			color=gray,
+			width=thin,
+		)
+
+		with pdf_scale(scale / 500 / 2):
+			make_compass(500, draw_red=False, fs=15, faint=True)
+			make_linearscale(500, max_v=60, side=-1, faint=True, fs=15)
+			make_linearscale(500, max_v=100, side=+1, faint=True, fs=15)
+	pdf.showPage()
+
 def make_book(min_lat=0,max_lat=60):
 	# title page
 	# intro page
@@ -946,12 +1012,87 @@ def make_book(min_lat=0,max_lat=60):
 		print("making %d" % (lat))
 		make_latitude(lat)
 
+# generate the pages of haversine and log(haversine)
+# they are scaled to be in the range 0.00000 to 1.00000
+def make_haversine():
+	sz = 6
+	line_sz = 5.25
+	col_size = 30 * mm
+	steps = 10
+	rows = 100
+	x = 2*margin
+	y = 0
+	for i in range(0,90*steps,1):
+		a = i / steps
+		ac = 90 - a
+		h = haversine(radians(a))
+		if h == 0:
+			hl = 99999
+		else:
+			hl = log(h) * -10000
+		if hl > 99999:
+			hl = 99999;
+		h *= 100000
+		
+		a_frac = i % steps
+		ac_frac = modf(ac)[0] * 10
+		if a_frac == 0:
+			y += 2
+		py = pagesize[1] - margin - y
+
+		if a_frac == 0:
+			pdf_text("%d" % (a),
+				sz+2, x-1, py-1,
+				text_anchor="end",
+			)
+		pdf_text("%d %05d %05d" % (a_frac, h, hl),
+			sz,
+			x,
+			py,
+			text_anchor = "start",
+		)
+
+		y += line_sz
+		if i % rows == rows - 1:
+			y = 0
+			x += col_size
+		
+	pdf.showPage()
+
+# Generate the lookup table for the declinations at this latitude
+def make_haversine_list(lat):
+	x = 0
+	sz = 9
+	y = 0
+
+	pdf_text("Dec  CCL   Hav+  Hav-", sz, 0, y, text_anchor="start")
+                 # xx 12345 12345 12345
+	y -= sz
+
+	for dec in range(0,23+1):
+		cc = cos(radians(lat)) * cos(radians(dec))
+		ccl = log(cc) * -10000
+		h_same = haversine(radians(lat - dec)) * 100000
+		h_contrary = haversine(radians(lat + dec)) * 100000
+
+		pdf_text("%3d %05d %05d %05d" % (dec, ccl, h_same, h_contrary),
+			sz,
+			0,
+			y  - dec * sz,
+			text_anchor="start",
+		)
+
+make_haversine()
+
+
 if decimal:
 	make_times(100, 5)
 else:
 	make_times()
 make_latitude(0)
 make_latitude(52)
+make_worksheet(6 * inch)
+make_worksheet(3 * inch)
 
 #pdf.saveState()
 #pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)
