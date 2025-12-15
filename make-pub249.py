@@ -3,7 +3,7 @@
 # Generate a circular web diagram of a given lattitude
 # that allows Hc and Zn to be read directly.
 import drawsvg as draw
-from math import radians, cos, sin, acos, asin, degrees, log, floor, modf, atan2, sqrt, fabs
+from math import radians, cos, sin, acos, asin, degrees, log, floor, modf, atan2, sqrt, fabs, exp
 import re
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4, landscape
@@ -18,7 +18,7 @@ pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
 pdf.setTitle("Sight Reduction Tables")
 
 lat = 0
-dec_max = 40
+dec_max = 80
 lha_max = 150
 scale = 500
 decimal = True
@@ -1019,20 +1019,28 @@ def make_haversine(min_a = 0, max_a=90, steps=10):
 	line_sz = 7.5
 	col_size = 35 * mm
 	rows = 100
-	x = 2*margin
-	y = 0
+	x_offset = 2*margin
 	y_offset = pagesize[0] - margin
 	pdf.circle(0,0,10)
+
+	def compute_axy(a, x_shift):
+		ay = y_offset - (((a - min_a) * steps) % rows) * line_sz
+		ax = x_offset + x_shift + (((a - min_a) * steps) // rows) * col_size
+		return (ax,ay)
+
+
 	for i in range(min_a*steps,max_a*steps,1):
 		if i % rows == 0:
 			# add a column header
-			pdf_text("θ  Hav   LogHav", sz,
-				x, y_offset - y + 2,
-				text_anchor="start",
-			)
-			pdf_lines([x, y_offset - y + 1, x+col_size-10*mm, y_offset - y + 1],
-				width=thin, color=black
-			)
+#			pdf_text("θ  Hav   LogHav", sz,
+#				x, y_offset - y + 2,
+#				text_anchor="start",
+#			)
+#			pdf_lines([x, y_offset - y + 1, x+col_size-10*mm, y_offset - y + 1],
+#				width=thin, color=black
+#			)
+			#pdf_lines([
+			pass
 
 		a = i / steps
 		ac = 90 - a
@@ -1047,26 +1055,64 @@ def make_haversine(min_a = 0, max_a=90, steps=10):
 		
 		a_frac = i % steps
 		ac_frac = modf(ac)[0] * 10
-		if a_frac == 0:
-			y += 5
-		py = y_offset - y
 
+		(ax,ay) = compute_axy(a,0)
 		if a_frac == 0:
 			pdf_text("%d" % (a),
-				sz+3, x-1, py-1,
+				sz+3,
+				ax-8, ay,
 				text_anchor="end",
 			)
-		pdf_text("%d  %05d  %05d" % (a_frac, h, hl),
-			sz,
-			x,
-			py,
+			width = thick
+		else:
+			pdf_text("%d" % (a_frac),
+				sz,
+				ax-5, ay,
+				text_anchor = "end",
+			)
+			width = thin
+		pdf_lines([ax-5, ay+sz/3, ax, ay+sz/3], width=width)
+
+	def draw_loghav(i):
+		lh = i / 1000
+		a = degrees(ahaversine(exp(-lh)))
+		if a < min_a or a > max_a:
+			return
+		(ax,ay) = compute_axy(a,0)
+		if a < 20:
+			txt = "%.0f" % (lh*10)
+		else:
+			txt = "%.2f" % (lh*10)
+		pdf_text(txt, sz,
+			ax+(5+30)/2, ay,
+			text_anchor = "middle",
+		)
+		width = thin if i % 100 else thick
+		pdf_lines([ax+5, ay+sz/3, ax, ay+sz/3], width=width)
+		pdf_lines([ax+35, ay+sz/3, ax+30, ay+sz/3], width=width)
+	for i in range(100,1720,5):
+		draw_loghav(i)
+	for i in range(1720,3500,10):
+		draw_loghav(i)
+	for i in range(3500,8000,100):
+		draw_loghav(i)
+	for i in range(8000,12000,500):
+		draw_loghav(i)
+
+	for i in range(0, 5000,10):
+		h = i / 10000
+		a = degrees(ahaversine(h))
+		if a < min_a or a > max_a:
+			return
+		(ax,ay) = compute_axy(a,0)
+		pdf_text("%.2f" % (h*100), sz,
+			ax+40, ay,
 			text_anchor = "start",
 		)
-
-		y += line_sz
-		if i % rows == rows - 1:
-			y = 0
-			x += col_size
+		width = thin if i % 100 else thick
+		pdf_lines([ax+35, ay+sz/3, ax+40, ay+sz/3], width=width)
+		
+		
 
 # Generate the lookup table for the declinations at this latitude
 def make_haversine_list(lat):
