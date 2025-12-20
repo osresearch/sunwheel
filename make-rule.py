@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # Generates the slide rule elements using SVG
+# The back of the rule is no longer rotating, it has a universal
+# astrolabe!
 #
 
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor
@@ -1873,6 +1875,108 @@ def log60_scales(inner,outer):
 	))
 	outer.append(draw_marker("1", cut, 0))
 
+
+# Make a universal astrolabe projection
+# https://www.neacsu.net/geodesy/snyder/5-azimuthal/sect_21/
+def stereographic_project(r,lat,lon,clon=0):
+	lat = radians(lat)
+	lon = radians(lon)
+	k0 = 1
+	k = 2 * k0 / (1 + cos(lat) * cos(lon - clon))
+	y = r * k * sin(lat)
+	x = r * k * cos(lat) * sin(lon - clon)
+	return (x,-y)
+
+	lat = radians(lat)
+	lon = radians(lon)
+	slat = sin(lat)
+	slon = sin(lon)
+	clat = cos(lat)
+	clon = cos(lon)
+
+	x = clat * slon / (1 + slat)
+	y = clat * clon / (1 + slat)
+	return (x,y)
+	
+def make_astrolabe(R):
+	g = draw.Group(class_="astrolabe") #transform="translate(%f %f)" % (R/2,R/2))
+	max_lat = 80
+	max_lha = 90
+
+	# horizontal "parallels" for every other latitude
+	for lat in range(-max_lat,max_lat+1,2):
+		pts = []
+		for lha in range(-max_lha, max_lha+1):
+			(x,y) = stereographic_project(R/2,lat,lha)
+			pts += (x,y)
+		stroke = "black"
+		if lat % 10 == 0:
+			stroke_width = 1
+		elif lat % 5 == 0:
+			stroke_width = 0.5
+			stroke = "gray"
+		else:
+			stroke_width = 0.2
+			stroke = "gray"
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke=stroke,
+			stroke_width=stroke_width,
+		))
+
+	# horizontal tick marks for each solid latitude
+	for lat in range(-max_lat+1,max_lat,2):
+		pts = []
+		for lha in range(-max_lha, -max_lha+2):
+			(x,y) = stereographic_project(R/2,lat,lha)
+			pts += (x,y)
+		stroke = "black"
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke="gray",
+			stroke_width=0.2,
+		))
+
+	# vertical "meridians" for each hour angle
+	for lha in range(-max_lha,max_lha+1):
+		pts = []
+		for lat in range(-max_lat,max_lat+1):
+			(x,y) = stereographic_project(R/2,lat,lha)
+			pts += (x,y)
+		stroke = "black"
+		if lha % 10 == 0:
+			stroke_width = 1
+		elif lha % 5 == 0:
+			stroke_width = 0.5
+			stroke = "gray"
+		else:
+			stroke_width = 0.2
+			stroke = "gray"
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke=stroke,
+			stroke_width=stroke_width,
+		))
+
+	# draw the equator quite strongly
+	g.append(draw.Lines(-R,0, +R,0,
+		fill='none',
+		stroke="black",
+		stroke_width=3,
+	))
+
+	# draw the ecliptic
+	g.append(draw.Lines(
+		*stereographic_project(R/2,-23.5,-90),
+		*stereographic_project(R/2,+23.5,+90),
+		fill='none',
+		stroke="red",
+		stroke_width=1,
+	))
+		
+
+	return g
+
 ####
 #### Front side
 ####
@@ -1928,7 +2032,7 @@ inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg
 
 ####
 #### Reverse side
-#### uses a smaller inner disc
+#### no longer has an inner disk
 ####
 cut = 410
 img_sz = cut * 2
@@ -1936,28 +2040,28 @@ back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 back.append(pointer)
 
 outer = draw.Group(id="back_outer")
-inner = draw.Group(id="back_inner")
+#inner = draw.Group(id="back_inner")
 #inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
 
-inner.append(axle)
-outer.append(axle)
-inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
+#inner.append(axle)
+#outer.append(axle)
+#inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
 
 # Make the minutes seconds rings with divisions every 5 seconds
-inner.append(make_minutes(cut, side=1, divisions=60*6, divisions2=60*6*2))
-outer.append(make_minutes(cut, side=2, divisions=60*6, divisions2=60*6*2))
+#inner.append(make_minutes(cut, side=1, divisions=60*6, divisions2=60*6*2))
+#outer.append(make_minutes(cut, side=2, divisions=60*6, divisions2=60*6*2))
 
 
-outer.append(make_fractional_minutes(cut + 88))
+#outer.append(make_fractional_minutes(cut + 88))
 #outer.append(make_ninety_minus(450, False))
 #outer.append(make_sine_nolog(cut+45))
 #outer.append(make_haversine(cut+75))
 
 # rule for 360 degree circle with reverse angles as well
-outer.append(make_fifteen_degrees(cut-40))
-inner.append(make_360_clock(cut-60))
-inner.append(make_equation_of_time(cut-180))
+#outer.append(make_fifteen_degrees(cut-40))
+#inner.append(make_360_clock(cut-60))
+#inner.append(make_equation_of_time(cut-180))
 #inner.append(make_offsets(cut - 25))
 
 # 90 degree circle and sine/cosine tables
@@ -1978,8 +2082,10 @@ inner.append(make_equation_of_time(cut-180))
 #back.append(make_log_cosine(320))
 #back.append(make_sin_sin_scale(200))
 
+back.append(make_astrolabe(outer_cut))
+
 back.append(outer)
-back.append(inner)
+#back.append(inner)
 
 # paper pointer until a better one can be made
 
