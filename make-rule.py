@@ -1898,20 +1898,24 @@ def stereographic_project(r,lat,lon,clon=0):
 	y = clat * clon / (1 + slat)
 	return (x,y)
 	
-def make_astrolabe(R):
+def make_astrolabe(scale):
+	R = scale - 10
 	g = draw.Group(class_="astrolabe") #transform="translate(%f %f)" % (R/2,R/2))
+	min_lat = -30
 	max_lat = 80
 	max_lha = 90
+	ecliptic = 23.4
 
 	# horizontal "parallels" for every other latitude
-	for lat in range(-max_lat,max_lat+1,2):
+	for lat in range(min_lat,max_lat+1,1):
 		pts = []
 		for lha in range(-max_lha, max_lha+1):
-			(x,y) = stereographic_project(R/2,lat,lha)
-			pts += (x,y)
+			pts += stereographic_project(R/2,lat,lha)
 		stroke = "black"
 		if lat % 10 == 0:
 			stroke_width = 1
+		elif lat % 2 != 0:
+			continue
 		elif lat % 5 == 0:
 			stroke_width = 0.5
 			stroke = "gray"
@@ -1924,30 +1928,17 @@ def make_astrolabe(R):
 			stroke_width=stroke_width,
 		))
 
-	# horizontal tick marks for each solid latitude
-	for lat in range(-max_lat+1,max_lat,2):
-		pts = []
-		for lha in range(-max_lha, -max_lha+2):
-			(x,y) = stereographic_project(R/2,lat,lha)
-			pts += (x,y)
-		stroke = "black"
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke="gray",
-			stroke_width=0.2,
-		))
-
 	# vertical "meridians" for each hour angle
 	for lha in range(-max_lha,max_lha+1):
 		pts = []
-		for lat in range(-max_lat,max_lat+1):
+		for lat in range(min_lat,max_lat+1):
 			(x,y) = stereographic_project(R/2,lat,lha)
 			pts += (x,y)
 		stroke = "black"
 		if lha % 10 == 0:
 			stroke_width = 1
 		elif lha % 5 == 0:
-			stroke_width = 0.5
+			stroke_width = 0.8
 			stroke = "gray"
 		else:
 			stroke_width = 0.2
@@ -1956,6 +1947,33 @@ def make_astrolabe(R):
 			fill='none',
 			stroke=stroke,
 			stroke_width=stroke_width,
+		))
+
+	# horizontal tick marks for each solid latitude
+	for lat in range(min_lat,90,1):
+		(x,y) = stereographic_project(R/2,lat,lha)
+		a = degrees(atan2(y,x))
+		pts = [x,y, *compute_xy(scale,a)]
+		stroke = "black"
+		if lat % 10 == 0:
+			stroke_width = 1
+		elif lat % 5 == 0:
+			stroke_width = 0.5
+			stroke = "gray"
+		else:
+			stroke_width = 0.2
+			stroke = "gray"
+
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke=stroke,
+			stroke_width=stroke_width,
+		))
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke=stroke,
+			stroke_width=stroke_width,
+			transform="scale(-1 1)",
 		))
 
 	# draw the equator quite strongly
@@ -1967,14 +1985,110 @@ def make_astrolabe(R):
 
 	# draw the ecliptic
 	g.append(draw.Lines(
-		*stereographic_project(R/2,-23.5,-90),
-		*stereographic_project(R/2,+23.5,+90),
+		*stereographic_project(R/2,-ecliptic,-max_lha),
+		*stereographic_project(R/2,+ecliptic,+max_lha),
 		fill='none',
 		stroke="red",
 		stroke_width=1,
 	))
+	# red horizontal for the tropics
+	pts = []
+	for lha in range(-max_lha, max_lha+1,10):
+		pts += stereographic_project(R/2,ecliptic,lha)
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke="red",
+			stroke_width=1,
+		))
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke="red",
+			stroke_width=1,
+			transform="scale(1 -1)",
+		))
 		
+	# local hour angle text in degrees, both north and south
+	for lha in range(-max_lha+10, max_lha, 10):
+		(x,y) = stereographic_project(R/2,-min_lat+2,lha-1)
+		g.append(draw.Text(
+			"%d" % (max_lha - lha),
+			12,
+			x, y,
+			text_anchor="end",
+			fill='black',
+		))
+		g.append(draw.Text(
+			"%d" % (max_lha - lha),
+			12,
+			x, -y,
+			text_anchor="end",
+			fill='black',
+		))
+	# actual hour angles
+	angle_dec = 50
+	for lha in range(-max_lha+15, max_lha, 15):
+		g.append(draw.Lines(
+			*stereographic_project(R/2,angle_dec+2,lha),
+			*stereographic_project(R/2,angle_dec,lha),
+			*stereographic_project(R/2,angle_dec-2,lha),
+			fill="none",
+			stroke="black",
+			stroke_width=1,
+		))
+		g.append(draw.Text(
+			"%d" % (12 - (max_lha - lha)/15),
+			12,
+			*stereographic_project(R/2,angle_dec+1,lha+0.5),
+			text_anchor="start",
+			fill='black',
+		))
+		g.append(draw.Text(
+			"%d" % (12 + (max_lha - lha)/15),
+			12,
+			*stereographic_project(R/2,angle_dec-2,lha-0.5),
+			text_anchor="end",
+			fill='black',
+		))
 
+	# Latitude for the ruler
+	for lat in range(10,90,10):
+		(x,y) = stereographic_project(R/2-5, lat-1.5, -90)
+		g.append(draw.Text(
+			"%d" % (90-lat),
+			15,
+			x, y,
+			fill="black",
+			text_anchor="start",
+		))
+		g.append(draw.Text(
+			"%d" % (90-lat),
+			15,
+			-x, y,
+			fill="red",
+			text_anchor="end",
+		))
+			
+
+	# bearing angle text
+	north = draw.Group()
+	for lha in range(-max_lha+10, max_lha, 10):
+		# Northern and south hemisphere
+		(x,_) = stereographic_project(R/2,0,lha)
+		north.append(draw.Text(
+			"%03d" % (lha+90),
+			12,
+			x, -15,
+			fill='black',
+			text_anchor='start',
+		))
+		north.append(draw.Text(
+			"%03d" % (180 - lha + 90),
+			12,
+			x, -5,
+			fill='black',
+			text_anchor='end',
+		))
+	g.append(north)
 	return g
 
 ####
@@ -2044,7 +2158,7 @@ outer = draw.Group(id="back_outer")
 #inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
 
 #inner.append(axle)
-#outer.append(axle)
+outer.append(axle)
 #inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
 
