@@ -1914,16 +1914,27 @@ def make_astrolabe(scale):
 	max_lha = 90
 	ecliptic = 23.4
 
-	# horizontal "parallels" for every other latitude
+	# horizontal "parallels" for every latitude below 23
+	# and every other above it
 	for lat in range(min_lat,max_lat+1,1):
 		pts = []
 		for lha in range(-max_lha, max_lha+1):
+			if lat % 2 != 0:
+				# only draw the extra lines where they
+				# are useful: between the ecplicit and
+				# from 06:00 to 18:00
+				if fabs(lat) > 25:
+					continue
+				if lha < 30:
+					continue
+
 			pts += stereographic_project(R/2,lat,lha)
+		if len(pts) == 0:
+			continue
+
 		stroke = "black"
 		if lat % 10 == 0:
 			stroke_width = 1
-		elif lat % 2 != 0:
-			continue
 		elif lat % 5 == 0:
 			stroke_width = 0.5
 			stroke = "gray"
@@ -1992,14 +2003,58 @@ def make_astrolabe(scale):
 	))
 
 	# draw the ecliptic
-	g.append(draw.Lines(
-		*stereographic_project(R/2,-ecliptic,-max_lha),
-		*stereographic_project(R/2,+ecliptic,+max_lha),
+	jday = 0
+	ec = draw.Group(transform="rotate(%.3f)" % (90-ecliptic))
+	ec.append(draw.Lines(
+		0, -scale,
+		0, +scale,
 		fill='none',
 		stroke="green",
 		stroke_width=1,
 	))
-	# red horizontal for the tropics
+
+	ecliptic_decl = lambda jday: declination(jday) * R / ecliptic
+	mday_step = 1
+
+	for month in months:
+		label = month[0]
+		mdays = month[1]
+		d = ecliptic_decl(jday)
+		side = -1 if jday < 172 or jday > 330 else +1
+
+		ec.append(draw.Text(label, 10,
+			12*side, d + (-2 if side > 0 else 10),
+			dominant_baseline="center",
+			fill='green',
+			text_anchor="start" if side > 0 else "end",
+		))
+			
+		for mday in range(0,mdays, mday_step):
+			d = ecliptic_decl(jday)
+			jday += mday_step
+
+			if mday == 0:
+				length = 20
+				width = 2
+			elif mday == 10 or mday == 20:
+				length = 15
+				width = 1
+			elif mday % 5 == 0:
+				length = 10
+				width = 1
+			else:
+				length = 5
+				width = 0.5
+			
+			ec.append(draw.Lines(
+				0, d,
+				side*length, d,
+				stroke="green",
+				stroke_width=width,
+			))
+	g.append(ec)
+
+	# horizontal for the tropics
 	pts = []
 	for lha in range(-max_lha, max_lha+1,10):
 		pts += stereographic_project(R/2,ecliptic,lha)
@@ -2073,23 +2128,39 @@ def make_astrolabe(scale):
 
 	# Latitude for the inner plate
 	for lat in range(10,90,10):
-		(x,y) = stereographic_project(R/2-10, lat, 90)
+		(x,y) = stereographic_project(R/2-15, lat, 90)
 		a = degrees(atan2(y,x))
 		g.append(draw.Text(
 			"%d" % (lat),
 			15,
-			R, 0,
+			R-15, 0,
 			fill="black",
-			text_anchor="end",
-			transform="rotate(%.3f)" % (a),
+			text_anchor="middle",
+			transform="rotate(%.3f)" % (a-0.5),
 		))
 		g.append(draw.Text(
 			"%d" % (lat),
 			15,
-			R, 0,
+			R-15, 0,
 			fill="red",
-			text_anchor="end",
-			transform="rotate(%.3f)" % (0-a),
+			text_anchor="middle",
+			transform="rotate(%.3f)" % (2-a),
+		))
+		g.append(draw.Text(
+			"%d" % (lat),
+			15,
+			-R+15, 0,
+			fill="black",
+			text_anchor="middle",
+			transform="rotate(%.3f)" % (- (a-0.5)),
+		))
+		g.append(draw.Text(
+			"%d" % (lat),
+			15,
+			-R+15, 0,
+			fill="red",
+			text_anchor="middle",
+			transform="rotate(%.3f)" % (- (2-a)),
 		))
 
 	# bearing angle text
@@ -2103,7 +2174,7 @@ def make_astrolabe(scale):
 		(x,y) = stereographic_project(R/2,lat_offset,lha)
 		upper.append(draw.Text(
 			"%d" % (270 - lha),  # should be 360 -> 180
-			13,
+			15,
 			-y, x-2,
 			fill='black',
 			text_anchor='start',
@@ -2111,12 +2182,14 @@ def make_astrolabe(scale):
 		))
 		lower.append(draw.Text(
 			"%d" % (90 - lha), # should be 0 - > 180
-			13,
-			+y, x-2,
+			15,
+			-y, x-2,
 			fill='red',
-			text_anchor='end',
+			text_anchor='start',
 			transform="rotate(90)",
 		))
+
+		continue
 
 		# Lower hemisphere same color code
 		# but opposite side of the line
@@ -2144,8 +2217,8 @@ def make_astrolabe(scale):
 	# to compute the bearing
 	g.append(draw.Lines(
 		  0, -(scale- 0),
-		-10, -(scale-20),
-		+10, -(scale-20),
+		-10, -(scale-30),
+		+10, -(scale-30),
 		stroke="none",
 		fill="black",
 	))
@@ -2197,15 +2270,17 @@ def make_astrolabe_outer(scale, width):
 
 		if lat < 0:
 			color = "red"
+			offset = +2
 		else:
 			color = "black"
+			offset = -0.5
 
 		g.append(draw.Text(
 			"%d" % (fabs(lat)),
 			15,
 			scale + width/2, 0,
 			text_anchor="middle",
-			transform="rotate(%.3f)" % (a),
+			transform="rotate(%.3f)" % (a+offset),
 			fill = color,
 		))
 
@@ -2224,9 +2299,11 @@ def make_astrolabe_outer(scale, width):
 
 	# Line up with the triangles on the outer
 	g.append(draw.Lines(
-		  0, -scale, 0, -R,
-		stroke="black",
-		stroke_width=3,
+		0, -scale,
+		0, -R,
+		-20, -(scale+R)/2,
+		fill="black",
+		stroke="none",
 	))
 	g.append(draw.Lines(
 		  0, +scale, 0, +R,
@@ -2297,7 +2374,6 @@ inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg
 cut = outer_cut - 25
 img_sz = cut * 2
 back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
-back.append(pointer)
 
 outer = draw.Group(id="back_outer")
 inner = draw.Group(id="back_inner")
@@ -2348,35 +2424,14 @@ outer.append(make_astrolabe_outer(cut, outer_cut - cut))
 back.append(outer)
 back.append(inner)
 
-# paper pointer until a better one can be made
-
-pointer_diam = 35
-pointer = draw.Group(class_="spinner")
-pointer.append(axle)
-pointer.append(draw.Circle(0,0,pointer_diam, fill="none", stroke="black", stroke_width=2))
-pointer.append(draw.Lines(
-	+pointer_diam,0,
-	+outer_cut,0,
-	+outer_cut+20,pointer_diam/2,
-	+outer_cut,pointer_diam,
-	0,pointer_diam,
-	fill="white", stroke="black", stroke_width=2, closed=True,
-))
-pointer.append(draw.Line(
-	+pointer_diam,5,
-	+outer_cut,5,
-	stroke="red",
-	stroke_width=10,
-))
-
-#mirror_pointer = draw.Group(transform="scale(1,-1)")
-#mirror_pointer.append(pointer)
-
-#front.append(pointer)
-#back.append(mirror_pointer)
-
-# Use a pointer image
-#d.append(draw.Image(0, 0, 1000+20+pointer_diam*2, 75, path="pointer.svg", embed=False, name="paper-pointer"))
+# The back pointer is 3D printed in the real version
+pointer = draw.Group()
+pointer.append(draw.Rectangle(-15,0, 30, 50, fill="blue"))
+pointer.append(draw.Circle(0, 0, 20, fill="blue"))
+pointer.append(draw.Rectangle(-15,50, 700, 30, fill="blue"))
+pointer.append(draw.Circle(0, 0, 10, fill="black"))
+pointer.append(draw.Rectangle(200, 0, 10, 50, fill="blue"))
+back.append(pointer)
 
 d.append(front)
 d.append(back)
