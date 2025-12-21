@@ -24,10 +24,10 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="0.48833333"
-     inkscape:cx="1498.9761"
-     inkscape:cy="1498.9761"
-     inkscape:window-width="3655"
-     inkscape:window-height="2468"
+     inkscape:cx="1500"
+     inkscape:cy="1497.9522"
+     inkscape:window-width="3263"
+     inkscape:window-height="2304"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -496,7 +496,7 @@
          cy="265.02277"
          r="231.23657" /><g
          id="g51"
-         transform="matrix(-0.00879663,-0.59558787,0.59558787,-0.00879663,167.65021,34.671637)"
+         transform="matrix(-0.00879663,-0.59558787,0.59558787,-0.00879663,178.69906,68.765222)"
          inkscape:transform-center-x="8.9353228"
          inkscape:transform-center-y="-9.0849998"><circle
            style="opacity:1;fill:#000000;stroke:#cccccc;stroke-width:0.247634;stroke-dasharray:none;stroke-opacity:0.981814"
@@ -523,7 +523,7 @@
              x="-42.029701"
              y="203.17032">+</tspan></text></g><g
          id="g53"
-         transform="matrix(-0.09888774,-0.58738702,0.58738702,-0.09888774,201.01599,48.637257)"><circle
+         transform="matrix(-0.09888774,-0.58738702,0.58738702,-0.09888774,192.80828,86.519018)"><circle
            style="opacity:1;fill:#000000;stroke:#cccccc;stroke-width:0.247634;stroke-dasharray:none;stroke-opacity:0.981814"
            id="circle51"
            cx="-63.141598"
@@ -548,7 +548,7 @@
              x="-42.029701"
              y="203.17032">-</tspan></text></g><g
          id="g55"
-         transform="matrix(-0.51820835,0.29370461,-0.29370461,-0.51820835,256.46469,230.71103)"><path
+         transform="matrix(-0.56368572,0.19251157,-0.19251157,-0.56368572,270.86418,211.56022)"><path
            style="opacity:1;fill:none;stroke:#000000;stroke-width:0.3659;stroke-dasharray:none;stroke-opacity:0.981814"
            d="m -71.958706,190.38105 c 1.4122,1.26237 1.78121,2.81071 0,5.0289 -2.19983,2.22011 -0.3038,4.98231 0,5.15462 2.20542,2.09453 0.16364,2.85669 0,4.02311 -2.09241,1.94201 -0.35331,2.90379 0,4.14885 2.45423,2.30352 0.16777,3.36366 0,4.77746 -1.93868,2.43061 0.11189,2.81909 0,3.52023 2.15622,2.70007 0.6125,3.34927 0,4.52601 -1.28426,2.68798 -0.67968,3.06794 0,4.02312"
            id="path54"
