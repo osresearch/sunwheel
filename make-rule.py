@@ -4,7 +4,7 @@
 # astrolabe!
 #
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor
+from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs
 import drawsvg as draw
 import datetime
 import sys
@@ -49,6 +49,7 @@ d.append_css("""
 }
 """)
 
+
 def compute_position(radius, angle, length, log_scale=False, spiral=False):
 	length = 10 # always force same spiral in
 	if log_scale:
@@ -87,6 +88,13 @@ def make_ticks(radius, ticks, length, log_scale=None, stroke='black', spiral=Fal
 			**style,
 		))
 	return g
+
+
+def text_rotate(s, size, x, y, text_angle=0, offset=(0,0), **args):
+	return draw.Text(s, size, offset[0], offset[1],
+		transform="translate(%.3f %.3f) rotate(%.3f)" % (x, y, text_angle),
+		**args,
+	)
 
 def make_labels(radius, step, start, end, fmter, pos=(1,9), size=10, text_angle=+90, fill="black", **style):
 	g = draw.Group()
@@ -1897,12 +1905,12 @@ def stereographic_project(r,lat,lon,clon=0):
 	x = clat * slon / (1 + slat)
 	y = clat * clon / (1 + slat)
 	return (x,y)
-	
+
 def make_astrolabe(scale):
-	R = scale - 10
+	R = scale
 	g = draw.Group(class_="astrolabe") #transform="translate(%f %f)" % (R/2,R/2))
-	min_lat = -30
-	max_lat = 80
+	min_lat = -85
+	max_lat = 85
 	max_lha = 90
 	ecliptic = 23.4
 
@@ -1988,7 +1996,7 @@ def make_astrolabe(scale):
 		*stereographic_project(R/2,-ecliptic,-max_lha),
 		*stereographic_project(R/2,+ecliptic,+max_lha),
 		fill='none',
-		stroke="red",
+		stroke="green",
 		stroke_width=1,
 	))
 	# red horizontal for the tropics
@@ -1997,99 +2005,237 @@ def make_astrolabe(scale):
 		pts += stereographic_project(R/2,ecliptic,lha)
 		g.append(draw.Lines(*pts,
 			fill='none',
-			stroke="red",
+			stroke="green",
 			stroke_width=1,
 		))
 		g.append(draw.Lines(*pts,
 			fill='none',
-			stroke="red",
+			stroke="green",
 			stroke_width=1,
 			transform="scale(1 -1)",
 		))
 		
 	# local hour angle text in degrees, both north and south
-	for lha in range(-max_lha+10, max_lha, 10):
-		(x,y) = stereographic_project(R/2,-min_lat+2,lha-1)
-		g.append(draw.Text(
-			"%d" % (max_lha - lha),
-			12,
-			x, y,
-			text_anchor="end",
-			fill='black',
-		))
-		g.append(draw.Text(
-			"%d" % (max_lha - lha),
-			12,
-			x, -y,
-			text_anchor="end",
-			fill='black',
-		))
+	angle_dec = 30
+	for hemi in [+1,-1]:
+		for lha in range(-max_lha+10, max_lha, 10):
+			(x,y) = stereographic_project(R/2,angle_dec,lha-1)
+			g.append(draw.Text(
+				"%d" % (max_lha - lha),
+				12,
+				x, y,
+				text_anchor="end",
+				fill='black',
+			))
+			g.append(draw.Text(
+				"%d" % (max_lha - lha),
+				12,
+				x, -y,
+				text_anchor="end",
+				fill='black',
+			))
 	# actual hour angles
 	angle_dec = 50
-	for lha in range(-max_lha+15, max_lha, 15):
-		g.append(draw.Lines(
-			*stereographic_project(R/2,angle_dec+2,lha),
-			*stereographic_project(R/2,angle_dec,lha),
-			*stereographic_project(R/2,angle_dec-2,lha),
-			fill="none",
-			stroke="black",
-			stroke_width=1,
-		))
-		g.append(draw.Text(
-			"%d" % (12 - (max_lha - lha)/15),
-			12,
-			*stereographic_project(R/2,angle_dec+1,lha+0.5),
-			text_anchor="start",
-			fill='black',
-		))
-		g.append(draw.Text(
-			"%d" % (12 + (max_lha - lha)/15),
-			12,
-			*stereographic_project(R/2,angle_dec-2,lha-0.5),
-			text_anchor="end",
-			fill='black',
-		))
+	for hemi in [+1,-1]:
+		angle_dec *= hemi
+		for lha in range(-max_lha+15, max_lha, 15):
+			(x1,y1) = stereographic_project(R/2,angle_dec+2,lha)
+			(x0,y0) = stereographic_project(R/2,angle_dec  ,lha)
+			(x2,y2) = stereographic_project(R/2,angle_dec-2,lha)
+			a = degrees(atan2(y2-y1, x2-x1))
+			g.append(draw.Lines(
+				x1,y1, x0, y0, x2,y2,
+				fill="none",
+				stroke="black",
+				stroke_width=1,
+			))
 
-	# Latitude for the ruler
+			# AM is in red
+			g.append(text_rotate(
+				"%02d:00" % (12 - (max_lha - lha)/15),
+				12,
+				x0, y0,
+				offset=(2,-2),
+				text_angle = a,
+				text_anchor="start",
+				fill='red',
+			))
+			# PM ins in black
+			g.append(text_rotate(
+				"%02d:00" % (12 + (max_lha - lha)/15),
+				12,
+				x0, y0,
+				offset=(2,-2),
+				text_angle = 180+a,
+				text_anchor="start",
+				fill='black',
+			))
+
+	# Latitude for the inner plate
 	for lat in range(10,90,10):
-		(x,y) = stereographic_project(R/2-5, lat-1.5, -90)
+		(x,y) = stereographic_project(R/2-10, lat, 90)
+		a = degrees(atan2(y,x))
 		g.append(draw.Text(
-			"%d" % (90-lat),
+			"%d" % (lat),
 			15,
-			x, y,
+			R, 0,
 			fill="black",
-			text_anchor="start",
+			text_anchor="end",
+			transform="rotate(%.3f)" % (a),
 		))
 		g.append(draw.Text(
-			"%d" % (90-lat),
+			"%d" % (lat),
 			15,
-			-x, y,
+			R, 0,
 			fill="red",
 			text_anchor="end",
+			transform="rotate(%.3f)" % (0-a),
 		))
-			
 
 	# bearing angle text
-	north = draw.Group()
-	for lha in range(-max_lha+10, max_lha, 10):
-		# Northern and south hemisphere
-		(x,_) = stereographic_project(R/2,0,lha)
-		north.append(draw.Text(
-			"%03d" % (lha+90),
-			12,
-			x, -15,
+	# this has a north and south hemisphere component
+	lower = draw.Group()
+	upper = draw.Group(transform="rotate(180)")
+	offset = 10
+	lat_offset = 1
+	for lha in range(-max_lha+10, max_lha+1, 10):
+		# Northern hemisphere AM (red) and PM (black)
+		(x,y) = stereographic_project(R/2,lat_offset,lha)
+		upper.append(draw.Text(
+			"%d" % (270 - lha),  # should be 360 -> 180
+			13,
+			-y, x-2,
 			fill='black',
 			text_anchor='start',
+			transform="rotate(90)",
 		))
-		north.append(draw.Text(
-			"%03d" % (180 - lha + 90),
-			12,
-			x, -5,
-			fill='black',
+		lower.append(draw.Text(
+			"%d" % (90 - lha), # should be 0 - > 180
+			13,
+			+y, x-2,
+			fill='red',
 			text_anchor='end',
+			transform="rotate(90)",
 		))
-	g.append(north)
+
+		# Lower hemisphere same color code
+		# but opposite side of the line
+		(x,y) = stereographic_project(R/2,-lat_offset,lha)
+		lower.append(draw.Text(
+			"%d" % (270 - lha), # PM: 360 - 180
+			13,
+			+y, x-2,
+			fill='black',
+			text_anchor='start',
+			transform="rotate(90)",
+		))
+		upper.append(draw.Text(
+			"%d" % (90 - lha),
+			13,
+			-y, x-2,
+			fill='red',
+			text_anchor='end',
+			transform="rotate(90)",
+		))
+	g.append(upper)
+	g.append(lower)
+
+	# Triangles for lining up the hemispheres when rotating
+	# to compute the bearing
+	g.append(draw.Lines(
+		  0, -(scale- 0),
+		-10, -(scale-20),
+		+10, -(scale-20),
+		stroke="none",
+		fill="black",
+	))
+	g.append(draw.Lines(
+		  0, +(scale- 0),
+		-10, +(scale-20),
+		+10, +(scale-20),
+		stroke="none",
+		fill="red",
+	))
 	return g
+
+def make_astrolabe_outer(scale, width):
+	R = scale + width
+	g = draw.Group()
+
+	# horizontal tick marks for each solid latitude
+	for lat in range(-89,90,1):
+		(x,y) = stereographic_project(R/2,lat,90)
+		a = degrees(atan2(y,x))
+		pts = [x,y, *compute_xy(scale,a)]
+		stroke = "black"
+		if lat % 10 == 0:
+			stroke_width = 1
+		elif lat % 5 == 0:
+			stroke_width = 0.5
+			stroke = "gray"
+		else:
+			stroke_width = 0.2
+			stroke = "gray"
+
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke=stroke,
+			stroke_width=stroke_width,
+		))
+		g.append(draw.Lines(*pts,
+			fill='none',
+			stroke=stroke,
+			stroke_width=stroke_width,
+			transform="scale(-1 1)",
+		))
+
+		if lat % 10 != 0:
+			continue
+		elif lat == 0 or lat == 90:
+			# do not draw 0 and 90
+			continue
+
+		if lat < 0:
+			color = "red"
+		else:
+			color = "black"
+
+		g.append(draw.Text(
+			"%d" % (fabs(lat)),
+			15,
+			scale + width/2, 0,
+			text_anchor="middle",
+			transform="rotate(%.3f)" % (a),
+			fill = color,
+		))
+
+	# stroke black for lining up the inner
+	# with the equator
+	g.append(draw.Lines(
+		scale, 0, R, 0,
+		stroke_width=3,
+		stroke="black",
+	))
+	g.append(draw.Lines(
+		-scale, 0, -R, 0,
+		stroke_width=3,
+		stroke="black",
+	))
+
+	# Line up with the triangles on the outer
+	g.append(draw.Lines(
+		  0, -scale, 0, -R,
+		stroke="black",
+		stroke_width=3,
+	))
+	g.append(draw.Lines(
+		  0, +scale, 0, +R,
+		stroke="red",
+		stroke_width=3,
+	))
+
+	return g
+	
 
 ####
 #### Front side
@@ -2146,20 +2292,20 @@ inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg
 
 ####
 #### Reverse side
-#### no longer has an inner disk
+#### inner disk is much larger
 ####
-cut = 410
+cut = outer_cut - 25
 img_sz = cut * 2
 back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 back.append(pointer)
 
 outer = draw.Group(id="back_outer")
-#inner = draw.Group(id="back_inner")
+inner = draw.Group(id="back_inner")
 #inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
 
-#inner.append(axle)
+inner.append(axle)
 outer.append(axle)
-#inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
+inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
 outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
 
 # Make the minutes seconds rings with divisions every 5 seconds
@@ -2196,10 +2342,11 @@ outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_wid
 #back.append(make_log_cosine(320))
 #back.append(make_sin_sin_scale(200))
 
-back.append(make_astrolabe(outer_cut))
+inner.append(make_astrolabe(cut))
+outer.append(make_astrolabe_outer(cut, outer_cut - cut))
 
 back.append(outer)
-#back.append(inner)
+back.append(inner)
 
 # paper pointer until a better one can be made
 
