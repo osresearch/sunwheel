@@ -282,23 +282,23 @@ var steps = [
 
 	var diam = semi_diam();
 
-	if (limb == "upper") {
+	if (limb == "lower") {
 		move_rule('inner', -diam);
-		return "Upper limb measurements moves the inner ring to line up with the semi diameter for the date " + fmt_min(diam);
+		return "Lower limb measurements moves the inner ring to line up with the semi diameter for the date " + fmt_min(diam);
 	} else {
 		move_rule('inner', 0);
-		return "Lower limb measument moves the the inner ring to zero";
+		return "Upper limb measument moves the the inner ring to zero";
 	}
 },
 () => {
 	var diam = semi_diam();
 
-	if (limb == "upper") {
+	if (limb == "lower") {
 		move_rule('pointer', -diam);
-		return "Upper limb measurement moves the pointer to zero on the inner ring (adding semi diameter to the height)";
+		return "Lower limb measurement moves the pointer to zero on the inner ring (adding semi diameter to the height)";
 	} else {
 		move_rule('pointer', +diam);
-		return "Lower limb measurement moves the pointer to approximate date (subtracting semi diameter from the height) " + fmt_min(diam);
+		return "Upper limb measurement moves the pointer to approximate date (subtracting semi diameter from the height) " + fmt_min(diam);
 	}
 },
 () => {
