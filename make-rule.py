@@ -9,6 +9,7 @@ import drawsvg as draw
 import datetime
 import sys
 import re
+from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project
 
 year = 2026 # for equation of time
 pointer_angle = 0
@@ -57,9 +58,6 @@ def compute_position(radius, angle, length, log_scale=False, spiral=False):
 	if spiral:
 		radius += (angle / 360) * length * 2.1
 	return (radius, angle)
-
-def compute_xy(r,a):
-	return (r * cos(radians(a)), r * sin(radians(a)))
 
 
 def draw_spiral(radius, pts, log_scale, stroke='black', stroke_width=0.1, spiral=True):
@@ -140,13 +138,6 @@ def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", tex
 def deg2sec(m):
 	return "%.0f" % (m/6)
 
-def frange(start, end, step=1):
-	n_items = int(ceil((end - start) / step))
-	items = []
-	for i in range(n_items):
-		items.append(start+i*step)
-	return items
-
 def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360, size=10, side=3, ticksize=11):
 	g = draw.Group()
 	g.append(draw.Circle(
@@ -163,17 +154,6 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 	g.append(make_labels(radius, major, start, end, fmt, pos=pos, size=size, side=side))
 	return g
 
-
-# Height of eye is 1.76 sqrt(H_e) in meters
-def height_of_eye(H_e):
-	return 1.76 * sqrt(H_e) * 6
-
-# compute the height of eye required to see that distance in km,
-# then convert that to a angle with height_of_eye
-# cos(angle) = 
-def horizon_distance(km):
-	height = (km / 3.56972) ** 2
-	return height_of_eye(height)
 
 def make_height_of_eye(radius,angle):
 	g = draw.Group(transform="rotate(%.3f)" % (angle))
@@ -295,14 +275,6 @@ def make_arcs(pts, func, fill="none", stroke="black", stroke_width=1, **style):
 		points += compute_xy(r,a)
 
 	return draw.Lines(*points, fill=fill, stroke=stroke, stroke_width=stroke_width, **style)
-
-# Refraction for normal conditions (10C 1010hPa)
-# R = (n_air - 1) cot(theta)
-# adjustment for non standard presure and temperature
-def refraction(H_a, p=1010, t=10):
-	r = 1/tan(radians(H_a + 7.31 / (H_a + 4.4)))
-	f = p / (273+t) * 283/1010
-	return f * r * -6
 
 # Combined refraction, semidiameter and parallax table
 # from https://www.thenauticalalmanac.com/Increments_and_Corrections/Altitude_Correction_Tables.pdf
@@ -623,11 +595,6 @@ def make_tangent_scale(radius):
 	))
 
 	return g
-
-def haversine(x):
-	return (1 - cos(radians(x)))/2
-def ahaversine(y):
-	return degrees(acos(1 - 2 * y))
 
 # the cosine and haversine scales use the same tick marks
 # put the cosine on the inside and haversine on the outside
@@ -1473,15 +1440,6 @@ def make_fifteen_degrees(radius):
 	return g
 	
 
-# minutes that the sun is ahead of noon
-def equation_of_time(d,y=year):
-	D = 6.24004077 + 0.01720197 * (365.25 * (y-2000) + d)
-	return -7.659 * sin(D) + 9.863 * sin(2*D + 3.5932)
-
-def julian(m,d,y=year):
-	return int(datetime.date(y,m,d).strftime("%j"))
-	
-
 def eq_time_radius(d):
 	return -60 * sin((d-0)/365 * 2 * pi) - 20
 	if d < julian(2,11):
@@ -1568,31 +1526,6 @@ def make_equation_of_time(radius):
 	#g.append(draw.Circle(0, 0, radius, fill="none", stroke="lightgray", stroke_width=1.0))
 	return g
 
-
-# related to the equation of time, the declination of the sun
-# throughout the year for approximating the lattitude
-# https://en.wikipedia.org/wiki/Position_of_the_Sun#Calculations
-# {\displaystyle \delta _{\odot }=-\arcsin \left[0.39779\cos \left(0.98565^{\circ }\left(N+10\right)+1.914^{\circ }\sin \left(0.98565^{\circ }\left(N-2\right)\right)\right)\right]}
-
-def declination(d):
-	return -degrees(asin(0.39779 * cos(radians(0.98565 * (d+10) + 1.914 * sin(radians(0.98565 * (d-2)))))))
-
-# compute the perpendicular between two declination days
-# for making pretty hash marks.
-# there must be a better way to do this since we are already
-# in polar space, but whatever we have to hard code it anyway
-def declination_perp(d, a_func, r_func):
-	d1 = a_func(d)
-	d2 = a_func(d+1)
-
-	r1 = r_func(d)
-	r2 = r_func(d+1)
-
-	(x1,y1) = compute_xy(r1, d1*6)
-	(x2,y2) = compute_xy(r2, d2*6)
-
-	a = atan2(y2-y1, x2-x1)
-	return degrees(a) - d1*6 + 90
 
 def decl_color(d):
 	# the declination is positive from 21 March to 21 Sept
@@ -1883,28 +1816,6 @@ def log60_scales(inner,outer):
 	))
 	outer.append(draw_marker("1", cut, 0))
 
-
-# Make a universal astrolabe projection
-# https://www.neacsu.net/geodesy/snyder/5-azimuthal/sect_21/
-def stereographic_project(r,lat,lon,clon=0):
-	lat = radians(lat)
-	lon = radians(lon)
-	k0 = 1
-	k = 2 * k0 / (1 + cos(lat) * cos(lon - clon))
-	y = r * k * sin(lat)
-	x = r * k * cos(lat) * sin(lon - clon)
-	return (x,-y)
-
-	lat = radians(lat)
-	lon = radians(lon)
-	slat = sin(lat)
-	slon = sin(lon)
-	clat = cos(lat)
-	clon = cos(lon)
-
-	x = clat * slon / (1 + slat)
-	y = clat * clon / (1 + slat)
-	return (x,y)
 
 def make_astrolabe(scale):
 	R = scale

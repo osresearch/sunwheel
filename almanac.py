@@ -9,9 +9,76 @@ import re
 
 year = 2025
 
+def haversine(x):
+	return (1 - cos(radians(x)))/2
+def ahaversine(y):
+	if y < 0: y = 0
+	if y > 1: y = 1
+	return degrees(acos(1 - 2 * y))
+
+def compute_xy(r,a):
+	return (r * cos(radians(a)), r * sin(radians(a)))
+
+def frange(start, end, step=1):
+	n_items = int(ceil((end - start) / step))
+	items = []
+	for i in range(n_items):
+		items.append(start+i*step)
+	return items
+
+# Make a universal astrolabe projection
+# https://www.neacsu.net/geodesy/snyder/5-azimuthal/sect_21/
+def stereographic_project(r,lat,lon,clon=0):
+	lat = radians(lat)
+	lon = radians(lon)
+	k0 = 1
+	k = 2 * k0 / (1 + cos(lat) * cos(lon - clon))
+	y = r * k * sin(lat)
+	x = r * k * cos(lat) * sin(lon - clon)
+	return (x,-y)
+
+	lat = radians(lat)
+	lon = radians(lon)
+	slat = sin(lat)
+	slon = sin(lon)
+	clat = cos(lat)
+	clon = cos(lon)
+
+	x = clat * slon / (1 + slat)
+	y = clat * clon / (1 + slat)
+	return (x,y)
+
+# sin(Hc) = Sin(Lat) * Sin(Dec) + Cos(Lat) * Cos(Dec) * Cos(LHA))
+# hav(90-Hc) = hav(LHA) * cos(lat) * cos(Dec) + hav(lat-dec)
+def compute_hczn(lat,dec,lha):
+	lat = radians(lat)
+	dec = radians(dec)
+	lha = radians(lha)
+	hav_hc = haversine(lha) * cos(lat) * cos(dec) + haversine(lat - dec)
+	#print(f"{lat=} {dec=} {lha=} => {hav_hc=}")
+	hc = radians(90) - ahaversine(hav_hc)
+
+	hav_zn = (cos(lat - hc) - sin(dec)) / (2 * cos(lat) * cos(hc))
+	zn = degrees(ahaversine(hav_zn))
+
+	# if the sun was to the west of us,
+	# our local hour angle will be positive
+	# and we have to adjust our computed heading
+	if lha > 0:
+		zn = 360 - zn
+
+	return (degrees(hc),zn)
+
 # Height of eye is 1.76 sqrt(H_e) in meters
 def height_of_eye(H_e):
 	return 1.76 * sqrt(H_e) * 6
+
+# compute the height of eye required to see that distance in km,
+# then convert that to a angle with height_of_eye
+# cos(angle) = 
+def horizon_distance(km):
+	height = (km / 3.56972) ** 2
+	return height_of_eye(height)
 
 # Refraction for normal conditions (10C 1010hPa)
 # R = (n_air - 1) cot(theta)
@@ -54,6 +121,23 @@ months = [
 
 def declination(d):
 	return -degrees(asin(0.39779 * cos(radians(0.98565 * (d+10) + 1.914 * sin(radians(0.98565 * (d-2)))))))
+
+# compute the perpendicular between two declination days
+# for making pretty hash marks.
+# there must be a better way to do this since we are already
+# in polar space, but whatever we have to hard code it anyway
+def declination_perp(d, a_func, r_func):
+	d1 = a_func(d)
+	d2 = a_func(d+1)
+
+	r1 = r_func(d)
+	r2 = r_func(d+1)
+
+	(x1,y1) = compute_xy(r1, d1*6)
+	(x2,y2) = compute_xy(r2, d2*6)
+
+	a = atan2(y2-y1, x2-x1)
+	return degrees(a) - d1*6 + 90
 
 def degfmt(d, prec=1, html=False):
 	rc = ''

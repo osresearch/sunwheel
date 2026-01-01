@@ -10,6 +10,8 @@ from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.units import mm, inch
 from reportlab.lib.colors import black, red, HexColor
 from contextlib import contextmanager
+from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project, compute_hczn
+
 gray = HexColor(0xC0C0C0)
 
 pagesize = landscape(A4)
@@ -26,42 +28,6 @@ decimal = True
 extra_thick = 3
 thick = 1
 thin = 0.1
-
-def haversine(x):
-	return (1 - cos(x))/2
-def ahaversine(y):
-	if y < 0:
-		y = 0
-	if y > 1:
-		y = 1
-	return acos(1 - 2 * y)
-
-# sin(Hc) = Sin(Lat) * Sin(Dec) + Cos(Lat) * Cos(Dec) * Cos(LHA))
-# hav(90-Hc) = hav(LHA) * cos(lat) * cos(Dec) + hav(lat-dec)
-def compute_hczn(lat,dec,lha):
-	lat = radians(lat)
-	dec = radians(dec)
-	lha = radians(lha)
-	hav_hc = haversine(lha) * cos(lat) * cos(dec) + haversine(lat - dec)
-	#print(f"{lat=} {dec=} {lha=} => {hav_hc=}")
-	hc = radians(90) - ahaversine(hav_hc)
-
-	hav_zn = (cos(lat - hc) - sin(dec)) / (2 * cos(lat) * cos(hc))
-	zn = degrees(ahaversine(hav_zn))
-
-	# if the sun was to the west of us,
-	# our local hour angle will be positive
-	# and we have to adjust our computed heading
-	if lha > 0:
-		zn = 360 - zn
-
-	return (degrees(hc),zn)
-
-
-def compute_xy(r,a):
-	a = radians(a)
-	return (r * sin(a), r * cos(a))
-
 
 @contextmanager
 def pdf_translate(x,y):
