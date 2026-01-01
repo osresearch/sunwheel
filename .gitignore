@@ -1,0 +1,6 @@
+__pycache__
+.*.sw[po]
+*.log
+*.uf2
+*.backup
+tags
