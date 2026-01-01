@@ -10,10 +10,24 @@ import sys
 import re
 from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project
 
+deg_symbol = "°"
 output_file = "haversine.svg"
 
 d = draw.Drawing(2000,1000, origin=(0,0))
 d.append_css("""
+@font-face {
+        font-family: "B612 Regular";
+        font-style: normal;
+        src: url(fonts/B612-Regular.ttf);
+}
+@font-face {
+        font-family: "B612 Italic";
+        font-style: italic;
+        src: url(fonts/B612-Italic.ttf);
+}
+text { font-family: "B612 Regular"; }
+.italic { font-family: "B612 Italic"; }
+
 .spinner {
 	-webkit-transition: all 2s;
 	-moz-transition: all 2s;
@@ -49,1214 +63,6 @@ d.append_css("""
 """)
 
 
-
-def compute_position(radius, angle, length, log_scale=False, spiral=False):
-	length = 10 # always force same spiral in
-	if log_scale:
-		angle = log(angle) * 360 / log_scale
-	if spiral:
-		radius += (angle / 360) * length * 2.1
-	return (radius, angle)
-
-
-def draw_spiral(radius, pts, log_scale, stroke='black', stroke_width=0.1, spiral=True):
-	arcs = []
-	for angle in pts:
-		(r,a) = compute_position(radius,angle,10,log_scale,spiral)
-		arcs += compute_xy(r,a)
-	return draw.Lines(*arcs,
-		fill='none',
-		stroke=stroke,
-		stroke_width=stroke_width,
-	)
-
-def make_ticks(radius, ticks, length, log_scale=None, stroke='black', spiral=False, side=3, **style):
-	g = draw.Group()
-	for angle in ticks:
-		(r,a) = compute_position(radius, angle, length, log_scale, spiral)
-		g.append(draw.Line(
-			-length if side & 1 != 0 else 0,
-			0,
-			+length if side & 2 != 0 else 0,
-			0,
-			fill='none',
-			stroke=stroke,
-			transform="rotate(%.3f) translate(%.3f)" % (a,r),
-			**style,
-		))
-	return g
-
-
-def text_rotate(s, size, x, y, text_angle=0, offset=(0,0), **args):
-	return draw.Text(s, size, offset[0], offset[1],
-		transform="translate(%.3f %.3f) rotate(%.3f)" % (x, y, text_angle),
-		**args,
-	)
-
-def make_labels(radius, step, start, end, fmter, pos=(1,9), size=10, text_angle=+90, fill="black", **style):
-	g = draw.Group()
-	m = start
-	while m < end:
-		s = fmter(m) #"%.0f" % (m)
-		g.append(draw.Text(s, size, pos[0], pos[1],
-			#align="left",
-			fill=fill,
-			stroke='none',
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (m,radius,text_angle),
-			**style,
-		))
-		m += step
-	return g
-
-def make_tick_labels(radius, labels, size=10, log_scale=None, align="right", text_angle=0, pos=(0,0), fill="black", stroke=None, stroke_width=0.3, length=0, side=3, spiral=False, **style):
-	g = draw.Group()
-	for (angle,label) in labels:
-		(r,a) = compute_position(radius, angle, length, log_scale, spiral)
-		g.append(draw.Text(label, size, pos[0], pos[1],
-			align=align,
-			fill=fill,
-			stroke='none',
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a, r, text_angle),
-			**style,
-		))
-
-	if length > 0:
-		g.append(make_ticks(
-			radius,
-			[x[0] for x in labels],
-			length,
-			side=side,
-			log_scale=log_scale,
-			spiral=spiral,
-			stroke=stroke,
-			stroke_width=stroke_width,
-		))
-
-	return g
-
-def deg2sec(m):
-	return "%.0f" % (m/6)
-
-def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9), start=0, end=360, size=10, side=3, ticksize=11):
-	g = draw.Group()
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
-	if minor3 is not None:
-		g.append(make_ticks(radius, frange(start, end, minor3), ticksize-9, stroke_width=0.1, side=side))
-	g.append(make_ticks(radius, frange(start, end, minor2), ticksize-6, stroke_width=0.1, side=side))
-	g.append(make_ticks(radius, frange(start, end, minor1), ticksize-5, stroke_width=0.2, side=side))
-	g.append(make_ticks(radius, frange(start, end, major),  ticksize, stroke_width=0.4, side=side))
-	g.append(make_labels(radius, major, start, end, fmt, pos=pos, size=size, side=side))
-	return g
-
-
-def make_height_of_eye(radius,angle):
-	g = draw.Group(transform="rotate(%.3f)" % (angle))
-	major = [height_of_eye(H_e) for H_e in frange(0,40.1,1)]
-	minor1 = [height_of_eye(H_e) for H_e in frange(0,40,0.5)]
-	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
-	minor2 += [height_of_eye(H_e) for H_e in frange(5,10,0.25)]
-
-	g.append(make_ticks(radius-10, minor2, 2, stroke_width=0.1))
-	g.append(make_ticks(radius-10, minor1, 5, stroke_width=0.2))
-	g.append(make_ticks(radius-10, major,  10, stroke_width=0.3))
-
-	# Meters
-	labels = [[height_of_eye(h_e), "%.0f" % (h_e)] for h_e in
-		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40]]
-
-	g.append(make_tick_labels(
-		radius-10,
-		labels,
-		pos=(-10,+3),
-		text_anchor="end",
-	))
-	g.append(make_tick_labels(
-		radius-10,
-		[[height_of_eye(42.5), "m"]],
-		pos=(-10,+3),
-		text_anchor="end",
-		#stroke="red",
-		#length=8,
-		#stroke_width=0.4,
-	))
-
-	# Feet
-	ft_radius = radius - 50
-	ft_per_m = 3.281
-	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,130.1,5)]
-	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,130.1,1)]
-
-	labels = [[height_of_eye(h_e/ft_per_m), "%.0f" % (h_e)] for h_e in
-		[5,10,15,20,25,30,35,40,45,50,60,70,80,90,100,110,120,130]]
-
-	g.append(make_ticks(ft_radius, minor1,  5, stroke_width=0.2))
-	g.append(make_ticks(ft_radius, major,  10, stroke_width=0.3))
-	g.append(make_tick_labels(
-		ft_radius,
-		labels,
-		pos=(-10,+3),
-		text_anchor="end",
-	))
-	g.append(make_tick_labels(
-		ft_radius,
-		[[height_of_eye(42.5), "ft"]],
-		pos=(-10,+3),
-		text_anchor="end",
-		#stroke="red",
-		#length=8,
-		#stroke_width=0.4,
-	))
-
-	# as a helpful reference, add the distance to the horizon
-	dist_radius = ft_radius - 80
-	dist_max = 22 + 0.01
-	major = [horizon_distance(x) for x in frange(1, dist_max, 1)]
-	minor1 = [horizon_distance(x) for x in frange(1, dist_max, 0.5)]
-	minor2 = [horizon_distance(x) for x in frange(1, dist_max, 0.25)]
-	g.append(make_ticks(dist_radius, minor2, 3, stroke_width=0.2))
-	g.append(make_ticks(dist_radius, minor1, 5, stroke_width=0.2))
-	g.append(make_ticks(dist_radius, major,  8, stroke_width=0.3))
-	g.append(make_tick_labels(
-		dist_radius,
-		[[horizon_distance(_),"%.0f" % _] for _ in frange(1,dist_max,1)],
-		pos=(+10,+3),
-		text_anchor="start",
-	))
-	g.append(make_tick_labels(
-		dist_radius,
-		[[horizon_distance(dist_max+1), "km"]],
-		pos=(+5,+0),
-		text_anchor="start",
-		#stroke="red",
-		#length=8,
-		#stroke_width=0.4,
-	))
-
-	# and do it in km as well, even though most folks arne't metric
-	dist_radius = dist_radius - 20
-	dist_max = 12 + 0.01
-	nm_per_km = 1.852
-	major = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 1)]
-	minor1 = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 0.5)]
-	minor2 = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 0.25)]
-	g.append(make_ticks(dist_radius, minor2,  3, stroke_width=0.2))
-	g.append(make_ticks(dist_radius, minor1,  5, stroke_width=0.2))
-	g.append(make_ticks(dist_radius, major,   8, stroke_width=0.3))
-	g.append(make_tick_labels(
-		dist_radius,
-		[[horizon_distance(_*nm_per_km),"%.0f" % _] for _ in frange(1,dist_max,1)],
-		pos=(-10,+3),
-		text_anchor="end",
-	))
-	g.append(make_tick_labels(
-		dist_radius,
-		[[horizon_distance(dist_max*nm_per_km+1), "nm"]],
-		pos=(-5,+0),
-		text_anchor="end",
-		#stroke="red",
-		#length=8,
-		#stroke_width=0.4,
-	))
-
-
-	return g
-
-
-def make_arcs(pts, func, fill="none", stroke="black", stroke_width=1, **style):
-	points = []
-	for t in pts:
-		(r,a) = func(t)
-		points += compute_xy(r,a)
-
-	return draw.Lines(*points, fill=fill, stroke=stroke, stroke_width=stroke_width, **style)
-
-# Combined refraction, semidiameter and parallax table
-# from https://www.thenauticalalmanac.com/Increments_and_Corrections/Altitude_Correction_Tables.pdf
-# There are four arcs to define:
-# - Upper/Lower limb of the sun
-# - Oct-Mar / Apr-Sep
-# The semidiameter for oct-march is 32.3/2 = 16.15
-# and for apr-sep 31.8/2 = 15.90
-# instead we can have four starting lines and one refraction table
-# TODO:  make better symbols
-def make_refraction(radius, angle):
-	sd_1 = 16.2
-	sd_2 = 15.9
-	g = draw.Group(transform="rotate(%.3f)" % (angle))
-	majors = frange(3,20,1) + frange(20,45,5) + frange(50,90.1,10)
-	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
-	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
-
-	t_scale = lambda t: radius - 50 - t * 4.5
-
-	t_max = 40
-	pressure = 1010
-
-	for h_a in majors:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.4))
-	for h_a in minors1:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.2))
-	for h_a in minors2:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.1))
-
-	for t in [-10,-5,0,5,10,15,20,25,30,35,40]:
-		r = t_scale(t)
-		g.append(make_arcs(minors2,
-			lambda a: (r, refraction(a,pressure,t)),
-			stroke_width= 0.8 if (t % 10 == 0) else 0.1,
-		))
-
-		if t % 10 != 0:
-			continue
-		g.append(draw.Text(
-			"%d°F" % (t * 9/5 + 32),
-			8.5, -8, -2,
-			transform="rotate(%f) translate(%f)" % (refraction(3,pressure,t), r),
-			text_anchor="center",
-		))
-		g.append(draw.Text(
-			"%d°C" % (t),
-			8.5, -8, +10,
-			transform="translate(%f)" % (r),
-			text_anchor="center",
-		))
-
-	g.append(make_tick_labels(
-		radius+2,
-		[[refraction(a,pressure,-9), "%.0f" % (a)] for a in majors],
-		size=8.5,
-		pos=(-5,+3),
-		text_anchor="start",
-	))
-
-	labels = [
-		[0, "Stars----"],
-		[-sd_1*6, "Oct-Mar" ],
-		[-sd_2*6, "Apr-Sep\n(Lower)" ],
-
-		[sd_1*6, "Oct-Mar\n(Upper)" ],
-		[sd_2*6, "Apr-Sep" ],
-	]
-
-#	g.append(make_tick_labels(
-#		radius-25,
-#		[
-#			[+sd_1*6-4, "Upper"],
-#			[-sd_1*6-2, "Lower"],
-#		],
-#		text_anchor="center",
-#		size=8,
-#	))
-
-	#g.append(make_ticks(radius, [_[0] for _ in labels], 8, stroke="red"))
-#	g.append(make_tick_labels(radius, labels,
-#		pos=(-9,2),
-#		text_anchor="end",
-#		length=8,
-#		stroke="red",
-#	))
-	#g.append(make_ticks(radius-30, [sd_1*6], 8, stroke="red"))
-	return g
-
-# Parallax table from https://thenauticalalmanac.com/DRIPS.pdf
-# what's the formula?
-def make_parallax(radius):
-	ticks = [
-		#[-0.14*60, "0"],
-		#[0.13*60, "25"],
-		#[0.12*60, "35"],
-		[-0.11*60, "40"],
-		#[0.10*60, "45"],
-		[-0.09*60, "50"],
-		#[0.08*60, "55"],
-		[-0.07*60, "60"],
-		#[0.06*60, "65"],
-		[-0.05*60, "70"],
-		#[0.04*60, "75"],
-		[-0.03*60, "80"],
-		#[0.01*60, "85"],
-		[-0.00*60, "90"],
-	]
-	angle = -0.14 * 60 # align with the zero on the height of eye
-	g = draw.Group(transform="rotate(%.3f)" % (-angle))
-	g.append(make_ticks(radius, [_[0] for _ in ticks], 8, stroke_width=0.3))
-	g.append(make_tick_labels(radius, ticks,
-		text_anchor="end",
-		pos=(-10,+3),
-	))
-	return g
-
-# Sun semi diameter for upper or lower
-# from https://thenauticalalmanac.com/DRIPS.pdf
-def make_semidiameter(radius):
-	g = draw.Group(transform="rotate(0)")
-	ticks1 = [
-		[16.29*6, "Jan"],
-		[16.26*6, ""],
-		[16.17*6, ""],
-		[16.03*6, "Apr"],
-		[15.90*6, ""],
-		[15.80*6, ""],
-		[15.75*6, "Jul"],
-	]
-	minor1 = [16.28*6, 16.21*6, 16.10*6, 15.96*6, 15.84*6, 15.77*6]
-	ticks2 = [
-		[15.78*6, "Aug"],
-		[15.87*6, ""],
-		[16.00*6, "Oct"],
-		[16.14*6, ""],
-		[16.24*6, "Dec"],
-	]
-	minor2 = [15.76*6, 15.82*6, 15.94*6, 16.07*6, 16.20*6, 16.27*6]
-	#g.append(make_ticks(radius, [0], 8, stroke_width=1, stroke="red"))
-
-	for scale in [-1]:
-		ticks1 = [[_[0]*scale, _[1]] for _ in ticks1]
-		ticks2 = [[_[0]*scale, _[1]] for _ in ticks2]
-		minor1 = [_*scale for _ in minor1]
-		minor2 = [_*scale for _ in minor2]
-
-		g.append(make_ticks(radius-10, [_[0] for _ in ticks1], 5, stroke_width=0.3))
-		g.append(make_ticks(radius-10, minor1, 3, stroke_width=0.2))
-		g.append(make_tick_labels(radius, ticks1,
-			size=6,
-			text_anchor="start",
-			pos=(-2,+2),
-		))
-
-		g.append(make_ticks(radius-25, [_[0] for _ in ticks2], 5, stroke_width=0.3))
-		g.append(make_ticks(radius-25, minor2, 3, stroke_width=0.2))
-		g.append(make_tick_labels(radius-20, ticks2,
-			size=6,
-			text_anchor="end",
-			pos=(-12,0),
-			#stroke="black",
-			#length=3,
-			#stroke_width=0.3,
-		))
-	return g
-
-# This is the scale to adjust the minutes of the declination based on
-# the number of minutes past the hour (using the d value from the almanac)
-# TODO: handle +/- 12 hours of the day?
-# TODO: add lines to help with alignment
-def make_d_lines(outer_radius):
-	g = draw.Group(transform="rotate(+0)")
-	inner_step = 265
-
-	radius = lambda d: outer_radius - inner_step * (1-d)
-
-	# horizontal lines for the different values of d
-	for d in frange(0.1, 1.1, 0.1):
-		r = radius(d)
-		g.append(make_arcs(frange(-12, 12.01, 0.1), lambda t: (r, t*d*6), stroke_width=0.1))
-
-		if d < 0.2 or d > 0.9:
-			continue
-
-		ta = radians(6.0 * d * 6)
-		tx = r * cos(ta)
-		ty = r * sin(ta)
-
-		# mark for the scales, following the 6 lines
-		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
-			fill="black",
-			stroke="none",
-			text_anchor="end",
-			transform="translate(%.3f %.3f) rotate(-90)" % (tx,ty),
-		))
-		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
-			fill="black",
-			stroke="none",
-			text_anchor="start",
-			transform="translate(%.3f %.3f) rotate(-90)" % (tx,-ty),
-		))
-
-	# quarter hour marks (only half way in)
-	for t in frange(-12,12.01,0.25):
-		g.append(make_arcs(frange(0.5, 1.01, 0.01),
-			lambda d: (radius(d), t*d*6),
-			stroke_width=0.1))
-
-	# half hour marks (almost all the way in)
-	for t in frange(-12,12.1,0.5):
-		g.append(make_arcs(frange(0.2, 1.01, 0.01),
-			lambda d: (radius(d), t*d*6),
-			stroke_width=0.2))
-
-	# full hour marks
-	for t in frange(-12,12.1,1):
-		stroke = "black"
-		width = 0.5
-
-		if t == 0:
-			width = 2
-		elif t == -6 or t == 6:
-			stroke = "red"
-			width = 1
-		g.append(make_arcs(frange(0.1, 1.01, 0.01), lambda d: (radius(d), t*d*6), stroke=stroke, stroke_width=width))
-
-		if t == -12 or t == +12:
-			continue
-		d = 0.95
-		tr = radius(d)
-		ta = radians(t * d * 6)
-		tx = tr * cos(ta)
-		ty = tr * sin(ta)
-		ta = degrees(ta) * 1.8
-		g.append(draw.Text("%02d:00" % (t + 12), 8, 0, -2,
-			text_anchor="middle",
-			fill="black",
-			transform="translate(%.3f %3.f) rotate(%.3f)" % (tx,ty,ta),
-		))
-		g.append(draw.Text("%02d:00" % (12 - t), 8, 0, +7,
-			text_anchor="middle",
-			fill="red",
-			font_style="italic",
-			transform="translate(%.3f %3.f) rotate(%.3f)" % (tx,ty,ta),
-		))
-
-	#g.append(draw.Lines(radius, 0, radius-inner_step, 0, stroke="red", stroke_width=0.5));
-
-	return g
-
-# convert gha increment into degrees and minutes
-# This is equvilant to https://www.thenauticalalmanac.com/Increments_and_Corrections/Increments_and_Corrections_Sun_only.pdf
-def make_gha_scale(radius):
-	g = draw.Group()
-	g.append(make_rule(radius,
-		360/20,		# 20 minutes around the circle
-		360/(20*2),	# every 30 seconds per minute
-		360/(20*6),	# every 10 seconds
-		minor3=360/(20*60), # every second
-		fmt=lambda x: "%02d:00\n%d / %d" % (x//18, 20+x//18, 40+x//18),
-		pos=(1,-2),
-	))
-
-	g.append(make_rule(radius-15,
-		360/(5*4),		# 5 degrees around, marks every 15 seconds 
-		360/(5*4*3),		# subdivide into 5/10/15 seconds
-		360/(5*4*15),		# every second
-		minor3=360/(5*4*15*2),	# every half second
-		fmt=lambda x: "%02d°%02.0f'\n%02d° / %02d°" % (x//72, (x % 72) * 30/36, 5+x//72, 10+x//72),
-		pos=(1,+12)
-	))
-	#g.append(make_labels(radius, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
-	return g
-
-# tangent goes off to infinity as it approaches 90
-# cotangent uses the red reverse scale since cot(theta) = tan(90-theta)
-def make_tangent_scale(radius):
-	g = draw.Group()
-
-	major = []
-	minor1 = []
-	minor2 = []
-	for a in frange(0, 2, 0.1):
-		major += [[degrees(atan(a))*4, "%.1f" % (a)]]
-	for a in frange(2, 10, 1) + [10,12,14,20,30,80]:
-		major += [[degrees(atan(a))*4, "%.0f" % (a)]]
-
-	for a in frange(2, 10, 0.5) + frange(10,30,1):
-		minor1 += [degrees(atan(a))*4]
-	for a in frange(0, 2, 0.01) + frange(2,5, 0.1) + frange(5, 10, 0.25) + frange(30,90,5):
-		minor2 += [degrees(atan(a))*4]
-
-	g.append(make_ticks(radius,
-		minor2,
-		length=2,
-		stroke_width=0.2,
-	))
-	g.append(make_ticks(radius,
-		minor1,
-		length=5,
-		stroke_width=0.2,
-	))
-	g.append(make_tick_labels(radius,
-		major,
-		10,
-		text_angle=90,
-		pos=(2,8),
-		stroke="black",
-		length=8,
-		stroke_width=0.4,
-	))
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
-
-	return g
-
-# the cosine and haversine scales use the same tick marks
-# put the cosine on the inside and haversine on the outside
-def make_haversine(radius):
-	g = draw.Group()
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
-
-	scale = 1000
-
-	def map(x): return ahaversine(x/scale) * 6
-	def asin_map(m): return [map(x) for x in m]
-
-	side = 3
-	start = 0
-	end = scale * haversine(60)
-	color = "black"
-	majors = frange(start, end, 5)
-	minors1 = frange(start, end, 2.5)
-	minors2 = frange(start, end,  0.5)
-	minors3 = frange(start, haversine(20)*scale,  0.1)
-
-	g.append(make_ticks(radius,
-		asin_map(majors),
-		length=10,
-		stroke_width=0.5,
-		stroke="black",
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		asin_map(minors1),
-		length=6,
-		stroke_width=0.4,
-		stroke="black",
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		asin_map(minors2),
-		length=4,
-		stroke_width=0.3,
-		stroke="black",
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		asin_map(minors3),
-		length=3,
-		stroke_width=0.2,
-		stroke="black",
-		side=side,
-	))
-
-	cos_majors = majors + [0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, scale*haversine(60)]
-	major_labels = [ [map(x), "%03d" % (scale-2*x)] for x in cos_majors ]
-
-	major_labels += [[map(x/10), "%04d" % (scale*10-2*x)] for x in [0.25, 1, 2.5, ]]
-	g.append(make_tick_labels(radius,
-		major_labels[1:],
-		8,
-		text_angle=90,
-		pos=(-1,12),
-		fill="red",
-		text_anchor="end",
-		length=0,
-		stroke_width=0.4,
-	))
-
-	hav_majors = majors + frange(1, 15, 1)
-	major_labels = [ [map(x), "%03d" % (x)] for x in hav_majors ]
-
-	major_labels += [[map(x/10), "%04d" % (x)] for x in [1, 2, 5]]
-	g.append(make_tick_labels(radius,
-		major_labels,
-		8,
-		text_angle=90,
-		pos=(1,-5),
-		fill=color,
-		length=0,
-		stroke_width=0.4,
-	))
-
-#	g.append(make_rule(radius, 360/(15*4), 360/(15*4*2), 360/(15*4*8),
-#		fmt=lambda x: "%04.0f" % (sin(radians(x/6))*10000),
-#		side=1,
-#		pos=(1.5,+12),
-#		size=7,
-#	))
-#
-#	# red numbers going reverse around the circle
-#	g.append(make_labels(radius, 360/(15*4), 6, 366,
-#		lambda x: "%04.0f" % (sin(radians(90-x/6))*10000),
-#		pos=(-2,+12),
-#		size=7,
-#		text_anchor="end",
-#		fill="red",
-#		font_style="italic",
-#	))
-
-	return g
-
-def make_sine_nolog(radius):
-	g = draw.Group()
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
-
-
-	side = 1
-	scale = 1000
-
-	start = 0
-	end = scale * sin(radians(60)) + 1
-	color = "black"
-	majors = frange(start, end, 10)
-	minors1 = frange(start, end, 5)
-	minors2 = frange(start, end, 1)
-	minors3 = frange(scale*sin(radians(30)), end, 0.5)
-
-	sin_map = lambda x: degrees(asin(x/scale)*6)
-	mapper = lambda m: [sin_map(x) for x in m]
-
-	g.append(make_ticks(radius,
-		mapper(majors),
-		length=15,
-		stroke_width=0.5,
-		stroke="black",
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		mapper(minors1),
-		length=8,
-		stroke_width=0.4,
-		stroke="black",
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		mapper(minors2),
-		length=4,
-		stroke_width=0.3,
-		stroke="black",
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		mapper(minors3),
-		length=3,
-		stroke_width=0.2,
-		stroke="black",
-		side=side,
-	))
-
-	major_labels = [ [sin_map(x), "%03d" % (x)] for x in majors ]
-
-	g.append(make_tick_labels(radius,
-		major_labels,
-		8,
-		text_angle=90,
-		pos=(1,14),
-		fill=color,
-		length=0,
-		stroke_width=0.4,
-	))
-
-	# red numbers going reverse around for 1/sin
-	side = 2
-	majors = [] \
-		+ frange(1.16, 1.3, 0.01) \
-		+ frange(1.3, 2.5, 0.05) \
-		+ frange(2.5,3, 0.1) \
-		+ frange(3,10, 0.5) \
-		+ frange(10,15,1) \
-		+ frange(15,30,5) \
-		+ [30,40, 60, 100] \
-
-	minors1 = frange(1.11, 3, 0.01) \
-		+ frange(3, 5, 0.1) \
-		+ frange(5, 10, 0.1) \
-
-	minors2 = frange(1.10, 3, 0.005)
-
-	sin_map = lambda x: degrees(asin(1/x))*6
-
-	def fmter(x):
-		if x < 3: return "%.02f" % (x)
-		if x < 10: return "%.1f" % (x)
-		return "%.0f" % (x)
-
-	g.append(make_tick_labels(radius,
-		[[sin_map(x), fmter(x)] for x in majors],
-		8,
-		text_angle=90,
-		pos=(-1,-10),
-		fill="red",
-		text_anchor="end",
-		length=0,
-		stroke_width=0.4,
-	))
-	g.append(make_ticks(radius,
-		mapper(majors),
-		length=15,
-		stroke_width=0.5,
-		stroke="black",
-		side=side,
-	))
-
-	g.append(make_ticks(radius,
-		mapper(minors1),
-		length=8,
-		stroke_width=0.4,
-		stroke="black",
-		side=side,
-	))
-
-	g.append(make_ticks(radius,
-		mapper(minors2),
-		length=4,
-		stroke_width=0.3,
-		stroke="black",
-		side=side,
-	))
-	return g
-	g.append(make_ticks(radius,
-		asin_map(minors3),
-		length=3,
-		stroke_width=0.2,
-		stroke="black",
-		side=side,
-	))
-
-
-	return g
-
-def make_sine(radius,major,minor1,minor2,minor3):
-	g = draw.Group()
-	convert = lambda pts: [sin(radians(pt)) for pt in pts]
-
-	g.append(make_logscale(radius, "", # we will label
-		convert(major),
-		convert(minor1),
-		convert(minor2),
-		convert(minor3),
-		[],
-		side=2,
-		fmt=lambda x: ("%.1f" if x < 0.14 else "%.0f") % (degrees(asin(x))),
-		#fmt=lambda x: "%.1f" % (degrees(asin(x))),
-		log_scale=log(10),
-		extra_labels=[],
-	))
-
-	# cosine is reverse of sin in red
-	g.append(make_tick_labels(radius,
-		[[x, ("%.1f" if x < 0.104 else "%.0f") % (90 - degrees(asin(x)))] for x in convert(major)],
-		8,
-		log_scale=log(10),
-		text_angle=90,
-		text_anchor="end",
-		fill="red",
-		pos=(-1,-2),
-	))
-
-	return g
-
-# Sine is one quadrant for increased accuracy and makes two circles
-# for 0.01 to 0.1 and 0.1 to 1.0
-# the spiral looked cool, but takes up more space than two concentric circles
-def make_log_sine(radius):
-	g = draw.Group()
-
-	# start at -20 since we will spiral outwards for the larger angles
-	#radius -= 20
-	# sine 0.56 - 5.6 degrees
-	s1 = (0.7, 6.0+0.0001)
-	g.append(make_sine(radius-25,
-		frange(s1[0], 3.01, 0.1) + frange(3.0, s1[1], 0.2),
-		frange(0.65, s1[1], 0.05),
-		frange(0.62, s1[1], 0.01),
-		frange(0.62, 1.801, 0.005),
-	))
-
-
-	# sine 5.6 - 90 degrees
-	g.append(make_sine(radius,
-		frange(6, 40.1, 1) + frange(45, 80, 5) + frange(80,90.1,10),
-		frange(6, 80, 0.5) + frange(80,90,1),
-		frange(6, 40, 0.1) + frange(40,75,0.25),
-		frange(6, 20, 0.05)
-	))
-
-	return g
-
-def make_tangent(radius, major, minor1, minor2, minor3):
-	g = draw.Group()
-	convert = lambda pts: [tan(radians(pt)) for pt in pts]
-
-	g.append(make_logscale(radius, "",
-		convert(major),
-		convert(minor1),
-		convert(minor2),
-		convert(minor3),
-		[],
-		side=2,
-		fmt=lambda x: ("%.1f" if x < 0.17 else "%.0f") % (degrees(atan(x))),
-		log_scale=log(10),
-		extra_labels=[],
-	))
-
-	# cotan is in reverse in red
-	g.append(make_tick_labels(radius,
-		[[x, ("%.1f" if x < 0.17 else "%.0f") % (90 - degrees(atan(x)))] for x in convert(major)],
-		8,
-		log_scale=log(10),
-		text_angle=90,
-		text_anchor="end",
-		fill="red",
-	))
-
-	return g
-
-# 0 to 45 and 45 to 90
-def make_log_tangent(radius):
-	g = draw.Group()
-
-	g.append(make_tangent(radius,
-		frange(45, 84.001, 1),
-		frange(45, 84.001, 0.5),
-		frange(45, 84.001, 0.1),
-		frange(45, 84.001, 0.05),
-	))
-
-	g.append(make_tangent(radius-22,
-		frange(6, 45.001, 1),
-		frange(6, 45.001, 0.5),
-		frange(6, 45.001, 0.1),
-		frange(6, 20, 0.05),
-	))
-
-	g.append(make_tangent(radius-44,
-		frange(2, 6.001, 1) + frange(0.7, 3, 0.1),
-		frange(0.7, 3, 0.1) + frange(3, 6.001, 0.5),
-		frange(0.65, 3.001, 0.05) + frange(3, 6.001, 0.05),
-		frange(0.65, 1.001, 0.01),
-	))
-
-	g.append(draw.Circle(0, 0, radius+15,
-		fill="none",
-		stroke="black",
-		stroke_width=0.2,
-	))
-
-	g.append(draw.Circle(0, 0, radius-44-12,
-		fill="none",
-		stroke="black",
-		stroke_width=0.2,
-	))
-
-	return g
-
-# Sine is one quadrant for increased accuracy
-def old_make_sine(radius):
-	g = draw.Group()
-	labels = []
-	extra_labels = []
-	minor1 = []
-	minor2 = []
-	minor3 = []
-	for a in frange(0,0.9001,0.05):
-		labels.append([degrees(asin(a)*4), "%.2f" % (a)])
-	for a in frange(0.91,0.951,0.01):
-		extra_labels.append([degrees(asin(a)*4), "%.2f" % (a)])
-	for a in frange(0.955,0.99999,0.005):
-		extra_labels.append([degrees(asin(a)*4), "%.3f" % (a)])
-
-	for a in frange(0,1.01,0.05):
-		minor1.append(degrees(asin(a))*4)
-		#minor1.append(180-degrees(asin(a)))
-	for a in frange(0,1.01,0.01):
-		minor2.append(degrees(asin(a))*4)
-		#minor2.append(180-degrees(asin(a)))
-	for a in frange(0,1.001,0.005):
-		minor3.append(degrees(asin(a))*4)
-		#minor2.append(180-degrees(asin(a)))
-	for a in frange(0.9,1.0001,0.001):
-		minor3.append(degrees(asin(a))*4)
-
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
-
-	g.append(make_ticks(radius, minor3, 2, stroke_width=0.1))
-	g.append(make_ticks(radius, minor2, 4, stroke_width=0.2))
-	g.append(make_ticks(radius, minor1, 6, stroke_width=0.4))
-	g.append(make_tick_labels(radius, labels,
-		text_angle=90,
-		pos=(1,9),
-		size=10,
-		length=8,
-		stroke_width=0.4,
-		stroke="black",
-	))
-	g.append(make_tick_labels(radius, extra_labels,
-		size=8,
-		text_angle=90,
-		pos=(1,9),
-		length=7,
-		stroke_width=0.4,
-		stroke="black",
-	))
-
-	# add a fake label for 1.0 at the far end and some for special values
-	g.append(make_tick_labels(radius,
-		[[359, "1.00"]],
-		text_angle=90,
-		pos=(1,9),
-		text_anchor="end",
-	))
-
-	# and some known values
-	g.append(make_tick_labels(radius+5,
-		[[30*4, "1/2"], [60*4, "√3/2"], [45*4,"√2/2"]],
-		text_angle=90,
-		pos=(0,2),
-		text_anchor="middle",
-		length=1,
-		stroke_width=0.2,
-		stroke="black",
-	))
-
-	return g
-
-def make_logscale(radius, label, major, minor1, minor2, minor3, minor4,
-	log_scale=log(10),
-	extra_labels=None,
-	fmt=lambda x: "%d" % (x),
-	text_anchor="start",
-	pos=(2,+10),
-	spiral=False,
-	side=3, # left/right/both
-	**kwargs
-):
-	g = draw.Group()
-	(label_r,label_a) = compute_position(radius, major[0], 9, log_scale, spiral)
-	g.append(draw.Text(label, 9, +12, +8,
-		font_style="bold",
-		fill="blue",
-		stroke="none",
-		text_anchor="start",
-		transform="rotate(%.3f) translate(%3.f) rotate(+90)" % (label_a, label_r),
-	))
-	if False: #not spiral:
-		g.append(draw.Circle(
-			0, 0, radius,
-			fill='none',
-			stroke='black',
-			stroke_width=0.1,
-		))
-	else:
-		g.append(draw_spiral(
-			radius,
-			minor2,
-			log_scale=log_scale,
-			spiral=spiral,
-			stroke="black",
-			stroke_width=0.1,
-		))
-	g.append(make_ticks(radius,
-		minor4,
-		log_scale=log_scale,
-		length=2,
-		stroke_width=0.1,
-		stroke="black",
-		spiral=spiral,
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		minor3,
-		log_scale=log_scale,
-		length=4,
-		stroke_width=0.1,
-		stroke="black",
-		spiral=spiral,
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		minor2,
-		log_scale=log_scale,
-		length=6,
-		stroke_width=0.2,
-		stroke="black",
-		spiral=spiral,
-		side=side,
-	))
-	g.append(make_ticks(radius,
-		minor1,
-		log_scale=log_scale,
-		length=8,
-		stroke_width=0.3,
-		stroke="black",
-		spiral=spiral,
-		side=side,
-	))
-	g.append(make_tick_labels(radius,
-		[[_, fmt(_)] for _ in major],
-		10,
-		side=side,
-		log_scale=log_scale,
-		length=10,
-		stroke_width=0.5,
-		stroke="black",
-		spiral=spiral,
-		text_angle=90,
-		text_anchor=text_anchor,
-		pos=pos,
-		**kwargs
-	))
-
-	if extra_labels:
-		g.append(make_tick_labels(radius,
-			extra_labels,
-			8,
-			log_scale=log_scale,
-			text_angle=90,
-			side=side,
-			length=3,
-			stroke="red",
-			stroke_width=0.3,
-			spiral=spiral,
-			text_anchor=text_anchor,
-			pos=(pos[0],pos[1]-2),
-			**kwargs
-		))
-
-	return g
-#
-# This makes three scales:
-# X^2, X, and 1/X
-# You can also compute:
-# sqrt(Y) by going X^2 -> X
-# 1/sqrt(Y) by going X^2 -> 1/X
-#
-def make_sqrt_scale(radius,draw_inverse):
-	g = draw.Group()
-
-	major = frange(2,10)
-	minor1 = frange(1,10,0.5)
-	minor2 = frange(1,10,0.1)
-	minor3 = frange(1,10,0.05)
-	minor4 = frange(1,6, 0.01) + frange(6,10,0.025)
-
-	extra_points = frange(11,20) + [25,35,45,55,65,75]
-
-	extra_labels = [[_/10, "%.1f" % (_/10)] for _ in extra_points]
-	extra_labels += [[pi, "π"]]
-	extra_labels += [[e, "e"]]
-	extra_labels += [[sqrt(2), "_√2"]]
-	extra_labels += [[degrees(1), "r"]]
-	extra_labels += [[0.00134102, "W"]]
-	extra_labels += [[2.54, "mm"]]
-	extra_labels += [[2.2, "kg"]]
-	extra_labels += [[1/0.5399, "km"]]
-
-	side=1 if draw_inverse else 2
-
-
-	# the X scale goes up to 10
-	g.append(make_logscale(radius, "X",
-		major,
-		minor1,
-		minor2,
-		minor3,
-		minor4,
-		side=side,
-		pos=(2,+10) if draw_inverse else (2,-2),
-		log_scale=log(10),
-		extra_labels=extra_labels,
-	))
-
-	g.append(draw_marker("1", radius, 180 if draw_inverse else 0))
-
-	if draw_inverse:
-		# Draw the scales in reverse to make the 1/X scale
-		g.append(make_logscale(radius-20, "1/X",
-			[10,2] + major[2:],
-			minor1,
-			minor2,
-			minor3,
-			minor4,
-			fill="red",
-			log_scale=log(0.1),
-			fmt=lambda x: "%.01f" % (x/10),
-			text_anchor="end",  # left side of the line
-			pos=(-2,+10),
-			extra_labels = [[_, "%.02f" % (_/100)] for _ in extra_points],
-		))
-	else:
-		# double the scales to go up to 100 for the X^2 on the outside
-		g.append(make_logscale(radius+25, "X²",
-			major + [10] + [10 * _ for _ in major],
-			minor1 + [10 * _ for _ in minor1],
-			minor2 + [10 * _ for _ in minor2],
-			minor3 + [10 * _ for _ in minor3],
-			minor4 + [10 * _ for _ in minor4],
-			log_scale=log(100),
-			extra_labels=extra_labels + [[_, "%d" % (_)] for _ in extra_points],
-		))
-	return g
-
-def make_radians(radius):
-	g = draw.Group()
-	major = [[degrees(a), "%.1f" % (a)] for a in frange(0, 2*pi, 0.1)]
-
-	g.append(draw.Circle(
-		0, 0, radius,
-		fill='none',
-		stroke='black',
-		stroke_width=0.1,
-	))
-
-	# replace the one close to pi and other special values
-	extra_labels = [
-	 [degrees(  pi/6), "π/6"],	# 30
-	 [degrees(  pi/3), "π/3"],	# 60
-	 [degrees(  pi/2), "π/2"],	# 90
-	 [degrees(2*pi/3), "2π/3"],	# 120
-	 [degrees(5*pi/6), "5π/6"],	# 150
-	 [degrees(  pi  ), "π"],	# 180
-	 [degrees(7*pi/6), "7π/6"],	# 210
-	 [degrees(4*pi/3), "4π/3"],	# 240
-	 [degrees(3*pi/2), "3π/2"],	# 270
-	 [degrees(5*pi/3), "5π/3"],	# 300
-	 [degrees(11*pi/6), "11π/6"],	# 330
-	 [359, "2π"],	# 360
-	]
-
-	g.append(make_ticks(radius, [degrees(_) for _ in frange(0,2*pi,0.01)], 2, stroke_width=0.2))
-
-	g.append(make_ticks(radius, [degrees(_) for _ in frange(0,2*pi,0.05)], 5, stroke_width=0.2))
-
-	g.append(make_tick_labels(radius, major,
-		8,
-		text_angle=90,
-		pos=(2,8),
-		length=8,
-		stroke="black",
-		stroke_width=0.4,
-	))
-
-	g.append(make_tick_labels(radius, extra_labels,
-		8,
-		text_angle=90,
-		pos=(0,-2),
-		text_anchor="middle",
-	))
-		
-	return g
-
 def draw_marker(label, radius, angle):
 	g = draw.Group(transform="translate(%.3f)" % (radius))
 	g.append(draw.Lines(
@@ -1279,960 +85,56 @@ def draw_marker(label, radius, angle):
 
 	return g
 
-def make_minutes(radius, side=3, red_offset=60, divisions=600, divisions2=None):
-	g = draw.Group()
-
-	major = frange(0,360,360/60)
-	minor1 = frange(0,360,360/120)
-	minor2 = frange(0,360,360/divisions)
-	if divisions2:
-		minor3 = frange(0,360,360/divisions2)
-		g.append(make_ticks(radius, minor3, 8, stroke_width=0.1, side=side))
-
-	g.append(make_ticks(radius, minor2, 10, stroke_width=0.2, side=side))
-	g.append(make_ticks(radius, minor1, 15, stroke_width=0.3, side=side))
-	g.append(make_ticks(radius, major, 25, stroke_width=0.5, side=side))
-	g.append(draw.Circle(0, 0, radius, fill="none", stroke="black", stroke_width=0.5))
-
-	# 0-60 minutes around the circle in black
-	#g.append(make_rule(radius, 360/60, 360/120, 360/600, pos=(2,9)))
-	# black numbers going clockwise
-	px = 2
-	py = 20 if side & 1 != 0 else -10
-
-	g.append(make_labels(radius, 6, 6, 360,
-		lambda x: "%.0f" % ((x/6) % 60),
-		size=11,
-		pos=(px,py),
-		text_anchor="start",
-		fill="black",
-	))
-
-	# red numbers going reverse around the circle
-	if red_offset is not None:
-		g.append(make_labels(radius, 6, 6, 360,
-			lambda x: "%.0f" % ((red_offset-x/6)),
-			pos=(-px,py),
-			size=11,
-			text_anchor="end",
-			fill="red",
-			font_style="italic",
-		))
-
-	# Special marker for the zeros
-	g.append(draw_marker("0", radius, 180 if side == 1 else 0))
-
-
-#	g.append(draw.Text("+", 30,
-#		2, -radius,
-#		fill="black",
-#		transform="rotate(90)",
-#	))
-#	g.append(draw.Text("-", 30,
-#		-20, -radius+15,
-#		fill="black",
-#		transform="rotate(90)",
-#	))
-		
-
-	return g
-
-def make_ninety_minus(radius, show_labels=True):
-	g = draw.Group()
-
-	# make the rule with no numbers
-	g.append(make_rule(radius, 360/60, 360/120, 360/360, minor3=360/720,
-		fmt=lambda x: "", # "%.0f" % (90 - x/360*60),
-		side=3,
-		pos=(+2,+14),
-		size=9,
-		ticksize=12,
-	))
-
-	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 360/60, 6, 360,
-		lambda x: "<-N" if x == 0 else "%.0f" % (90-x//6),
-		pos=(-2,-7),
-		size=9,
-		text_anchor="end",
-		fill="red",
-		font_style="italic",
-	))
-
-	if not show_labels:
-		return g
-
-	# black numebrs going forwards
-	g.append(make_labels(radius, 360/60, 6, 360,
-		lambda x: "S->" if x == 0 else "%.0f" % (30+x//6),
-		pos=(+2,+12),
-		size=9,
-		text_anchor="start",
-		fill="black",
-	))
-
-
-	# and draw the N/S direction labels, which are the
-	# wrong colors based on the labels above so they are done
-	# by hand
-	g.append(make_labels(radius, 6, 0, 6,
-		lambda x: "<-N",
-		size=9,
-		pos=(-2,12),
-		fill="black",
-		text_anchor="end",
-	))
-	g.append(make_labels(radius, 6, 0, 6,
-		lambda x: "S->",
-		size=8,
-		pos=(+2,-7),
-		fill="red",
-		text_anchor="start",
-	))
-
-	return g
 
 # decimal degrees
-def make_fractional_minutes(radius, include_red=True, include_marker=False, side=1):
+def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=1000):
 	g = draw.Group()
-	g.append(make_rule(radius, 360/100, 360/200, 360/1000,
-		fmt=lambda x: "%02.0f" % (x/360*100),
-		side=side,
-		pos=(1.5,+10 if side == 1 else -10),
-		size=8,
-		ticksize=18,
-	))
 
-	if include_red:
-		# red numbers going reverse around the circle
-		g.append(make_labels(radius, 360/100, 0, 360,
-			lambda x: "%02.0f" % (((360-x) * 100 / 360) % 100),
-			pos=(-2,+10),
-			size=8,
-			text_anchor="end",
-			fill="red",
-			font_style="italic",
+	# skip the 0 since there is a marker
+	for i in range(1,max_angle):
+		a = 360 * i / 1000
+		font_sz = None
+
+		if i % 100 == 0:
+			font_sz = 15
+			c = "extra_thick"
+			l = 15
+		elif i % 10 == 0:
+			font_sz = 12
+			c = "thick"
+			l = 10
+		elif i % 5 == 0:
+			c = "thin"
+			l = 8
+		else:
+			c = "extra_thin"
+			l = 5
+
+		l1 = -l if side & 1 else 0
+		l2 = +l if side & 2 else 0
+
+		g.append(draw.Line(
+			radius + l1, 0, radius + l2, 0,
+			class_=c,
+			transform="rotate(%.3f)" % (a),
 		))
 
+		if not font_sz:
+			continue
+		g.append(draw.Text(
+			"%d" % (i // 10),
+			font_sz,
+			1, -8 if side & 2 else font_sz + 2,
+			class_="angle" if side & 2 else "red_angle",
+			text_anchor="start",
+			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (a,radius),
+		))
+			
 	if include_marker:
 		g.append(draw_marker("0", radius, 0))
 
 	return g
 
-# one hour split into 15 degrees
-# this is the increments and corrections table for the sun,
-# which moves at 15 degrees per hour
-def make_fifteen_degrees(radius):
-	g = draw.Group()
-	g.append(make_rule(radius, 360/(15*4), 360/(15*4*3), 360/(15*60),
-		fmt=lambda x: "%.0f°%.0f'" % (floor(x*15/360), floor(x*60*15/360) % 60),
-		side=3,
-		pos=(1.5,+14),
-		size=9,
-	))
-
-	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 360/(15*4), 6, 366,
-		lambda x: "%.0f°%.0f'" % (floor((360-x)*15/360), floor((360-x)*60*15/360) % 60),
-		pos=(-2,-2),
-		size=8,
-		text_anchor="end",
-		fill="red",
-		font_style="italic",
-	))
-
-	return g
-	
-
-def eq_time_radius(d):
-	return -60 * sin((d-0)/365 * 2 * pi) - 20
-	if d < julian(2,11):
-		return -45
-	if d < julian(5,15):
-		return -0
-	if d < julian(7,30):
-		return -15
-	if d < julian(10,31):
-		return -30
-	return -45
-
-# Name, days, declination pos, eq time pos
-months = [
-	["Jan",31,(+9,-2),(-9,-2)],
-	["Feb",28,(+9,-2),(-9,-2)],
-	["Mar",31,(+9,-2),(-9,-2)],
-	["Apr",30,(-9,-2),(+9,-2)],
-	["May",31,(+9,-2),(+9,-2)],
-	["Jun",30,(+9,-2),(-9,-2)],
-	["Jul",31,(+9,-2),(+9,-2)],
-	["Aug",31,(-9,-2),(+9,-2)],
-	["Sep",30,(-9,-2),(+9,-2)],
-	["Oct",31,(-9,-2),(+9,-2)],
-	["Nov",30,(-9,-2),(+9,-2)],
-	["Dec",31,(-9,-2),(+9,-2)],
-]
-
-def make_equation_of_time(radius):
-	g = draw.Group()
-	#r = lambda d: radius/2 + 30 * sin(2*pi*d/365 + 0.95)
-	r = lambda d: radius - eq_time_radius(d)
-
-	pts = []
-	c = decl_color(0)
-	for d in range(0, 366):
-		minutes = equation_of_time(d)
-		pts += compute_xy(r(d), minutes*6)
-		nc = decl_color(d)
-		if nc != c or d == 365:
-			g.append(draw.Lines(*pts, stroke=c, stroke_width=1, fill="none"))
-			c = nc
-			pts = pts[-2:]
-
-
-	d = 0
-	for (name,d_in_month,_,label_pos) in months:
-		minutes = equation_of_time(d)
-
-		lx = label_pos[0]
-		g.append(draw.Line(lx*2,0,+0,0,
-			stroke=decl_color(d),
-			stroke_width=1,
-			fill="none",
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (minutes*6, r(d), declination_perp(d,equation_of_time,r)),
-		))
-
-		for d_of_month in range(1,d_in_month):
-			d_minutes = equation_of_time(d + d_of_month)
-			g.append(draw.Line(-2,0,+2,0,
-				stroke=decl_color(d+d_of_month),
-				stroke_width=0.1,
-				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,equation_of_time, r)),
-			))
-		for d_of_month in range(10,d_in_month,10):
-			d_minutes = equation_of_time(d + d_of_month)
-			x = 8 if d_of_month == 14 else 4
-			g.append(draw.Line(-x,0,+4,0,
-				stroke=decl_color(d+d_of_month),
-				stroke_width=0.2,
-				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,equation_of_time,r)),
-			))
-
-		g.append(draw.Text(name, 7, *label_pos,
-			fill=decl_color(d),
-			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (minutes*6, r(d), declination_perp(d,equation_of_time,r)),
-		))
-
-		d += d_in_month
-			
-	#g.append(draw.Circle(0, 0, radius, fill="none", stroke="lightgray", stroke_width=1.0))
-	return g
-
-
-def decl_color(d):
-	# the declination is positive from 21 March to 21 Sept
-	#return 'red' if d < 80 or d > 266 else 'black'
-
-	# the d term is negative from 21 Jun to 21 Dec
-	return 'black' if d < 171 or d > 354 else 'red'
-
-# the zeros are at day 80 and day 266, which is where we want
-# the curves to cross.  This produces a nice analemma of the sun's motion
-def make_declination(radius):
-	g = draw.Group(id="declination")
-
-	scale = -3
-	r = lambda d: radius + scale * equation_of_time(d)
-	#r = lambda d: radius - 2000 * (declination(d+1.0/24) - declination(d))
-	stroke = 'black'
-	stroke_width = 1
-
-	arcs = []
-
-	pts = []
-	c = decl_color(0)
-	for d in range(0, 366):
-		minutes = declination(d)
-		pts += compute_xy(r(d), minutes*6)
-		nc = decl_color(d)
-		if nc != c or d == 365:
-			g.append(draw.Lines(*pts, stroke=c, stroke_width=1, fill="none"))
-			c = nc
-			pts = pts[-2:]
-
-
-	d = 0
-	for (name,d_in_month,label_pos,_) in months:
-		a = declination(d)
-
-		#(x,y) = compute_xy(r,a * 6)
-		g.append(draw.Text(name, 7, *label_pos,
-			fill=decl_color(d),
-			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a * 6, r(d), declination_perp(d,declination, r)),
-		))
-
-		for d_of_month in range(1,d_in_month):
-			d_minutes = declination(d + d_of_month)
-			g.append(draw.Line(-2,0,+2,0,
-				stroke=decl_color(d+d_of_month),
-				stroke_width=0.2,
-				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,declination, r)),
-			))
-		for d_of_month in range(10,d_in_month,10):
-			d_minutes = declination(d + d_of_month)
-			g.append(draw.Line(-6,0,+6,0,
-				stroke=decl_color(d+d_of_month),
-				stroke_width=0.2,
-				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (d_minutes*6, r(d+d_of_month), declination_perp(d+d_of_month,declination, r)),
-			))
-		for d_of_month in range(5,d_in_month,5):
-			g.append(draw.Line(-4,0,+4,0,
-				stroke=decl_color(d+d_of_month),
-				stroke_width=0.25,
-				fill="none",
-				transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (declination(d+d_of_month)*6, r(d+d_of_month), declination_perp(d+d_of_month,declination, r)),
-			))
-
-		# draw a thick line under the label
-		lx = label_pos[0]
-		g.append(draw.Line(lx*2,0,0,0,
-			stroke=decl_color(d),
-			stroke_width=1,
-			fill="none",
-			transform="rotate(%.3f) translate(%.3f) rotate(%.3f)" % (a*6, r(d), declination_perp(d, declination, r)),
-		))
-
-#		g.append(draw.Text(name, 7, *label_pos,
-#			fill="black",
-#			text_anchor="middle",
-#			transform="rotate(%.3f) translate(%.3f)" % (r(d)*6, r(d)),
-#		))
-		d += d_in_month
-
-	# circles for every five minutes
-	#g.append(draw.Circle(0, 0, radius, fill="none", stroke="lightgray", stroke_width=1.0))
-	#g.append(draw.Circle(0, 0, radius+10*scale, fill="none", stroke="gray", stroke_width=0.25))
-	#g.append(draw.Circle(0, 0, radius+5*scale, fill="none", stroke="gray", stroke_width=0.25))
-	#g.append(draw.Circle(0, 0, radius-5*scale, fill="none", stroke="red", stroke_width=0.25))
-	#g.append(draw.Circle(0, 0, radius-10*scale, fill="none", stroke="red", stroke_width=0.25))
-	return g
-
-
-def make_sin_sin_scale(radius):
-	g = draw.Group(id="sinsin")
-
-	def func(lat, d, lha):
-		return sin(radians(d))*sin(radians(lat)) + cos(radians(d))*cos(radians(lat))*cos(radians(lha))
-
-	# scale on the outside goes from 0 to 0.4 (sin(23))
-	lha = 0
-
-	max_scale = 1
-	max_lat = 60.1
-	#output_angle = lambda x: 0 if x == 0 else radians(log(max_scale) * 360 / log(x))
-	output_angle = lambda x: 0 if x == 0 else radians(x * 360 / max_scale)
-	#output_angle = lambda x: 0 if x == 0 else radians(x * 180 / max_scale)
-	output_radius = lambda l: radius - 350*abs(sin(radians(l)))
-	for o in frange(0.001,0.01,0.001):
-		g.append(draw.Text("%.3f" % (o),
-			5, 0, 0,
-			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius),
-		))
-	for o in frange(0.01, 0.4, 0.01):
-		g.append(draw.Text("%.2f" % (o),
-			5, 0, 0,
-			text_anchor="middle",
-			#transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius - 100/ log(o) * log(max_scale)),
-			transform="rotate(%.3f) translate(%.3f)" % (degrees(output_angle(o)), radius),
-		))
-
-	for d in [0.1, 0.25, 0.5] + frange(0,25.1,1):
-		pts = []
-		for l in frange(-max_lat,max_lat,1):
-			# compute the angle that provides correct output
-			# for sin(d)*sin(l)
-			o = func(l, d, lha)
-			a = output_angle(o)
-			r = output_radius(l)
-
-			pts.append(r * cos(a))
-			pts.append(r * sin(a))
-
-		g.append(draw.Lines(*pts,
-			fill="none",
-			stroke="black",
-			stroke_width=0.1 if d % 5 != 0 else 0.5,
-		))
-
-		if d < 1:
-			continue
-		g.append(draw.Text("%.0f" % (d), 5, 0, 0,
-			text_anchor="middle",
-			transform="rotate(%.3f) translate(%.3f) rotate(-90)" % (degrees(output_angle(sin(radians(d)))), output_radius(90)),
-		))
-
-
-	for l in frange(-max_lat,max_lat,5):
-		pts = []
-		for d in frange(0.01,25.01,0.01):
-			o = func(l, d, lha)
-			a = output_angle(o)
-			r = output_radius(l)
-
-			pts.append(r * cos(a))
-			pts.append(r * sin(a))
-		g.append(draw.Lines(*pts,
-			fill="none",
-			stroke="black" if l > 0 else "red",
-			stroke_width=0.1,
-		))
-	for l in frange(-max_lat,max_lat,10):
-		pts = []
-		for d in frange(0.01,25.01,0.01):
-			o = func(l, d, lha)
-			a = output_angle(o)
-			r = output_radius(l)
-
-			pts.append(r * cos(a))
-			pts.append(r * sin(a))
-		g.append(draw.Lines(*pts,
-			fill="none",
-			stroke="black" if l > 0 else "red",
-			stroke_width=0.2,
-		))
-			#g.append(draw.Text("%.2f" % v, 7, radius, 0,
-				#transform="rotate(%.3f) translate(%.3f)" % ())
-
-	return g
-
-def make_360_clock(radius):
-	g = draw.Group()
-	g.append(make_rule(radius-20, 5, 1, 0.5,
-		size=7,
-		fmt=lambda x: "%.0f" % (x)))
-	g.append(make_labels(radius-20, 5, 0, 360,
-		lambda x: "%.0f" % ((360-x) % 360),
-		size=7,
-		pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
-	))
-	#g.append(make_radians(radius-40))
-
-	# 24-hour clock on the outsde and inverted in red
-	g.append(make_rule(radius, 360/(24), 360/(24*4), 360/(24*60),
-		side=1,
-		size=9,
-		fmt=lambda x: "%02d:%02d" % ((12 + x // 15) % 24, (4 * (x % 15))),
-	))
-#	g.append(make_labels(radius, 360/(24), 0, 360,
-#		lambda x: "%02d:%02d" % ((24+12 - ((x+14) // 15)) % 24, (4 * (x % 15))),
-#		size=9,
-#		pos=(-2,-1), text_anchor="end", fill="red", font_style="italic",
-#	))
-
-	return g
-
-
-#
-# This is a lookup table for 0 - 60 times 0 - 60
-# and is used to compute the offsets from the increment table
-#
-def make_offsets(radius, end=60):
-	g = draw.Group()
-	r_func = lambda d,m: radius - (end - d) * 3
-	a_func = lambda d,m: d*m / 60 * 6
-
-	for d in frange(0,end-0.01,5):
-		pts = []
-		for m in frange(0,60+0.01, 0.1):
-			pts += compute_xy(r_func(d,m), a_func(d,m))
-
-		# add a tail that sticks out so that it is easier
-		# to find where the divisions stop
-		pts += compute_xy(r_func(d,m) - 10, a_func(d,m))
-
-		g.append(draw.Lines(*pts,
-			fill="none",
-			stroke="red",
-			stroke_width=0.5 if d % 10 == 0 else 0.1,
-		))
-
-	for m in frange(0,60+0.01, 1):
-		pts = []
-		for d in frange(0,end+0.01,0.5):
-			pts += compute_xy(r_func(d,m), a_func(d,m))
-		g.append(draw.Lines(*pts,
-			fill="none",
-			stroke="black",
-			stroke_width = 0.5 if m % 5 == 0 else 0.1,
-		))
-
-		# also add the perpendicular hashes
-			
-	return g
-
-def log60_scales(inner,outer):
-	inner.append(make_logscale(cut, "",
-		frange(2,50,1) + frange(50,60,2),
-		frange(1,60.01,0.5),
-		frange(1,60.01,0.1),
-		[],
-		[],
-		log_scale=-log(60),
-		side=1,
-		pos=(2,+12),
-		#fmt=lambda x: "%d" % (floor(6*x+0.5)),
-	))
-	inner.append(draw_marker("1", cut, 180))
-	outer.append(make_logscale(cut, "",
-		frange(2,50,1) + frange(50,60,2),
-		frange(1,5,0.1) + frange(5,60.01,0.5),
-		frange(1,5,0.01) + frange(5,60.01,0.1),
-		[],
-		[],
-		log_scale=+log(60),
-		side=2,
-		#fmt=lambda x: "%d" % (floor(6*x+0.5)),
-		#fmt=lambda x: "%.1f" % (floor(6*x+0.5)),
-		pos=(2,-5),
-		extra_labels=[[_, "%.1f" % (_)] for _ in frange(1.1,2,0.1) + [2.5,3.5, 4.5]],
-	))
-
-	# add a base 10 outer log scale that can be used to convert from base 60
-	outer.append(make_logscale(cut + 30, "",
-		frange(2,50,1) + frange(50,60,2),
-		frange(1,10.01,0.5),
-		frange(1,2, 0.01) + frange(2,10.01,0.1),
-		[],
-		[],
-		log_scale=+log(60),
-		side=3,
-		#fmt=lambda x: "%d" % (floor(6*x+0.5)),
-		#fmt=lambda x: "%.1f" % (floor(6*x+0.5)),
-		pos=(2,-5),
-		fmt=lambda x: "%.1f" % (x * 100/60),
-		extra_labels=[[_, "%.1f" % (_)] for _ in frange(1.1,2,0.1)],
-	))
-	outer.append(draw_marker("1", cut, 0))
-
-
-def make_astrolabe(scale):
-	R = scale
-	g = draw.Group(class_="astrolabe") #transform="translate(%f %f)" % (R/2,R/2))
-	min_lat = -85
-	max_lat = 85
-	max_lha = 90
-	ecliptic = 23.4
-
-	# horizontal "parallels" for every latitude below 23
-	# and every other above it
-	for lat in range(min_lat,max_lat+1,1):
-		pts = []
-		for lha in range(-max_lha, max_lha+1):
-			if lat % 2 != 0:
-				# only draw the extra lines where they
-				# are useful: between the ecplicit and
-				# from 06:00 to 18:00
-				if fabs(lat) > 25:
-					continue
-				if lha < 30:
-					continue
-
-			pts += stereographic_project(R/2,lat,lha)
-		if len(pts) == 0:
-			continue
-
-		stroke = "black"
-		if lat % 10 == 0:
-			stroke_width = 0.8
-		elif lat % 5 == 0:
-			stroke_width = 0.5
-			stroke = "gray"
-		else:
-			stroke_width = 0.2
-			stroke = "gray"
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke=stroke,
-			stroke_width=stroke_width,
-		))
-
-	# vertical "meridians" for each hour angle
-	for lha in range(-max_lha,max_lha+1):
-		pts = []
-		for lat in range(min_lat,max_lat+1):
-			(x,y) = stereographic_project(R/2,lat,lha)
-			pts += (x,y)
-		stroke = "black"
-		if lha % 10 == 0:
-			stroke_width = 0.8
-		elif lha % 5 == 0:
-			stroke_width = 0.5
-			stroke = "gray"
-		else:
-			stroke_width = 0.2
-			stroke = "gray"
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke=stroke,
-			stroke_width=stroke_width,
-		))
-
-	# draw the equator and east/west meridian quite strongly
-	g.append(draw.Lines(-R,0, +R,0,
-		fill='none',
-		stroke="black",
-		stroke_width=2,
-	))
-	g.append(draw.Lines(0,0, 0, -R,
-		fill='none',
-		stroke="black",
-		stroke_width=2,
-	))
-	g.append(draw.Lines(0,0, 0, +R,
-		fill='none',
-		stroke="red",
-		stroke_width=2,
-	))
-
-	# draw the ecliptic
-	jday = 0
-	ec = draw.Group(transform="rotate(%.3f)" % (90-ecliptic))
-	ec.append(draw.Lines(
-		0, -scale,
-		0, +scale,
-		fill='none',
-		stroke="green",
-		stroke_width=1,
-	))
-
-	ecliptic_decl = lambda jday: declination(jday) * R / ecliptic
-	mday_step = 1
-
-	pts = []
-	for month in months:
-		label = month[0]
-		mdays = month[1]
-		d = ecliptic_decl(jday)
-		side = -1 if jday < 172 or jday > 330 else +1
-		ec.append(draw.Text(label, 10,
-			12*side, d + (-2 if side > 0 else 10),
-			dominant_baseline="center",
-			fill='green',
-			text_anchor="start" if side > 0 else "end",
-		))
-			
-		for mday in range(0,mdays, mday_step):
-			d = ecliptic_decl(jday)
-			eq = equation_of_time(jday)
-
-			pts += stereographic_project(R/2,declination(jday),eq*5)
-
-			jday += mday_step
-
-			if mday == 0:
-				length = 20
-				width = 2
-			elif mday == 10 or mday == 20:
-				length = 15
-				width = 1
-			elif mday % 5 == 0:
-				length = 10
-				width = 1
-			else:
-				length = 5
-				width = 0.5
-			
-			ec.append(draw.Lines(
-				0, d,
-				side*length, d,
-				stroke="green",
-				stroke_width=width,
-			))
-	g.append(ec)
-#	g.append(draw.Lines(*pts,
-#		fill="none",
-#		stroke="green",
-#		stroke_width=1,
-#	))
-
-	# horizontal for the tropics
-	pts = []
-	for lha in range(-max_lha, max_lha+1,10):
-		pts += stereographic_project(R/2,ecliptic,lha)
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke="green",
-			stroke_width=1,
-		))
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke="green",
-			stroke_width=1,
-			transform="scale(1 -1)",
-		))
-		
-	# local hour angle text in degrees, both north and south
-	angle_dec = 30
-	for lha in range(-max_lha+10, max_lha, 10):
-		(x,y) = stereographic_project(R/2,angle_dec,lha)
-		(x1,y1) = stereographic_project(R/2,angle_dec-2,lha)
-		a = degrees(atan2(y1-y, x1-x))
-		g.append(text_rotate(
-			"%d" % (max_lha - lha),
-			15,
-			x, y,
-			offset=(-1,15),
-			text_angle=a,
-			text_anchor="end",
-			fill='black',
-		))
-		g.append(text_rotate(
-			"%d" % (max_lha - lha),
-			15,
-			x, -y,
-			offset=(-1,-3),
-			text_angle=-a,
-			text_anchor="end",
-			fill='black',
-		))
-
-	# actual hour angles
-	# only do AM below and PM above
-	angle_dec = 40
-	for lha in range(-max_lha+15, max_lha, 15):
-		(x1,y1) = stereographic_project(R/2,angle_dec+2,lha)
-		(x0,y0) = stereographic_project(R/2,angle_dec  ,lha)
-		(x2,y2) = stereographic_project(R/2,angle_dec-2,lha)
-		a = degrees(atan2(y2-y1, x2-x1))
-		g.append(draw.Lines(
-			x1,y1, x0, y0, x2,y2,
-			fill="none",
-			stroke="black",
-			stroke_width=2,
-		))
-		g.append(draw.Lines(
-			x1,-y1, x0, -y0, x2,-y2,
-			fill="none",
-			stroke="red",
-			stroke_width=2,
-		))
-
-		# AM is in red
-		g.append(text_rotate(
-			"%02d:00" % (12 - (max_lha - lha)/15),
-			15,
-			x0, -y0,
-			offset=(2,-2),
-			text_angle = 180-a,
-			text_anchor="start",
-			fill='red',
-		))
-		# PM ins in black
-		g.append(text_rotate(
-			"%02d:00" % (12 + (max_lha - lha)/15),
-			15,
-			x0, y0,
-			offset=(2,-2),
-			text_angle = 180+a,
-			text_anchor="start",
-			fill='black',
-		))
-
-	# Latitude for the inner plate
-	for lat in range(10,90,10):
-		(x,y) = stereographic_project(R/2-15, lat, 90)
-		a = degrees(atan2(y,x))
-		g.append(draw.Text(
-			"%d" % (lat),
-			16,
-			-R+15, 0,
-			fill="black",
-			text_anchor="middle",
-			transform="rotate(%.3f)" % (- (a-0.5)),
-		))
-		g.append(draw.Text(
-			"%d" % (lat),
-			16,
-			-R+15, 0,
-			fill="red",
-			text_anchor="middle",
-			transform="rotate(%.3f)" % (- (2-a)),
-		))
-		# only do left side to reduce errors on rotation
-		continue
-		g.append(draw.Text(
-			"%d" % (lat),
-			16,
-			R-15, 0,
-			fill="black",
-			text_anchor="middle",
-			transform="rotate(%.3f)" % (a-0.5),
-		))
-		g.append(draw.Text(
-			"%d" % (lat),
-			16,
-			R-15, 0,
-			fill="red",
-			text_anchor="middle",
-			transform="rotate(%.3f)" % (2-a),
-		))
-
-
-	# bearing angle text
-	# this has a north and south hemisphere component
-	lower = draw.Group()
-	upper = draw.Group(transform="rotate(180)")
-	offset = 10
-	lat_offset = 1
-	g.append(draw.Text("PM", 15, -R+20, -15, fill="black", text_anchor="start"))
-	g.append(draw.Text("PM", 15, +R-20, -15, fill="black", text_anchor="end"))
-	g.append(draw.Text("AM", 15, -R+20, 25, fill="red", text_anchor="start"))
-	g.append(draw.Text("AM", 15, +R-20, 25, fill="red", text_anchor="end"))
-	for lha in range(-max_lha+10, max_lha+1, 10):
-		# Northern hemisphere AM (red) and PM (black)
-		(x,y) = stereographic_project(R/2,lat_offset,lha)
-		upper.append(draw.Text(
-			"%d" % (270 - lha),  # should be 360 -> 180
-			15,
-			-y, x-2,
-			fill='black',
-			text_anchor='start',
-			transform="rotate(90)",
-		))
-		lower.append(draw.Text(
-			"%d" % (90 - lha), # should be 0 - > 180
-			15,
-			-y, x-2,
-			fill='red',
-			text_anchor='start',
-			transform="rotate(90)",
-		))
-
-	g.append(upper)
-	g.append(lower)
-
-	# Triangles for lining up the hemispheres when rotating
-	# to compute the bearing
-	g.append(draw.Lines(
-		  0, -(scale- 0),
-		-10, -(scale-30),
-		+10, -(scale-30),
-		stroke="none",
-		fill="black",
-	))
-	g.append(draw.Lines(
-		  0, +(scale- 0),
-		-10, +(scale-20),
-		+10, +(scale-20),
-		stroke="none",
-		fill="red",
-	))
-	return g
-
-
-#
-# This is visible through a cutout at the top of the wheel
-#
-def make_astrolabe_outer(scale, width):
-	R = scale + width
-	g = draw.Group()
-
-	# horizontal tick marks for each solid latitude
-	for lat in range(-89,90,1):
-		(x,y) = stereographic_project(R/2,lat,90)
-		a = degrees(atan2(y,x))
-		pts = [x,y, *compute_xy(scale,a)]
-		stroke = "black"
-		if lat % 10 == 0:
-			stroke_width = 1
-		elif lat % 5 == 0:
-			stroke_width = 0.5
-			stroke = "gray"
-		else:
-			stroke_width = 0.2
-			stroke = "gray"
-
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke=stroke,
-			stroke_width=stroke_width,
-		))
-		g.append(draw.Lines(*pts,
-			fill='none',
-			stroke=stroke,
-			stroke_width=stroke_width,
-			transform="scale(-1 1)",
-		))
-
-		# no labels on the outer ring
-		continue
-
-		if lat % 10 != 0:
-			continue
-		elif lat == 0 or lat == 90:
-			# do not draw 0 and 90
-			continue
-
-		if lat < 0:
-			color = "red"
-			offset = +2
-		else:
-			color = "black"
-			offset = -0.5
-
-		g.append(draw.Text(
-			"%d" % (fabs(lat)),
-			16,
-			scale + width/2, 0,
-			text_anchor="middle",
-			transform="rotate(%.3f)" % (a+offset),
-			fill = color,
-		))
-		g.append(draw.Text(
-			"%d" % (fabs(lat)),
-			16,
-			scale + width/2, 0,
-			text_anchor="middle",
-			transform="rotate(%.3f)" % (a+offset+180),
-			fill = color,
-		))
-
-	# stroke black for lining up the inner
-	# with the equator
-	g.append(draw.Lines(
-		scale, 0, R, 0,
-		stroke_width=3,
-		stroke="black",
-	))
-	g.append(draw.Lines(
-		-scale, 0, -R, 0,
-		stroke_width=3,
-		stroke="black",
-	))
-
-	# Line up with the triangles on the outer
-	g.append(draw.Lines(
-		0, -scale,
-		+10, -R,
-		-10, -R,
-		fill="black",
-		stroke="none",
-	))
-#	g.append(draw.Lines(
-#		0, +scale,
-#		0, +R,
-#		+20, +(scale+R)/2,
-#		fill="black",
-#		stroke="none",
-#	))
-
-	return g
 	
 
 def make_haversine_spiral(R,
@@ -2242,6 +144,9 @@ def make_haversine_spiral(R,
 	max_angle = 90,
 	log_scale = False,
 	min_angle = 0,
+	sides = 1,
+	include_red = False,
+	include_marker = True,
 ):
 
 	g = draw.Group()
@@ -2250,14 +155,14 @@ def make_haversine_spiral(R,
 		max_h = log(haversine(max_angle))
 		min_h = log(haversine(min_angle))
 		range_h = max_h - min_h
-		def r_func(h): return offset + ((modf(h)[1]-min_h-0.1)/range_h)*(R-offset-spacing)
+		def r_func(h): return offset + ((modf(h)[1]-min_h-0.1)/range_h)*(R-offset-spacing*3)
 		def a_func(h): return -modf(h)[0]*360
 	else:
 		# include space for the red numbers too
 		max_h = haversine(max_angle)
 		min_h = haversine(min_angle)
 		#def r_func(h): return offset + (modf(h*10)[1]/10-min_h)*(R-offset+spacing*2+15)/(max_h-min_h)
-		def r_func(h): return offset + (max_h-modf(h*10)[1]/10)*(R-offset-spacing*2-15)/max_h
+		def r_func(h): return offset + (max_h-modf(h*10)[1]/10)*(R-offset-spacing*2-18)/max_h
 		def a_func(h): return modf(h*10)[0]*360
 
 	for angle in frange(min_angle,max_angle+0.01,0.05):
@@ -2282,13 +187,14 @@ def make_haversine_spiral(R,
 				c = "thick"
 				l = 15
 				sz = font_sz
-			gt.append(draw.Text("%d" % (angle), sz,
+			gt.append(draw.Text("%d" % (angle) + (deg_symbol if log_scale else ""),
+				sz,
 				-7,
 				-3 if log_scale else sz,
 				class_="angle",
 				text_anchor="end",
 			))
-			if not log_scale:
+			if include_red:
 				gt.append(draw.Text("%d" % (90-angle), sz,
 					5,
 					-3,
@@ -2306,30 +212,33 @@ def make_haversine_spiral(R,
 			c = "extra_thin"
 
 		gt.append(draw.Lines(
-			0 if log_scale else +l, 0, -l, 0,
+			-l if sides & 1 else 0, 0,
+			+l if sides & 2 else 0, 0,
 			class_=c,
 		))
 
 		g.append(gt)
 
-	g.append(draw_marker("", R, 180))
-	g.append(draw.Lines(*pts, class_="thin", id_="haversine_spiral"))
+	if include_marker:
+		g.append(draw_marker("", R, 180 if sides % 2 else 0))
+	g.append(draw.Lines(*pts, class_="thin"))
 	return g
 
 
 # Generate the helpers for adjsting the CCL by the fractional declination
 def make_fractional_ccl(R):
 	g = draw.Group()
-	a = 0
 	def ccl_step(dec): return log(cos(radians(dec)))-log(cos(radians(dec+1)))
 	for decl in range(1,25):
 		delta = ccl_step(decl) * 1000
-		a = 4 * decl * 360 / 100
-		g.append(draw.Text("%d" % (decl),
-			10, R+10, +4,
+		a = 4 * (decl-0.5) * 360 / 100
+		g.append(draw.Text("%d" % (decl) + deg_symbol,
+			12, -3, +0,
 			class_="angle",
-			transform="rotate(%.3f)" % (a),
+			text_anchor="end",
+			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (a, R),
 		))
+		pts = []
 		for step in range(0,11):
 			if step % 10 == 0:
 				c = "thick"
@@ -2341,10 +250,66 @@ def make_fractional_ccl(R):
 				c = "extra_thin"
 				l = 5
 
+			astep = a + step*delta/10
+			pts += compute_xy(R, astep)
+
 			g.append(draw.Lines(R, 0, R+l, 0,
 				class_=c,
-				transform="rotate(%.3f)" % (a + step*delta/10),
+				transform="rotate(%.3f)" % (astep),
 			))
+
+		g.append(draw.Lines(*pts, class_="thin"))
+
+	return g
+
+def make_fractional_ccl2(R, max_h):
+	g = draw.Group()
+	def ccl_step(dec): return log(cos(radians(dec)))-log(cos(radians(dec+1)))
+	for decl in range(5,26,5):
+		delta = ccl_step(decl) * 1000
+		pts = []
+		for step in range(0,11):
+			astep = -step*delta/10
+			pts += compute_xy(R + decl * max_h/25, astep)
+		if step % 10 == 0:
+			c = "thick"
+			l = 10
+		elif step % 5 == 0:
+			c = "thin"
+			l = 8
+		else:
+			c = "extra_thin"
+			l = 5
+
+		g.append(draw.Lines(*pts, class_="thin"))
+
+	for decl in [10, 15, 20]:
+		g.append(draw.Text("%d" % (decl) + deg_symbol,
+			10, 2, -(R + decl*max_h/25),
+			class_="angle",
+			text_anchor="start",
+			transform="rotate(90)",
+		))
+	
+
+	for step in range(0,11):
+		pts = []
+		for decl in range(0,26,1):
+			delta = ccl_step(decl) * 1000
+			astep = -step*delta/10
+			pts += compute_xy(R + decl * max_h/25, astep)
+		if step % 10 == 0:
+			c = "thick"
+			l = 10
+		elif step % 5 == 0:
+			c = "thin"
+			l = 8
+		else:
+			c = "extra_thin"
+			l = 5
+
+		g.append(draw.Lines(*pts, class_=c))
+
 
 	return g
 
@@ -2353,7 +318,7 @@ def make_fractional_ccl(R):
 #### Front side
 ####
 front = draw.Group(transform="translate(500 500)")
-cut = 450
+cut = 430
 outer_cut = 500
 outer = draw.Group(id="outer", class_="spinner")
 inner = draw.Group(id="inner", class_="spinner")
@@ -2370,8 +335,9 @@ pointer = draw.Group(id="pointer", class_="spinner")
 pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 
-inner.append(make_haversine_spiral(cut, min_angle=4))
-outer.append(make_fractional_minutes(cut, include_red=False, include_marker=True, side=2))
+inner.append(make_haversine_spiral(cut, min_angle=4, include_red=True, sides=3))
+outer.append(make_haversine_spiral(outer_cut+15, min_angle=2, max_angle=36.7, sides=1, include_marker=False))
+outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
 front.append(pointer)
 front.append(outer)
@@ -2390,10 +356,12 @@ outer.append(axle)
 inner.append(draw.Circle(0,0, cut, class_="thick"))
 outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 
-inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=140, min_angle=5.8))
-outer.append(make_fractional_minutes(cut, include_red=False, include_marker=True, side=2))
+inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=120, min_angle=5.8))
+inner.append(make_fractional_minutes(cut, include_marker=True, side=1, max_angle=251))
+outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
-outer.append(make_fractional_ccl(cut+20))
+outer.append(make_fractional_ccl(cut+25))
+outer.append(make_fractional_ccl2(cut, outer_cut - cut))
 
 #back.append(pointer)
 back.append(outer)
