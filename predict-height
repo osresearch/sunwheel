@@ -4,6 +4,7 @@ import datetime
 import sys
 import re
 import ephem
+from almanac import haversine, ahaversine, compute_hczn
 
 # TODO: use the more recent skyfield library?
 #import skyfield
@@ -51,11 +52,6 @@ def fmt_deg(x, zero_deg=False):
 	return "%+4d°%04.1f'" % (-d if neg else d,m)
 
 
-def haversine(x):
-	return (1 - cos(x))/2
-def ahaversine(y):
-	return acos(1 - 2 * y)
-
 
 # The ephem library always wants UTC
 def ephem_date(when):
@@ -87,27 +83,6 @@ def compute_hc_ephem(lat,lon,when):
 	sun = ephem.Sun(pos)
 	return (fmt_deg(degrees(sun.alt)), fmt_deg(degrees(sun.az)))
 
-# sin(Hc) = Sin(Lat) * Sin(Dec) + Cos(Lat) * Cos(Dec) * Cos(LHA))
-# hav(90-Hc) = hav(LHA) * cos(lat) * cos(Dec) + hav(lat-dec)
-def compute_hczn(lat,dec,lha):
-	lat = radians(lat)
-	dec = radians(dec)
-	lha = radians(lha)
-	hav_hc = haversine(lha) * cos(lat) * cos(dec) + haversine(lat - dec)
-	#print(f"{lat=} {dec=} {lha=} => {hav_hc=}")
-	hc = radians(90) - ahaversine(hav_hc)
-
-	hav_zn = (cos(lat - hc) - sin(dec)) / (2 * cos(lat) * cos(hc))
-	zn = degrees(ahaversine(hav_zn))
-
-	# if the sun was to the west of us,
-	# our local hour angle will be positive
-	# and we have to adjust our computed heading
-	if lha > 0:
-		zn = 360 - zn
-
-	return (degrees(hc),zn)
-
 def hczn_table(lat, dec, lha):
 	# round all of the values in the correct directions
 	lat = floor(lat)
@@ -135,30 +110,6 @@ def compute_hc(lat, lon, when):
 	(hc,zn) = compute_hczn(lat, sun_dec, lha)
 
 	return (hc,zn,sun_dec,sun_gha,lha)
-
-	lat = radians(lat)
-	lon = radians(lon)
-
-	#print("lha", fmt_deg(lha), "= lon", fmt_deg(lon), "gha", fmt_deg(sun_gha))
-	#hav_hc = haversine(lat - sun_dec) + cos(lat) * cos(sun_dec) * haversine(lha)
-	hav_hc = haversine(lha) * cos(lat) * cos(sun_dec) + haversine(lat - sun_dec)
-	hc = radians(90) - ahaversine(hav_hc)
-
-	hav_zn = (cos(lat - hc) - sin(sun_dec)) / (2 * cos(lat) * cos(hc))
-	zn = ahaversine(hav_zn)
-
-	# if the sun was to the west of us,
-	# our local hour angle will be positive
-	# and we have to adjust our computed heading
-	if lha > 0:
-		zn = radians(360) - zn
-
-	# could also compute the sun's heading with
-	#zn = radians(180) - atan2(sin(lha), sin(lat)*cos(lha) - cos(lat)*tan(sun_dec))
-	#zn = atan2(sin(lha), sin(lat)*cos(lha) - cos(lat)*tan(sun_dec))
-
-	return (hc,zn,sun_dec,sun_gha,lha)
-	
 
 
 tz = datetime.timezone(datetime.timedelta(hours=1))

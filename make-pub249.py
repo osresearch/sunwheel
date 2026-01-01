@@ -20,8 +20,8 @@ pdf = canvas.Canvas('pub249.pdf', pagesize=pagesize)
 pdf.setTitle("Sight Reduction Tables")
 
 lat = 0
-dec_max = 80
-lha_max = 150
+dec_max = 40
+lha_max = 120
 scale = 500
 decimal = True
 
@@ -109,7 +109,7 @@ def make_hczn(lat):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < 0:
 				continue
-			pts += compute_xy(hc_scale(hc),zn)
+			pts += compute_xy(hc_scale(hc),zn+90)
 		if len(pts) == 0:
 			continue
 
@@ -134,7 +134,7 @@ def make_hczn(lat):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < 0:
 				continue
-			pts += compute_xy(hc_scale(hc),zn)
+			pts += compute_xy(hc_scale(hc),zn+90)
 
 		if len(pts) == 0:
 			continue
@@ -157,7 +157,7 @@ def make_hczn(lat):
 			continue
 		pdf_text(
 			"%d" % (fabs(lha)), 15,
-			*compute_xy(hc_scale(hc), zn),
+			*compute_xy(hc_scale(hc), zn+90),
 			#text_angle = -90,
 			text_anchor = "middle",
 		)
@@ -183,7 +183,7 @@ def make_hczn(lat):
 			(hc,zn) = compute_hczn(lat, dec, lha)
 			if hc < radians(1):
 				continue
-			(x,y) = compute_xy(hc_scale(hc), zn)
+			(x,y) = compute_xy(hc_scale(hc), zn+90)
 			pdf_text("%+d" % (dec), 15,
 				x, y,
 				#class_="label",
@@ -206,7 +206,7 @@ def make_hczn(lat):
 			w = thin
 			l = 5
 			c = gray
-		(x,y) = compute_xy(hc_scale(hc), 0)
+		(x,y) = compute_xy(hc_scale(hc), 90)
 		pdf_lines([x,y, x-l, y], width=w, color=c)
 
 		if hc % 10 == 0 and hc != 0:
@@ -238,13 +238,13 @@ def make_compass(r, draw_red = True, fs=15, faint=False):
 			l = 5
 			c = gray
 		pdf_lines([
-			*compute_xy(r,a),
-			*compute_xy(r+l,a),
+			*compute_xy(r,a+90),
+			*compute_xy(r+l,a+90),
 			],
 			width = w,
 			color = c,
 		)
-		pts += compute_xy(r,a)
+		pts += compute_xy(r,a+90)
 
 	pdf_lines(pts, width=thick, color=gray if faint else black)
 
@@ -300,7 +300,7 @@ def make_compass(r, draw_red = True, fs=15, faint=False):
 		if not draw_red:
 			offset *= -2
 		pdf_text("%03d" % (a), fs,
-			*compute_xy(r+10, (a+offset)),
+			*compute_xy(r+10, (a+offset+90)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
 			color=gray if faint else black,
@@ -320,7 +320,7 @@ def make_compass(r, draw_red = True, fs=15, faint=False):
 			rot = 90
 			anchor = "end"
 		pdf_text("%03d" % (a), fs,
-			*compute_xy(r+10, 180+(a+offset)),
+			*compute_xy(r+10, 180+(a+offset+90)),
 			text_anchor=anchor,
 			text_angle=rot-(a+offset),
 			color = red,
@@ -1010,7 +1010,7 @@ def make_haversine(min_a = 0, max_a=90, steps=10):
 
 		a = i / steps
 		ac = 90 - a
-		h = haversine(radians(a))
+		h = haversine(a)
 		if h == 0:
 			hl = 99999
 		else:
@@ -1094,10 +1094,10 @@ def make_haversine_list(lat):
 	for dec in range(0,23+1):
 		cc = cos(radians(lat)) * cos(radians(dec))
 		ccl = log(cc) * -10000
-		h_same = haversine(radians(lat - dec)) * 100000
-		h2_same = haversine(radians(lat - dec - 1)) * 100000
-		h_contrary = haversine(radians(lat + dec)) * 100000
-		h2_contrary = haversine(radians(lat + dec + 1)) * 100000
+		h_same = haversine(lat - dec) * 100000
+		h2_same = haversine(lat - dec - 1) * 100000
+		h_contrary = haversine(lat + dec) * 100000
+		h2_contrary = haversine(lat + dec + 1) * 100000
 
 		d1 = (h2_same - h_same) / 10
 		d2 = (h2_contrary - h_contrary) / 10
@@ -1165,14 +1165,77 @@ def make_haversine_pages():
 
 make_haversine_pages()
 
-if decimal:
-	make_times(100, 5)
-else:
-	make_times()
+def make_ccl_page():
+	key = "ccl"
+	pdf.bookmarkPage(key)
+	pdf.addOutlineEntry("Cos(Dec)Cos(Lat) table", key, 0, 0)
+
+	col_width = (pagesize[0]-margin) / 25
+	col_offset = col_width
+	row_offset = -10
+	line_sz = (pagesize[1]-margin*2) / 64
+	sz = 7
+	def ccl_func(lat,dec):
+		return log(cos(radians(lat)) * cos(radians(dec))) * -100
+
+	# column header with the declination and the change
+	# between each declination
+	for dec in range(0,24):
+		pdf_text("%d" % (dec),
+			sz + 2,
+			dec * col_width + col_offset - 5,
+			0,
+			text_anchor="end",
+		)
+		ccl = ccl_func(0,dec)
+		ccl2 = ccl_func(0,dec+1)
+		d = (ccl2 - ccl) * 100
+		pdf_text("+%d" % (d),
+			sz-2,
+			dec * col_width + col_offset,
+			0,
+			text_anchor = "start",
+		)
+
+	y = row_offset
+	for lat in range(0,60+1):
+		pdf_text("%d" % (lat),
+			sz + 2,
+			0,
+			y,
+			text_anchor="end",
+		)
+
+		for dec in range(0,24):
+			ccl = ccl_func(lat,dec)
+			if ccl <= 0:
+				ccl = 0
+			pdf_text("%.2f" % (ccl),
+				sz,
+				dec * col_width + col_offset,
+				y,
+				text_anchor = "end",
+			)
+
+		if lat % 10 == 9 and lat != 59:
+			pdf_lines([0, y-line_sz/2, 24 * col_width, y-line_sz/2], width=thin, color=gray)
+			y -= line_sz * 1.5
+		else:
+			y -= line_sz
+
+
+with pdf_translate(margin,pagesize[1]-margin):
+	make_ccl_page()
+pdf.showPage()
+
 make_latitude(0)
 make_latitude(52)
 make_worksheet(6 * inch)
 make_worksheet(3 * inch)
+if decimal:
+	make_times(100, 5)
+else:
+	make_times()
 
 #pdf.saveState()
 #pdf.translate(pagesize[0]/2,pagesize[1]/2+30 *mm)

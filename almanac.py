@@ -17,7 +17,8 @@ def ahaversine(y):
 	return degrees(acos(1 - 2 * y))
 
 def compute_xy(r,a):
-	return (r * cos(radians(a)), r * sin(radians(a)))
+	a = radians(a)
+	return (r * cos(a), r * sin(a))
 
 def frange(start, end, step=1):
 	n_items = int(ceil((end - start) / step))
@@ -51,15 +52,15 @@ def stereographic_project(r,lat,lon,clon=0):
 # sin(Hc) = Sin(Lat) * Sin(Dec) + Cos(Lat) * Cos(Dec) * Cos(LHA))
 # hav(90-Hc) = hav(LHA) * cos(lat) * cos(Dec) + hav(lat-dec)
 def compute_hczn(lat,dec,lha):
-	lat = radians(lat)
-	dec = radians(dec)
-	lha = radians(lha)
-	hav_hc = haversine(lha) * cos(lat) * cos(dec) + haversine(lat - dec)
+	#lat = radians(lat)
+	#dec = radians(dec)
+	#lha = radians(lha)
+	hav_hc = haversine(lha) * cos(radians(lat)) * cos(radians(dec)) + haversine(lat - dec)
 	#print(f"{lat=} {dec=} {lha=} => {hav_hc=}")
-	hc = radians(90) - ahaversine(hav_hc)
+	hc = 90 - ahaversine(hav_hc)
 
-	hav_zn = (cos(lat - hc) - sin(dec)) / (2 * cos(lat) * cos(hc))
-	zn = degrees(ahaversine(hav_zn))
+	hav_zn = (cos(radians(lat - hc)) - sin(radians(dec))) / (2 * cos(radians(lat)) * cos(radians(hc)))
+	zn = ahaversine(hav_zn)
 
 	# if the sun was to the west of us,
 	# our local hour angle will be positive
@@ -67,7 +68,7 @@ def compute_hczn(lat,dec,lha):
 	if lha > 0:
 		zn = 360 - zn
 
-	return (degrees(hc),zn)
+	return (hc,zn)
 
 # Height of eye is 1.76 sqrt(H_e) in meters
 def height_of_eye(H_e):
