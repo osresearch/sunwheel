@@ -145,7 +145,7 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 
 	# skip the 0 since there is a marker
 	# TODO: fix the low digits
-	for i in frange(20,10*10, 20) + frange(10*10, max_angle*10):
+	for i in frange(30,10*10, 5) + frange(10*10, max_angle*10):
 		lc = log(cos(radians(i/10)))
 		whole = int(lc / division)
 		frac = -((-lc) % division)
@@ -156,12 +156,17 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 
 		font_sz = None
 
-		if int(i) % 100 == 0:
+		if int(i) % 100 == 0 and i > 100:
 			font_sz = 20
 			c = "extra_thick"
 			l = 20
-		elif int(i) % 10 == 0:
+		elif int(i) % 50 == 0:
 			font_sz = 15
+			c = "extra_thick"
+			l = 15
+		elif int(i) % 10 == 0:
+			if i > 100 or i == 80:
+				font_sz = 15
 			c = "thick"
 			l = 15
 		elif int(i) % 5 == 0:
@@ -339,7 +344,7 @@ def make_fractional_ccl2(R, max_h):
 	def ccl_step(dec): return log(cos(radians(dec)))-log(cos(radians(dec+1)))
 	# Horizontal lines every 5 degrees of declination
 	for decl in range(5,26,5):
-		delta = ccl_step(decl) * 1000
+		delta = (ccl_step(decl) / -log(cos(radians(60)))) * 360
 		pts = []
 		for step in range(0,11):
 			astep = -step*delta/10
