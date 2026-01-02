@@ -139,6 +139,63 @@ def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=1000
 
 	return g
 
+# log cosine for CCL computatoin
+def make_log_cosine(radius, side=2, include_marker=True, division = 1.0):
+	g = draw.Group()
+
+	# skip the 0 since there is a marker
+	# TODO: fix the low digits
+	for i in frange(20,10*10, 20) + frange(10*10, 60*10):
+		lc = log(cos(radians(i/10)))
+		whole = int(lc / division)
+		frac = -((-lc) % division)
+		#(frac,whole) = modf(lc)
+		if whole != 0:
+			print("uh oh", i, lc, frac, whole)
+		a = -frac * 360 / division
+
+		font_sz = None
+
+		if int(i) % 100 == 0:
+			font_sz = 20
+			c = "extra_thick"
+			l = 20
+		elif int(i) % 10 == 0:
+			font_sz = 15
+			c = "thick"
+			l = 15
+		elif int(i) % 5 == 0:
+			c = "thin"
+			l = 10
+		else:
+			c = "extra_thin"
+			l = 5
+
+		l1 = -l if side & 1 else 0
+		l2 = +l if side & 2 else 0
+
+		g.append(draw.Line(
+			radius + l1, 0, radius + l2, 0,
+			class_=c,
+			transform="rotate(%.3f)" % (a),
+		))
+
+		if not font_sz:
+			continue
+		g.append(draw.Text(
+			"%d" % (i // 10),
+			font_sz,
+			+15 if side & 2 else -10,
+			(font_sz-2) if side & 2 else -2,
+			class_="angle",
+			text_anchor="start" if side & 2 else "end",
+			transform="rotate(%.3f) translate(%.3f 0) rotate(0)" % (a,radius),
+		))
+			
+	if include_marker:
+		g.append(draw_marker("0", radius, 0 if side & 2 else 180))
+
+	return g
 	
 
 def make_haversine_spiral(R,
@@ -151,16 +208,22 @@ def make_haversine_spiral(R,
 	sides = 1,
 	include_red = False,
 	include_marker = False,
+	division = 0.8,
 ):
-
 	g = draw.Group()
 	pts = []
 	if log_scale:
 		max_h = log(haversine(max_angle))
 		min_h = log(haversine(min_angle))
-		range_h = max_h - min_h
-		def r_func(h): return offset + ((modf(h)[1]-min_h-0.1)/range_h)*(R-offset-spacing*3)
-		def a_func(h): return -modf(h)[0]*360
+		divs = int(min_h / division)
+		print(max_h, min_h, divs)
+		def r_func(h):
+			r_major = int(h / division)
+			#return offset + (r_major  ((r_major-min_h-0.1)/range_h)*(R-offset-spacing*3)
+			return offset + (divs - r_major) / divs * (R - offset - spacing)
+		def a_func(h):
+			r_min = (h % division) / division
+			return -r_min*360
 	else:
 		# include space for the red numbers too
 		max_h = haversine(max_angle)
@@ -351,15 +414,16 @@ inner.append(make_haversine_spiral(cut, min_angle=4, include_red=True, sides=3, 
 outer.append(make_haversine_spiral(outer_cut+35, min_angle=2, max_angle=53, sides=1, include_marker=True, offset=cut))
 #outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
-for line in [
-"1. Pointer to Adjustment Angle on outer",
-"2. Inner index to pointer",
-"2. Inner index to pointer",
-"3. Pointer to DR LAT - Declination",
-"4. Read Hc from red angle",
-]:
-	inner.append(text_circle(line, 20, inner_offset-5, 0, 180, text_anchor="start"))
-	inner_offset -= 20
+def front_instructions():
+	for line in [
+	"1. Pointer to Adjustment Angle on outer",
+	"2. Inner index to pointer",
+	"2. Inner index to pointer",
+	"3. Pointer to DR LAT - Declination",
+	"4. Read Hc from red angle",
+	]:
+		inner.append(text_circle(line, 20, inner_offset-5, 0, 180, text_anchor="start"))
+		inner_offset -= 20
 
 front.append(pointer)
 front.append(outer)
@@ -379,57 +443,55 @@ inner.append(draw.Circle(0,0, cut, class_="thick"))
 outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 
 
-inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=120, min_angle=5.8))
+log_scale_limit = -log(cos(radians(60)))
+inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=135, min_angle=10.2, division=log_scale_limit))
 
 # Reverse to help with lat - dec if necessary
-inner.append(make_fractional_minutes(cut,
-	include_marker=True,
-	side=1,
-	max_angle=241,
-	offset = 90
-))
+#inner.append(make_fractional_minutes(cut, include_marker=True, side=1, max_angle=241, offset = 90))
 
-outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
+outer.append(make_log_cosine(cut, division=log_scale_limit))
+#outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
 #outer.append(make_fractional_ccl(cut+25))
-outer.append(make_fractional_ccl2(cut, outer_cut - cut))
+#outer.append(make_fractional_ccl2(cut, outer_cut - cut))
 
-text_r = (cut + outer_cut + 20) / 2
-outer.append(text_circle(
-	"1. Align Local Hour Angle with Declination Fraction " + right_arrow + right_arrow,
-	20, text_r,
-	-90, -8,
-	text_anchor="end",
-))
-
-outer.append(text_circle(
-	"2. Move cursor to CCL for DR Lat and Declination " + right_arrow + right_arrow,
-	20, text_r,
-	10, 90,
-	text_anchor="start",
-))
-
-outer.append(text_circle(
-	"3. Carry and read Adjustment Angle from inner scale",
-	20, text_r,
-	90, 180,
-	text_anchor="start",
-))
-
-outer.append(text_circle(
-	"4. Compute DR Lat - Declination if needed",
-	20, text_r,
-	-179, -90,
-	text_anchor="start",
-))
-
-for offset in [150, 215, 320, 372]:
-	inner.append(draw.Text(right_arrow+right_arrow, 20, -offset, 0,
-		class_="angle",
-		transform="rotate(180)",
+def add_instructions():
+	text_r = (cut + outer_cut + 20) / 2
+	outer.append(text_circle(
+		"1. Align Local Hour Angle with Declination Fraction " + right_arrow + right_arrow,
+		20, text_r,
+		-90, -8,
 		text_anchor="end",
 	))
-	
+
+	outer.append(text_circle(
+		"2. Move cursor to CCL for DR Lat and Declination " + right_arrow + right_arrow,
+		20, text_r,
+		10, 90,
+		text_anchor="start",
+	))
+
+	outer.append(text_circle(
+		"3. Carry and read Adjustment Angle from inner scale",
+		20, text_r,
+		90, 180,
+		text_anchor="start",
+	))
+
+	outer.append(text_circle(
+		"4. Compute DR Lat - Declination if needed",
+		20, text_r,
+		-179, -90,
+		text_anchor="start",
+	))
+
+	for offset in [150, 215, 320, 372]:
+		inner.append(draw.Text(right_arrow+right_arrow, 20, -offset, 0,
+			class_="angle",
+			transform="rotate(180)",
+			text_anchor="end",
+		))
+		
 
 
 #back.append(pointer)
