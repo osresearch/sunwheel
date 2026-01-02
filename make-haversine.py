@@ -232,7 +232,7 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 	
 
 def make_haversine_spiral(R,
-	font_sz = 15,
+	font_sz = 12,
 	offset = 100,
 	spacing = 5,
 	max_angle = 90,
@@ -432,7 +432,7 @@ def text_circle(s, sz, r, start=0, end=360, cx=0, cy=0, **kargs):
 	p = draw.Path()
 	(sx,sy) = compute_xy(r, start)
 	(ex,ey) = compute_xy(r, end)
-	p.M(sx,sy).A(r, r, 0, 0, 1, ex, ey)
+	p.M(sx,sy).A(r, r, 0, 0, 1 if start < end else 0, ex, ey)
 	return draw.Text(s, sz, path=p, **kargs)
 
 
@@ -459,12 +459,15 @@ pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=
 
 inner_offset = 150
 #inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
-inner_division = 1 / 14 + 0.0001 #haversine(35)
+inner_division = 1 / 14 + 0.00051 #haversine(35)
 #inner_division = haversine(30)
 inner.append(make_haversine_spiral(cut, min_angle=3, include_red=True, sides=3, offset=inner_offset, division = inner_division, font_sz=12))
+inner.append(draw_marker("", cut, 180))
+outer.append(draw_marker("", cut, 0))
 
 # two loops of the haversine spiral for holding position on the outer ring
-outer.append(make_haversine_spiral(outer_cut, min_angle=2, max_angle=44.4, sides=1, include_marker=True, offset=cut+35, division = inner_division))
+# this doesn't actually work out as very useful
+#outer.append(make_haversine_spiral(outer_cut, min_angle=2, max_angle=44.4, sides=1, include_marker=True, offset=cut+35, division = inner_division))
 #outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
 def front_instructions():
@@ -477,6 +480,20 @@ def front_instructions():
 	]:
 		inner.append(text_circle(line, 20, inner_offset-5, 0, 180, text_anchor="start"))
 		inner_offset -= 20
+
+inner.append(draw.Text("Dec-Lat", 25,
+	0, -inner_offset*.5,
+	text_anchor="middle",
+))
+inner.append(draw.Text("Height", 25,
+	0, -inner_offset*.3,
+	fill="red",
+	text_anchor="middle",
+))
+inner.append(draw.Text("Hc = Hav(Dec-Lat) +\nHav(LHA)*Cos(DEC)*Cos(LAT)", 12,
+	0, inner_offset*.4,
+	text_anchor="middle",
+))
 
 front.append(pointer)
 front.append(outer)
@@ -498,7 +515,7 @@ outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 
 inner_offset = 100
 #inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
-log_scale_limit = -log(cos(radians(60)))
+log_scale_limit = -log(cos(radians(60.001)))
 inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=135, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
 
 # Inside log cosine for declination
@@ -547,6 +564,16 @@ def add_instructions():
 			text_anchor="end",
 		))
 		
+inner.append(text_circle("Local Hour Angle" + right_arrow+right_arrow+right_arrow, 20, inner_offset - 18, -180, 0, text_anchor="middle"))
+inner.append(draw.Text("Hav(LHA)*Cos(DEC)*Cos(LAT)", 12,
+	0, inner_offset*.7,
+	text_anchor="middle",
+))
+inner.append(text_circle("Declination" + right_arrow+right_arrow+right_arrow, 20, cut - 20, 80, 53, text_anchor="end", fill="red"))
+
+# repeat this one a few times
+for a in [0, 120, 240]:
+	outer.append(text_circle("Latitude" + right_arrow+right_arrow+right_arrow, 20, cut + 40, a, a+45, text_anchor="start", fill="black"))
 
 
 #back.append(pointer)
