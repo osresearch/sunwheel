@@ -140,12 +140,12 @@ def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=1000
 	return g
 
 # log cosine for CCL computatoin
-def make_log_cosine(radius, side=2, include_marker=True, division = 1.0):
+def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_angle=60):
 	g = draw.Group()
 
 	# skip the 0 since there is a marker
 	# TODO: fix the low digits
-	for i in frange(20,10*10, 20) + frange(10*10, 60*10):
+	for i in frange(20,10*10, 20) + frange(10*10, max_angle*10):
 		lc = log(cos(radians(i/10)))
 		whole = int(lc / division)
 		frac = -((-lc) % division)
@@ -185,9 +185,10 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0):
 		g.append(draw.Text(
 			"%d" % (i // 10),
 			font_sz,
-			+15 if side & 2 else -10,
-			(font_sz-2) if side & 2 else -2,
-			class_="angle",
+			+15 if side & 2 else -15,
+			#(font_sz-2) if side & 2 else -2,
+			font_sz-4,
+			class_="angle" if side & 2 else "red_angle",
 			text_anchor="start" if side & 2 else "end",
 			transform="rotate(%.3f) translate(%.3f 0) rotate(0)" % (a,radius),
 		))
@@ -262,7 +263,7 @@ def make_haversine_spiral(R,
 				sz,
 				-7,
 				-3 if log_scale else sz,
-				class_="angle",
+				class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
 				text_anchor="end",
 			))
 			if include_red:
@@ -455,9 +456,9 @@ inner_offset = 100
 log_scale_limit = -log(cos(radians(60)))
 inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=135, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
 
-# Reverse to help with lat - dec if necessary
-#inner.append(make_fractional_minutes(cut, include_marker=True, side=1, max_angle=241, offset = 90))
-
+# Inside log cosine for declination
+inner.append(make_log_cosine(cut, division=log_scale_limit, max_angle=25.01, side=1))
+# outside log cosine for latitude
 outer.append(make_log_cosine(cut, division=log_scale_limit))
 #outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
