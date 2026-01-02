@@ -2,6 +2,33 @@
 # Generates the Haversine slide rule elements using SVG
 # Front is a Haversine, rear is log(Haversine)
 #
+# Usage:
+# Given DR Lat (LAT), Sun Declination (DEC), and Local Hour Angle (LHA)
+# computes the expected height Hc using haversine's law.
+# If LHA is less than 10 degrees, you probably want a meridian sight instead.
+#
+# On the log side:
+# 1. Rotate the inner so that the declination in red lines up with
+# the outer index.
+# 2. Move the pointer to the DR Lat on the outer in black.
+# 3. Rotate the inner so that the LHA is under the cursor
+# 4. Move the pointer clockwise to the outer index, tracking if it crosses
+# the inner index, in which case move to the next line in.
+# 5. Read the Adjustment Angle from under the cursor and record it.
+# This is ahav(hav(lha)*cos(lat)*cos(dec))
+# The functions computed were ahav(exp(log(hav(lha)) + log(cos(lat)) + log(cos(dec))))
+#
+# Flip to the linear side.
+# 1. Move the pointer to the outer index
+# 2. Rotate the inner so that the Adjustment Angle is under the cursor.
+# Make note of the carry number if there is one.
+# 3. Move the pointer to the inner index
+# 4. Rotate the inner so that the Dec - Lat value (ignoring the sign)
+# is under the pointer.
+# 5. Move the pointer clockwise to the outer index, tracking if it crosses
+# the inner index, in which case move to the next line in.
+# 6. Move in the additional carry number from the adjustment angle
+# 7. Read the Hc from the red numbers on the spiral.
 
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs, modf
 import drawsvg as draw
@@ -237,7 +264,7 @@ def make_haversine_spiral(R,
 		divs = int(max_h / division)
 		def r_func(h):
 			r_major = int(h / division)
-			return offset + (divs - r_major) / divs * (R - offset - spacing - 50) + 25
+			return offset + (divs - r_major) / divs * (R - offset - spacing)
 		def a_func(h):
 			r_minor = (h % division) / division
 			return r_minor*360
@@ -272,11 +299,21 @@ def make_haversine_spiral(R,
 				text_anchor="end",
 			))
 			if include_red:
-				gt.append(draw.Text("%d" % (90-angle), sz,
-					5,
+				gt.append(draw.Text("%d" % (90-angle),
+					sz,
+					-7,
 					-3,
 					class_="red_angle",
-					text_anchor="start",
+					text_anchor="end",
+				))
+
+			major_r = int(h/division)
+			if include_red and major_r != 0:
+				gt.append(draw.Text("+%d" % (major_r),
+					font_sz-2,
+					-7, font_sz + sz,
+					class_="angle",
+					text_anchor="end",
 				))
 		elif frac == 50:
 			l = 10
@@ -290,7 +327,7 @@ def make_haversine_spiral(R,
 
 		gt.append(draw.Lines(
 			-l if sides & 1 else 0, 0,
-			+l if sides & 2 else 0, 0,
+			0, 0, #+l if sides & 2 else 0, 0,
 			class_=c,
 		))
 
@@ -422,9 +459,12 @@ pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=
 
 inner_offset = 150
 #inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
-inner_division = 1 / 12 + 0.0001 #haversine(35)
+inner_division = 1 / 14 + 0.0001 #haversine(35)
+#inner_division = haversine(30)
 inner.append(make_haversine_spiral(cut, min_angle=3, include_red=True, sides=3, offset=inner_offset, division = inner_division, font_sz=12))
-outer.append(make_haversine_spiral(outer_cut+30, min_angle=2, max_angle=48, sides=1, include_marker=True, offset=cut+10, division = inner_division))
+
+# two loops of the haversine spiral for holding position on the outer ring
+outer.append(make_haversine_spiral(outer_cut, min_angle=2, max_angle=44.4, sides=1, include_marker=True, offset=cut+35, division = inner_division))
 #outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
 def front_instructions():
