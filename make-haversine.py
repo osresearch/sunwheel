@@ -208,28 +208,33 @@ def make_haversine_spiral(R,
 	sides = 1,
 	include_red = False,
 	include_marker = False,
-	division = 0.8,
+	division = 0.1,
 ):
 	g = draw.Group()
 	pts = []
 	if log_scale:
 		max_h = log(haversine(max_angle))
 		min_h = log(haversine(min_angle))
-		divs = int(min_h / division)
+		divs = int(min_h / division + 0.5)
 		print(max_h, min_h, divs)
 		def r_func(h):
 			r_major = int(h / division)
 			#return offset + (r_major  ((r_major-min_h-0.1)/range_h)*(R-offset-spacing*3)
-			return offset + (divs - r_major) / divs * (R - offset - spacing)
+			return offset + (divs - r_major) / divs * (R - offset - spacing - 25) + 25
 		def a_func(h):
-			r_min = (h % division) / division
-			return -r_min*360
+			r_minor = (h % division) / division
+			return -r_minor*360
 	else:
 		# include space for the red numbers too
 		max_h = haversine(max_angle)
 		min_h = haversine(min_angle)
-		def r_func(h): return offset + (max_h-modf(h*10)[1]/10)*(R-offset-spacing*2-25)/max_h
-		def a_func(h): return modf(h*10)[0]*360
+		divs = int(max_h / division)
+		def r_func(h):
+			r_major = int(h / division)
+			return offset + (divs - r_major) / divs * (R - offset - spacing - 50) + 25
+		def a_func(h):
+			r_minor = (h % division) / division
+			return r_minor*360
 
 	for angle in frange(min_angle,max_angle+0.01,0.05):
 		h = haversine(angle)
@@ -410,8 +415,10 @@ pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2
 pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 
 inner_offset = 150
-inner.append(make_haversine_spiral(cut, min_angle=4, include_red=True, sides=3, offset=inner_offset))
-outer.append(make_haversine_spiral(outer_cut+35, min_angle=2, max_angle=53, sides=1, include_marker=True, offset=cut))
+#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
+inner_division = 1 / 12 + 0.0001 #haversine(35)
+inner.append(make_haversine_spiral(cut, min_angle=3, include_red=True, sides=3, offset=inner_offset, division = inner_division, font_sz=12))
+outer.append(make_haversine_spiral(outer_cut+30, min_angle=2, max_angle=48, sides=1, include_marker=True, offset=cut+10, division = inner_division))
 #outer.append(make_fractional_minutes(cut, include_marker=True, side=2))
 
 def front_instructions():
@@ -443,8 +450,10 @@ inner.append(draw.Circle(0,0, cut, class_="thick"))
 outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 
 
+inner_offset = 100
+#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
 log_scale_limit = -log(cos(radians(60)))
-inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=135, min_angle=10.2, division=log_scale_limit))
+inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=135, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
 
 # Reverse to help with lat - dec if necessary
 #inner.append(make_fractional_minutes(cut, include_marker=True, side=1, max_angle=241, offset = 90))
