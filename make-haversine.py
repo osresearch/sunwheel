@@ -118,18 +118,16 @@ def draw_marker(label, radius, angle):
 
 
 # decimal degrees
-def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=1000, offset = 0, font_sz = 15):
+def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=100, offset = 0, font_sz = 15, include_red=False):
 	g = draw.Group(transform="rotate(%.3f)" % (offset))
 
 	# skip the 0 since there is a marker
-	for i in range(1,max_angle):
-		a = 360 * i / 1000
-		if side == 1:
-			a = -a
+	for i in range(1,max_angle*10):
+		a = 360 * i / (max_angle*10)
 		sz = None
 
 		if i % 100 == 0:
-			sz = font_sz + 5
+			sz = font_sz + 2
 			c = "extra_thick"
 			l = 15
 		elif i % 10 == 0:
@@ -157,11 +155,25 @@ def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=1000
 		g.append(draw.Text(
 			"%d" % (i // 10),
 			sz,
-			+10 if side & 2 else -10,
-			(font_sz-2) if side & 2 else -2,
-			class_="angle" if side & 2 else "red_angle",
+			+12 if side & 2 else -12,
+			#(font_sz-2) if side & 2 else -2,
+			(sz-1),
+			class_="angle",
 			text_anchor="start" if side & 2 else "end",
 			transform="rotate(%.3f) translate(%.3f 0) rotate(0)" % (a,radius),
+		))
+
+		if not include_red:
+			continue
+		g.append(draw.Text(
+			"%d" % (i // 10),
+			sz,
+			+12 if side & 2 else -12,
+			#(font_sz-2) if side & 2 else -2,
+			-2,
+			class_="red_angle",
+			text_anchor="start" if side & 2 else "end",
+			transform="rotate(%.3f) translate(%.3f 0) rotate(0)" % (-a,radius),
 		))
 			
 	if include_marker:
@@ -189,22 +201,22 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 		if int(i) % 100 == 0 and i > 100:
 			font_sz = 20
 			c = "extra_thick"
-			l = 20
+			l = 25
 		elif int(i) % 50 == 0:
 			font_sz = 15
 			c = "extra_thick"
-			l = 15
+			l = 20
 		elif int(i) % 10 == 0:
 			if i > 100 or i == 80:
 				font_sz = 15
 			c = "thick"
-			l = 15
+			l = 20
 		elif int(i) % 5 == 0:
 			c = "thin"
-			l = 10
+			l = 15
 		else:
 			c = "extra_thin"
-			l = 5
+			l = 10
 
 		l1 = -l if side & 1 else 0
 		l2 = +l if side & 2 else 0
@@ -237,7 +249,7 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 def make_haversine_spiral(R,
 	font_sz = 12,
 	offset = 100,
-	spacing = 5,
+	spacing = 10,
 	max_angle = 90,
 	log_scale = False,
 	min_angle = 0,
@@ -255,7 +267,7 @@ def make_haversine_spiral(R,
 		print(max_h, min_h, divs)
 		def r_func(h):
 			r_major = int(h / division)
-			r_major = h / division
+			#r_major = h / division
 			#return offset + (r_major  ((r_major-min_h-0.1)/range_h)*(R-offset-spacing*3)
 			return offset + (divs - r_major) / divs * (R - offset - spacing - 25) + 25
 		def a_func(h):
@@ -274,7 +286,8 @@ def make_haversine_spiral(R,
 			r_minor = (h % division) / division
 			return r_minor*360
 
-		# highlight every other ring to make it easier to trace
+	# highlight every other ring to make it easier to trace
+	if False:
 		for i in range(1,divs,2):
 			div_r = offset + (divs - i) / divs * (R - offset - spacing) - 30/2
 			ex = div_r * cos(radians(-2))
@@ -306,12 +319,12 @@ def make_haversine_spiral(R,
 			# whole number degrees
 			if int(angle) % 5 == 0 and angle != 0:
 				c = "extra_thick"
-				l = 20
+				l = 30
 				l2 = 8
 				sz = font_sz + 5
 			else:
 				c = "thick"
-				l = 15
+				l = 25
 				l2 = 5
 				sz = font_sz
 			gt.append(draw.Text("%d" % (angle) + (deg_symbol if log_scale else ""),
@@ -339,14 +352,14 @@ def make_haversine_spiral(R,
 					text_anchor="end",
 				))
 		elif frac == 50:
-			l = 10
+			l = 15
 			l2 = 5
 			c = "thin"
 		elif frac % 10 == 0:
-			l = 5
+			l = 10
 			c = "thin"
 		else:
-			l = 4
+			l = 6
 			c = "extra_thin"
 
 		gt.append(draw.Lines(
@@ -507,7 +520,7 @@ def front_instructions(outer, lines, offset=35):
 		))
 		a += 60
 
-front_instructions(outer, [
+0 if True else front_instructions(outer, [
 	"1. Pointer to outer index " + right_arrow3,
 	"2. Inner to Adjust Angle from other side",
 	"3. Pointer to inner index",
@@ -532,8 +545,13 @@ inner.append(draw.Text("Hc = Hav(Dec-Lat) +\nHav(LHA)*Cos(DEC)*Cos(LAT)", 12,
 	text_anchor="middle",
 ))
 
-# it is helpful to have something on the outside, even if it is meaningless
-outer.append(make_fractional_minutes(cut, side=2, font_sz=10))
+# the outer scales help both with keeping track of your place
+# as well as converting minutes to decimal degrees
+outer.append(make_fractional_minutes((outer_cut+cut)/2+1, side=2, font_sz=10, include_red=True))
+outer.append(make_fractional_minutes((outer_cut+cut)/2-1, side=1, font_sz=10, max_angle=60, include_red=True))
+outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
+outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
+
 #front.append(pointer)
 front.append(outer)
 front.append(inner)
@@ -614,7 +632,7 @@ inner.append(text_circle("Declination" + right_arrow3, 20, cut - 20, 80, 53, tex
 for a in []: #[0, 120, 240]:
 	outer.append(text_circle("Latitude" + right_arrow3, 20, cut + 40, a, a+45, text_anchor="start", fill="black"))
 
-front_instructions(outer, [
+0 if True else front_instructions(outer, [
 	left_arrow3 + " 1. Red Declination to outer index ",
 	left_arrow3 + " 2. Pointer to inner index",
 	"3. Inner to Local Hour Angle",
