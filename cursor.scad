@@ -169,7 +169,7 @@ module astrolabe_arm()
 }
 
 
-if(1)
+if(0)
 {
 %translate([0,35,0])
 cursor(true);
@@ -185,6 +185,6 @@ astrolabe_arm();
 } else {
 
 	// printable
-	astrolabe_cursor(false);
-	//translate([0,20,0]) slider();
+	cursor(false);
+	translate([0,25,0]) cursor(true);
 }
