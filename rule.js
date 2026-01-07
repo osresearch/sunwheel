@@ -110,9 +110,12 @@ function declination(d)
 
 function rotate(elem, value, speed)
 {
+	if (!elem)
+		return
 	elem.value = value;
 	elem.style.transform = "rotate(" + -value*6 + "deg)";
 }
+
 
 function setup(){
 	var date = document.getElementById("date");
@@ -122,6 +125,9 @@ function setup(){
 	pointer = sliderule.getElementById("pointer");
 	inner = sliderule.getElementById("inner");
 	outer = sliderule.getElementById("outer");
+	back_pointer = sliderule.getElementById("back_pointer");
+	back_inner = sliderule.getElementById("back_inner");
+	back_outer = sliderule.getElementById("back_outer");
 
 	set("ho", "");
 	set("za", "");
@@ -132,6 +138,9 @@ function setup(){
 	rotate(pointer, 0, speed)
 	rotate(inner, 0, speed)
 	rotate(outer, 0, speed)
+	rotate(back_pointer, 0, speed)
+	rotate(back_inner, 0, speed)
+	rotate(back_outer, 0, speed)
 	step = 0;
 }
 
@@ -146,6 +155,15 @@ function reset_pointer(all=0)
 		rotate(inner, inner.value - pointer.value, speed)
 	rotate(pointer, 0, speed)
 
+}
+function reset_back_pointer(all=0)
+{
+	// rotate so that the pointer is level and the outer
+	// marks the current pointed to value
+	rotate(back_outer, back_outer.value - back_pointer.value, speed)
+	if (all)
+		rotate(back_inner, back_inner.value - back_pointer.value, speed)
+	rotate(back_pointer, 0, speed)
 }
 
 function set_rule(p,i,o) {
