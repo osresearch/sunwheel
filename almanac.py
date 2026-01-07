@@ -16,6 +16,12 @@ def ahaversine(y):
 	if y > 1: y = 1
 	return degrees(acos(1 - 2 * y))
 
+def compute_ccl(lat,dec):
+	return log(cos(radians(lat)) * cos(radians(dec)))
+def compute_adjust(lat, dec, lha):
+	return ahaversine(haversine(lha) * cos(radians(lat)) * cos(radians(dec)))
+	
+
 def compute_xy(r,a):
 	a = radians(a)
 	return (r * cos(a), r * sin(a))

@@ -56,6 +56,10 @@ text { font-family: "B612 Regular"; }
 <path d="M71.19575284344147,403.77117873500526 A410,410,0,0,0,246.74415949233983,327.44055911939006" id="d4" />
 </defs>
 <g transform="translate(500 500)">
+<g id="pointer" class="spinner">
+<path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" />
+<path d="M0,0 L-500,0" fill="none" stroke="none" stroke-width="2" />
+</g>
 <g id="outer" class="spinner">
 <circle cx="0" cy="0" r="500" class="thick" />
 <circle cx="0" cy="0" r="5" class="thick" id="d5" />
@@ -7466,7 +7470,11 @@ text { font-family: "B612 Regular"; }
 </g>
 </g>
 <g transform="translate(1500 500)">
-<g id="back_outer">
+<g id="back_pointer" class="spinner">
+<path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" />
+<path d="M0,0 L-500,0" fill="none" stroke="none" stroke-width="2" />
+</g>
+<g id="back_outer" class="spinner">
 <use xlink:href="#d5" />
 <circle cx="0" cy="0" r="500" class="thick" />
 <path d="M430,0 L500,0" class="extra_thick" />
@@ -9312,7 +9320,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em" dx="-1">Latitude➤➤➤</tspan>
 </textPath></text>
 </g>
-<g id="back_inner">
+<g id="back_inner" class="spinner">
 <use xlink:href="#d5" />
 <circle cx="0" cy="0" r="430" class="thick" />
 <g>
@@ -17088,7 +17096,7 @@ text { font-family: "B612 Regular"; }
 </g>
 </g>
 <text font-size="20" text-anchor="middle"><textPath xlink:href="#d3" startOffset="50%">
-<tspan dy="0em">Local Hour Angle➤➤➤</tspan>
+<tspan dy="0em">⮜⮜⮜Local Hour Angle</tspan>
 </textPath></text>
 <text x="0" y="70.0" font-size="12" text-anchor="middle">Hav(LHA)*Cos(DEC)*Cos(LAT)</text>
 <text font-size="15" text-anchor="end" fill="red"><textPath xlink:href="#d4" startOffset="100%">
