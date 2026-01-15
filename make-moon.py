@@ -6,6 +6,16 @@
 # 15 deg for the Sun
 # 15 deg 2.4 for Aries
 # 
+# Measure the lunar distance, height of the moon and height of the sun.
+# Add the moon and sun semi diameters to the lunar distnace
+# Add the moon and sun semi diameters to the heights
+# Compute the LHA between the sun and the moon given these heights as lat&dec
+# and 90 minus the lunar distance with the nav wheel.
+# - 
+# Adjust the sun height for refraction
+# Adjust the moon height for refraction and parallax (using this wheel)
+# Compute the height with the navwheel using the adjusted heights and LHA
+# 
 
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs, modf
 import drawsvg as draw
@@ -169,372 +179,6 @@ def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=100,
 
 	return g
 
-# log cosine for CCL computatoin
-def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_angle=60):
-	g = draw.Group()
-
-	# 
-	steps = 100
-	ranges = frange(3*steps,10*steps, steps//2)
-	ranges += frange(10*steps, min(16,max_angle)*steps, steps//4)
-	ranges += frange(16*steps, min(40,max_angle)*steps, steps//10)
-	ranges += frange(40*steps,max_angle*steps, steps//20)
-	for i in ranges:
-		lc = log(cos(radians(i/steps)))
-		whole = int(lc / division)
-		frac = -((-lc) % division)
-		#(frac,whole) = modf(lc)
-		if whole != 0:
-			print("uh oh", i, lc, frac, whole)
-		a = -frac * 360 / division
-
-		font_sz = None
-
-		if int(i) % (10*steps) == 0 and i > 10*steps:
-			font_sz = 20
-			c = "extra_thick"
-			l = 25
-		elif int(i) % (5*steps) == 0:
-			font_sz = 15
-			c = "extra_thick"
-			l = 20
-		elif int(i) % (1*steps) == 0:
-			if i > 10*steps or i == 8*steps:
-				font_sz = 15
-			c = "thick"
-			l = 20
-		elif int(i) % (steps//2) == 0:
-			c = "thin"
-			l = 20 if i > 16*steps else 10
-		elif int(i) % (steps//10) == 0:
-			c = "thin"
-			l = 12
-		else:
-			c = "extra_thin"
-			l = 8
-
-		l1 = -l if side & 1 else 0
-		l2 = +l if side & 2 else 0
-
-		g.append(draw.Line(
-			radius + l1, 0, radius + l2, 0,
-			class_=c,
-			transform="rotate(%.3f)" % (a),
-		))
-
-		if not font_sz:
-			continue
-		g.append(draw.Text(
-			"%d" % (i // steps),
-			font_sz,
-			+16 if side & 2 else -16,
-			#(font_sz-2) if side & 2 else -2,
-			font_sz-2,
-			class_="angle" if side & 2 else "red_angle",
-			text_anchor="start" if side & 2 else "end",
-			transform="rotate(%.3f) translate(%.3f 0) rotate(0)" % (a,radius),
-		))
-			
-	if include_marker:
-		g.append(draw_marker("0", radius, 0 if side & 2 else 180))
-
-	return g
-	
-
-def make_haversine_spiral(R,
-	font_sz = 12,
-	offset = 100,
-	spacing = 10,
-	max_angle = 90,
-	log_scale = False,
-	min_angle = 0,
-	sides = 1,
-	include_red = False,
-	include_marker = False,
-	division = 0.1,
-):
-	g = draw.Group()
-	pts = []
-	if log_scale:
-		max_h = log(haversine(max_angle))
-		min_h = log(haversine(min_angle))
-		divs = int(min_h / division + 0.5)
-		print(max_h, min_h, divs)
-		def r_func(h):
-			r_major = int(h / division)
-			#r_major = h / division
-			#return offset + (r_major  ((r_major-min_h-0.1)/range_h)*(R-offset-spacing*3)
-			return offset + (divs - r_major) / divs * (R - offset - spacing - 25) + 25
-		def a_func(h):
-			r_minor = (h % division) / division
-			return -r_minor*360
-	else:
-		# include space for the red numbers too
-		max_h = haversine(max_angle)
-		min_h = haversine(min_angle)
-		divs = int(max_h / division)
-		def r_func(h):
-			r_major = int(h / division) # discrete levels
-			#r_major = h / division # continuous spiral
-			return offset + (divs - r_major) / divs * (R - offset - spacing)
-		def a_func(h):
-			r_minor = (h % division) / division
-			return r_minor*360
-
-	# highlight every other ring to make it easier to trace
-	if False:
-		for i in range(1,divs,2):
-			div_r = offset + (divs - i) / divs * (R - offset - spacing) - 30/2
-			ex = div_r * cos(radians(-2))
-			ey = div_r * sin(radians(-2))
-			g.append(draw.Path(
-				stroke_width=30,
-				stroke_opacity="0.20",
-				stroke="#404040",
-				fill="none",
-			).M(div_r, 0)
-			.A(div_r, div_r, 0, 1, 1, ex, ey)
-			)
-
-	for angle in frange(min_angle,max_angle+0.01,0.05):
-		h = haversine(angle)
-		if log_scale:
-			h = log(h)
-		r = r_func(h)
-		a = a_func(h)
-		(x,y) = compute_xy(r, a)
-		pts += [x,y]
-
-		(frac,whole) = modf(angle)
-		gt = draw.Group(transform="rotate(%.3f) translate(%.3f 0)" % (a, r))
-		frac = int(frac*100 + 0.5)
-		l2 = 0
-
-		if frac == 0:
-			# whole number degrees
-			if int(angle) % 5 == 0 and angle != 0:
-				c = "extra_thick"
-				l = 30
-				l2 = 8
-				sz = font_sz + 5
-			else:
-				c = "thick"
-				l = 25
-				l2 = 5
-				sz = font_sz
-			gt.append(draw.Text("%d" % (angle) + (deg_symbol if log_scale else ""),
-				sz,
-				-7,
-				-3 if log_scale else sz,
-				class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
-				text_anchor="end",
-			))
-			if include_red:
-				gt.append(draw.Text("%d" % (90-angle),
-					sz,
-					-7,
-					-3,
-					class_="red_angle",
-					text_anchor="end",
-				))
-
-			major_r = int(h/division)
-			if include_red and major_r != 0:
-				gt.append(draw.Text("+%d" % (major_r),
-					font_sz-2,
-					-7, font_sz + sz,
-					class_="angle",
-					text_anchor="end",
-				))
-		elif frac == 50:
-			l = 15
-			l2 = 5
-			c = "thin"
-		elif frac % 10 == 0:
-			l = 10
-			c = "thin"
-		else:
-			l = 6
-			c = "extra_thin"
-
-		gt.append(draw.Lines(
-			-l if sides & 1 else 0, 0,
-			l2, 0, #+l if sides & 2 else 0, 0,
-			class_=c,
-		))
-
-		g.append(gt)
-
-	if not log_scale:
-		return g
-
-	#for angle in frange(5,80,0.01):
-	if False:
-		h = sin(radians(angle))
-		if log_scale:
-			h = log(h)
-		r = r_func(h*2)
-		a = a_func(h*2)
-		(x,y) = compute_xy(r, a)
-		pts += [x,y]
-
-		(frac,whole) = modf(angle)
-		gt = draw.Group(transform="rotate(%.3f) translate(%.3f 0)" % (a, r))
-		frac = int(frac*100 + 0.5)
-		l2 = 0
-
-		if frac == 0:
-			# whole number degrees
-			if int(angle) % 5 == 0 and angle != 0:
-				c = "extra_thick"
-				l = 30
-				l2 = 8
-				sz = font_sz + 5
-			else:
-				c = "thick"
-				l = 25
-				l2 = 5
-				sz = font_sz
-			gt.append(draw.Text("%d" % (angle) + (deg_symbol if log_scale else ""),
-				sz,
-				-7,
-				-3 if log_scale else sz,
-				class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
-				text_anchor="end",
-			))
-			if include_red:
-				gt.append(draw.Text("%d" % (90-angle),
-					sz,
-					-7,
-					-3,
-					class_="red_angle",
-					text_anchor="end",
-				))
-
-			major_r = int(h/division)
-			if include_red and major_r != 0:
-				gt.append(draw.Text("+%d" % (major_r),
-					font_sz-2,
-					-7, font_sz + sz,
-					class_="angle",
-					text_anchor="end",
-				))
-		elif frac == 50:
-			l = 15
-			l2 = 5
-			c = "thin"
-		elif frac % 10 == 0:
-			l = 10
-			c = "thin"
-		else:
-			l = 6
-			c = "extra_thin"
-
-		gt.append(draw.Lines(
-			-l if sides & 1 else 0, 0,
-			l2, 0, #+l if sides & 2 else 0, 0,
-			class_=c,
-		))
-
-		g.append(gt)
-
-	if include_marker:
-		g.append(draw_marker("", offset, 0))
-	g.append(draw.Lines(*pts,
-		#class_="extra_thick",
-		class_="thick",
-	))
-	return g
-
-
-# Generate the helpers for adjsting the CCL by the fractional declination
-def make_fractional_ccl(R):
-	g = draw.Group()
-	def ccl_step(dec): return log(cos(radians(dec)))-log(cos(radians(dec+1)))
-	for decl in range(1,25):
-		delta = ccl_step(decl) * 1000
-		a = 4 * (decl-0.5) * 360 / 100
-		g.append(draw.Text("%d" % (decl) + deg_symbol,
-			12, -3, +0,
-			class_="angle",
-			text_anchor="end",
-			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (a, R),
-		))
-		pts = []
-		for step in range(0,11):
-			if step % 10 == 0:
-				c = "thick"
-				l = 10
-			elif step % 5 == 0:
-				c = "thin"
-				l = 8
-			else:
-				c = "extra_thin"
-				l = 5
-
-			astep = a + step*delta/10
-			pts += compute_xy(R, astep)
-
-			g.append(draw.Lines(R, 0, R+l, 0,
-				class_=c,
-				transform="rotate(%.3f)" % (astep),
-			))
-
-		g.append(draw.Lines(*pts, class_="thin"))
-
-	return g
-
-def make_fractional_ccl2(R, max_h):
-	g = draw.Group()
-	def ccl_step(dec): return log(cos(radians(dec)))-log(cos(radians(dec+1)))
-	# Horizontal lines every 5 degrees of declination
-	for decl in range(5,26,5):
-		delta = (ccl_step(decl) / -log(cos(radians(60)))) * 360
-		pts = []
-		for step in range(0,11):
-			astep = -step*delta/10
-			pts += compute_xy(R + decl * max_h/25, astep)
-		if step % 10 == 0:
-			c = "thick"
-			l = 10
-		elif step % 5 == 0:
-			c = "thin"
-			l = 8
-		else:
-			c = "extra_thin"
-			l = 5
-
-		g.append(draw.Lines(*pts, class_="thin"))
-
-	for decl in [10, 15, 20]:
-		g.append(draw.Text("%d" % (decl) + deg_symbol,
-			10, 2, -(R + decl*max_h/25),
-			class_="angle",
-			text_anchor="start",
-			transform="rotate(90)",
-		))
-	
-
-	for step in range(0,11):
-		pts = []
-		for decl in range(0,26,1):
-			delta = ccl_step(decl) * 1000
-			astep = -step*delta/10
-			pts += compute_xy(R + decl * max_h/25, astep)
-		if step % 10 == 0:
-			c = "thick"
-			l = 10
-		elif step % 5 == 0:
-			c = "thin"
-			l = 8
-		else:
-			c = "extra_thin"
-			l = 5
-
-		g.append(draw.Lines(*pts, class_=c))
-
-
-	return g
 
 def text_circle(s, sz, r, start=0, end=360, cx=0, cy=0, **kargs):
 	p = draw.Path()
@@ -603,10 +247,12 @@ def make_moon(R):
 
 
 # The lunar distance changes by +/-12 degrees per day,
-# so a multiplication nomograph can be used to 
+# so a multiplication nomograph can be used to compute the
+# time based on the distance between the moon and some other object.
+# this scale helps with computing that time.
 def make_lunar_dist(R):
 	g = draw.Group()
-	offset = 200
+	offset = 150
 	min_d = 25
 	max_d = 35
 	#def r_func(d,m): return offset + (R - offset) * (max_d-d) / 10
@@ -622,7 +268,7 @@ def make_lunar_dist(R):
 			pts += compute_xy(r, a)
 			pts2 += compute_xy(r, -a)
 
-			if m % (60*10) == 0:
+			if False and m % (60*10) == 0 and d % 2 == 0:
 				g.append(draw.Text("%d" % (d), 12,
 					*compute_xy(r, a),
 					class_="red_angle",
@@ -659,19 +305,111 @@ def make_lunar_dist(R):
 			continue
 
 		# add some labels
-		label_d = (max_d+min_d)/2
+		for label_d in [(max_d*2+min_d)/3, min_d-1.6]:
+			pts = []
+			for d in range(1,5):
+				pts += compute_xy(r_func(label_d+d, m+3), a_func(label_d+d, m+3))
+			path = draw.Lines(*pts)
+			g.append(draw.Text("%02d" % (m // (60)),
+				12,
+				path=path,
+				text_anchor="start",
+				dominant_baseline="hanging",
+				class_="angle",
+			))
+	
+	return g
+
+
+# Correct for "parallax in altitude"
+# which ranges from 54 to 61.5
+# and depends on the cosine of the altitude
+# the semi diameter of the moon varies from 14.7 to 16.6
+# this is a really weird diagram...
+def make_lunar_parallax(R):
+	g = draw.Group()
+	offset = 200
+	alt_max = 88
+	hp_min = 54.0
+	hp_max = 62.0
+	hp_range = hp_max - hp_min
+
+	sd_min = 14.7
+	sd_max = 16.6
+
+	# the semi diameter of the moon is related to the
+	# HP by the factor .2724, so we can add that in here
+	def r_func(hp,alt): return offset + (R - offset) * (hp - hp_min) / hp_range
+	def a_func(hp,alt): return (cos(radians(alt))) * hp * 6 
+
+	for hp in frange(hp_min, hp_max + 0.01, 0.5):
 		pts = []
-		for d in range(1,5):
-			pts += compute_xy(r_func(label_d+d, m+3), a_func(label_d+d, m+3))
-		path = draw.Lines(*pts)
-		g.append(draw.Text("%02d" % (m // (60)),
-			12,
+		for alt in frange(0, alt_max+0.01, 0.1):
+			a = a_func(hp,alt)
+			r = r_func(hp,alt)
+			pts += compute_xy(r, a)
+
+			if modf(hp)[0] == 0 and \
+			alt == alt_max and hp != hp_max:
+				g.append(draw.Text("%d" % (hp), 12,
+					*compute_xy(r,a),
+					class_="angle",
+				))
+		if hp % 5 == 0:
+			c = "thick"
+		elif hp % 1 == 0:
+			c = "thin"
+		else:
+			c = "extra_thin"
+
+		g.append(draw.Lines(*pts, class_=c))
+
+		if hp % 1:
+			continue
+
+		# mark the semi diameters for the differen HP values
+		for sd in [ 0.2724 * hp, -0.2724 * hp ]:
+			g.append(draw.Lines(
+				*compute_xy(R-20, sd * 6),
+				*compute_xy(R, sd * 6),
+				class_=c
+			))
+			g.append(draw.Lines(
+				*compute_xy(offset-20, sd * 6),
+				*compute_xy(offset, sd * 6),
+				class_=c
+			))
+
+
+	for alt in [0,2,4,6,7,8,9] + frange(10, alt_max+1, 1):
+		pts = []
+		for hp in frange(hp_min, hp_max + 0.01, 0.1):
+			a = a_func(hp,alt)
+			r = r_func(hp,alt)
+			pts += compute_xy(r, a)
+		if int(alt % 10) == 0:
+			c = "extra_thick"
+		elif int(alt % 5) == 0:
+			c = "thick"
+		else:
+			c = "thin"
+		path = draw.Lines(*pts, class_=c)
+		g.append(path)
+
+		if int(alt % 10) != 0 or alt == 0:
+			continue
+		g.append(draw.Text(("%d") % (alt), 12,
 			path=path,
 			text_anchor="start",
-			dominant_baseline="hanging",
 			class_="angle",
 		))
-	
+		g.append(draw.Text(("%d") % (alt), 12,
+			path=path,
+			text_anchor="end",
+			class_="angle",
+		))
+
+	# draw some thick lines at the semi-diameters
 	return g
 
 ####
@@ -700,9 +438,13 @@ def make_pointer(id="pointer"):
 inner.append(draw_marker("", cut, 180))
 
 
-inner.append(make_moon(cut))
+# computing the lunar increments
+# do we still want this?
+#inner.append(make_moon(cut))
+#inner.append(make_fractional_minutes(cut-50, side=2, font_sz=10, max_angle=15, include_red=False, include_marker=True, divisions=60))
+
+inner.append(make_lunar_parallax(cut - 30))
 inner.append(make_fractional_minutes(cut, side=1, font_sz=10, max_angle=60, include_red=True, include_marker=True, divisions=10))
-inner.append(make_fractional_minutes(cut-50, side=2, font_sz=10, max_angle=15, include_red=False, include_marker=True, divisions=60))
 
 
 
