@@ -7,7 +7,7 @@ import datetime
 import sys
 import re
 
-year = 2025
+year = 2026
 
 def haversine(x):
 	return (1 - cos(radians(x)))/2
@@ -76,6 +76,15 @@ def compute_hczn(lat,dec,lha):
 
 	return (hc,zn)
 
+# reverse the Hc Zn computation to produce LHA
+# hav_hc = haversine(lha) * cos(radians(lat)) * cos(radians(dec)) + haversine(lat - dec)
+# hav(lha) = (hav(90-hc) - hav(lat-dec)) / cos(lat) / cos(dec)
+def compute_lha(lat, dec, hc):
+	cc = cos(radians(lat)) * cos(radians(dec))
+	hav_lha = (haversine(90-hc)  - haversine(lat-dec)) / cc
+	return ahaversine(hav_lha)
+	
+
 # Height of eye is 1.76 sqrt(H_e) in meters
 def height_of_eye(H_e):
 	return 1.76 * sqrt(H_e) * 6
@@ -103,6 +112,35 @@ def equation_of_time(d,y=year):
 
 def julian(m,d,y=year):
 	return int(datetime.date(y,m,d).strftime("%j"))
+
+# The ephem library always wants UTC
+def ephem_date(when):
+	date = when.isoformat()
+	date = re.sub(r"T"," ", date)
+	date = re.sub(r"-","/", date)
+	return date
+
+# compute the lunar distance for a given date
+def compute_ld(when):
+	import ephem
+	sun = ephem.Sun()
+	moon = ephem.Moon()
+	sun.compute(ephem_date(when))
+	moon.compute(ephem_date(when))
+
+	(ld,zn) = compute_hczn(
+		degrees(sun.dec),
+		degrees(moon.dec),
+		degrees(sun.ha) - degrees(moon.ha),
+	)
+
+	return (
+		90 - ld, zn,
+		degrees(sun.dec),
+		degrees(sun.ha),
+		degrees(moon.dec),
+		degrees(moon.ha),
+	)
 	
 
 months = [
