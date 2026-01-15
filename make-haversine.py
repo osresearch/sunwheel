@@ -203,21 +203,24 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 		#(frac,whole) = modf(lc)
 		if whole != 0:
 			print("uh oh", i, lc, frac, whole)
-		a = -frac * 360 / division
+		if side == 1:
+			a = +frac * 360 / division
+		else:
+			a = -frac * 360 / division
 
 		font_sz = None
 
 		if int(i) % (10*steps) == 0 and i > 10*steps:
-			font_sz = 20
+			font_sz = 15
 			c = "extra_thick"
 			l = 25
 		elif int(i) % (5*steps) == 0:
-			font_sz = 15
+			font_sz = 10
 			c = "extra_thick"
 			l = 20
 		elif int(i) % (1*steps) == 0:
 			if i > 10*steps or i == 8*steps:
-				font_sz = 15
+				font_sz = 10
 			c = "thick"
 			l = 20
 		elif int(i) % (steps//2) == 0:
@@ -245,8 +248,7 @@ def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_ang
 			"%d" % (i // steps),
 			font_sz,
 			+16 if side & 2 else -16,
-			#(font_sz-2) if side & 2 else -2,
-			font_sz-2,
+			(font_sz-2) if side & 2 else -2,
 			class_="angle" if side & 2 else "red_angle",
 			text_anchor="start" if side & 2 else "end",
 			transform="rotate(%.3f) translate(%.3f 0) rotate(0)" % (a,radius),
@@ -319,6 +321,76 @@ def make_haversine_spiral(R,
 			h = log(h)
 		r = r_func(h)
 		a = a_func(h)
+		(x,y) = compute_xy(r, a)
+		pts += [x,y]
+
+		(frac,whole) = modf(angle)
+		gt = draw.Group(transform="rotate(%.3f) translate(%.3f 0)" % (a, r))
+		frac = int(frac*100 + 0.5)
+		l2 = 0
+
+		if frac == 0:
+			# whole number degrees
+			if int(angle) % 5 == 0 and angle != 0:
+				c = "extra_thick"
+				l = 30
+				l2 = 8
+				sz = font_sz + 5
+			else:
+				c = "thick"
+				l = 25
+				l2 = 5
+				sz = font_sz
+			gt.append(draw.Text("%d" % (angle) + (deg_symbol if log_scale else ""),
+				sz,
+				-7,
+				-3 if log_scale else sz,
+				class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
+				text_anchor="end",
+			))
+			if include_red:
+				gt.append(draw.Text("%d" % (90-angle),
+					sz,
+					-7,
+					-3,
+					class_="red_angle",
+					text_anchor="end",
+				))
+
+			major_r = int(h/division)
+			if include_red and major_r != 0:
+				gt.append(draw.Text("+%d" % (major_r),
+					font_sz-2,
+					-7, font_sz + sz,
+					class_="angle",
+					text_anchor="end",
+				))
+		elif frac == 50:
+			l = 15
+			l2 = 5
+			c = "thin"
+		elif frac % 10 == 0:
+			l = 10
+			c = "thin"
+		else:
+			l = 6
+			c = "extra_thin"
+
+		gt.append(draw.Lines(
+			-l if sides & 1 else 0, 0,
+			l2, 0, #+l if sides & 2 else 0, 0,
+			class_=c,
+		))
+
+		g.append(gt)
+
+	#for angle in frange(5,80,0.01):
+	if False:
+		h = sin(radians(angle))
+		if log_scale:
+			h = log(h)
+		r = r_func(h*2)
+		a = a_func(h*2)
 		(x,y) = compute_xy(r, a)
 		pts += [x,y]
 
@@ -606,14 +678,15 @@ outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 inner_offset = 100
 #inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
 log_scale_limit = -log(cos(radians(60.001)))
-inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=135, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
+inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=160, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
 
 # Inside log cosine for declination
-inner.append(make_log_cosine(cut, division=log_scale_limit, max_angle=25.01, side=1))
+#inner.append(make_log_cosine(cut, division=log_scale_limit, max_angle=25.01, side=1))
 # outside log cosine for latitude
 outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
 outer.append(make_log_cosine(cut, division=log_scale_limit))
-outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10))
+outer.append(make_log_cosine(outer_cut, division=log_scale_limit, side=1))
+#outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10))
 
 #outer.append(make_fractional_ccl(cut+25))
 #outer.append(make_fractional_ccl2(cut, outer_cut - cut))
@@ -623,25 +696,19 @@ inner.append(draw.Text("Hav(LHA)*Cos(DEC)*Cos(LAT)", 12,
 	0, inner_offset*.7,
 	text_anchor="middle",
 ))
-inner.append(text_circle("Declination" + right_arrow3, 15, cut - 20, 80, 53, text_anchor="end", fill="red"))
+#inner.append(text_circle("Declination" + right_arrow3, 15, cut - 20, 80, 53, text_anchor="end", fill="red"))
 
 # repeat this one a few times
-for a in [0]: #[0, 120, 240]:
+for a in []: #[0, 120, 240]:
 	outer.append(text_circle("Latitude" + right_arrow3, 15,
 		cut + 20, a-45, a, text_anchor="end", fill="black"))
 
-0 if True else front_instructions(outer, [
-	left_arrow3 + " 1. Red Declination to outer index ",
-	left_arrow3 + " 2. Pointer to inner index",
-	"3. Inner to Local Hour Angle",
-	"4. Pointer to Latitude on outer " + right_arrow3,
-	"5. Carry if necessary",
-	"6. Read adjust angle from spiral",
-], offset=45)
 
 back.append(make_pointer("back_pointer"))
 back.append(outer)
 back.append(inner)
+#front.append(outer)
+#front.append(inner)
 
 d.append(front)
 d.append(back)
