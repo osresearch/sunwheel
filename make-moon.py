@@ -259,6 +259,8 @@ def make_lunar_dist(R):
 	def r_func(d,m): return offset + (R - offset) * (d-min_d) / 10
 	def a_func(d,m): return m * d / 100 / 6
 
+	g2 = draw.Group(id_="time-rings")
+
 	for d in range(min_d,max_d+1):
 		pts = []
 		pts2 = []
@@ -269,7 +271,7 @@ def make_lunar_dist(R):
 			pts2 += compute_xy(r, -a)
 
 			if False and m % (60*10) == 0 and d % 2 == 0:
-				g.append(draw.Text("%d" % (d), 12,
+				g2.append(draw.Text("%d" % (d), 12,
 					*compute_xy(r, a),
 					class_="red_angle",
 				))
@@ -278,10 +280,19 @@ def make_lunar_dist(R):
 			c = "extra_thick"
 		else:
 			c = "thin"
-		g.append(draw.Lines(*pts,
-			class_=c
+		g2.append(draw.Lines(*pts,
+			class_=c,
+			id_="time-ring-%02d" % (d),
 		))
+
+		if d != max_d:
+			g2.append(draw.Text("%d" % (d), 12,
+				*compute_xy(r_func(d, 0), a_func(d,0)),
+				class_="angle",
+			))
 		#g.append(draw.Lines(*pts2, class_=c))
+	g.append(g2)
+	g2 = draw.Group(id_="time-lines")
 
 	for m in range(0, 60*60+1, 30):
 		pts = []
@@ -299,24 +310,32 @@ def make_lunar_dist(R):
 		else:
 			c = "extra_thin"
 		#g.append(draw.Lines(*pts2, class_=c))
-		g.append(draw.Lines(*pts, class_=c))
+		g2.append(draw.Lines(*pts,
+			class_=c,
+			id_="time-line-%02d" % (m),
+		))
 
-		if m % (60*5) != 0 or m == 0 or m == 60*60:
+		if m % (60*1) != 0 or m == 0 or m == 60*60:
 			continue
 
 		# add some labels
-		for label_d in [(max_d*2+min_d)/3, min_d-1.6]:
+		for label_d in [max_d-4, min_d-2]:
+			if label_d == min_d - 2 and m % (60*5) != 0:
+				continue
+
 			pts = []
 			for d in range(1,5):
 				pts += compute_xy(r_func(label_d+d, m+3), a_func(label_d+d, m+3))
 			path = draw.Lines(*pts)
-			g.append(draw.Text("%02d" % (m // (60)),
+			g2.append(draw.Text("%02d" % (m // (60)),
 				12,
 				path=path,
-				text_anchor="start",
+				text_anchor="end",
 				dominant_baseline="hanging",
 				class_="angle",
 			))
+
+	g.append(g2)
 	
 	return g
 
@@ -456,7 +475,7 @@ outer.append(axle)
 
 # Pointer with hidden half so it spins around the center
 def make_pointer(id="pointer"):
-	pointer = draw.Group(id=id, class_="spinner")
+	pointer = draw.Group(id=id, class_="spinner", transform="rotate(0)")
 	pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 	pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
 	return pointer
@@ -490,8 +509,8 @@ front.append(make_pointer("pointer"))
 ####
 back = draw.Group(transform="translate(1500 500)")
 
-outer = draw.Group(id="back_outer", class_="spinner")
-inner = draw.Group(id="back_inner", class_="spinner")
+outer = draw.Group(id="back_outer", class_="spinner", transform="rotate(0)")
+inner = draw.Group(id="back_inner", class_="spinner", transform="rotate(0)")
 inner.append(axle)
 outer.append(axle)
 inner.append(draw.Circle(0,0, cut, class_="thick"))
