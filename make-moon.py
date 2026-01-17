@@ -369,16 +369,26 @@ def make_lunar_parallax(R):
 
 		# mark the semi diameters for the differen HP values
 		for sd in [ 0.2724 * hp, -0.2724 * hp ]:
+			a = sd * 6
 			g.append(draw.Lines(
-				*compute_xy(R-20, sd * 6),
-				*compute_xy(R, sd * 6),
+				*compute_xy(R-20, a),
+				*compute_xy(R, a),
 				class_=c
 			))
 			g.append(draw.Lines(
-				*compute_xy(offset-20, sd * 6),
-				*compute_xy(offset, sd * 6),
+				*compute_xy(offset-20, a),
+				*compute_xy(offset, a),
 				class_=c
 			))
+
+			if hp % 5 == 0:
+				g.append(draw.Text("%d" % (hp), 8,
+					offset-20, 5,
+					class_="angle",
+					text_anchor="end",
+					transform="rotate(%.3f)" % (a),
+				))
+				
 
 
 	for alt in [0,2,4,6,7,8,9] + frange(10, alt_max+1, 1):
@@ -409,7 +419,23 @@ def make_lunar_parallax(R):
 			class_="angle",
 		))
 
-	# draw some thick lines at the semi-diameters
+	# draw some lines for the semi-diameter augmentation
+
+	pts = []
+	for alt in range(0,90+1):
+		sd_aug = 0.3 * sin(radians(alt))
+		(x,y) = compute_xy(offset + alt*1.5, sd_aug*6)
+		pts += (x,y)
+		if alt % 10 != 0:
+			continue
+		g.append(draw.Lines(x, y-5, x, y+5, class_="thin"))
+		g.append(draw.Text("%d" % (alt), 8,
+			x+0, y + 10,
+			text_anchor="start",
+			class_="angle",
+		))
+	g.append(draw.Lines(*pts, class_="thin"))
+
 	return g
 
 ####
