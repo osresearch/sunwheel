@@ -30,22 +30,27 @@
 # 6. Move in the additional carry number from the adjustment angle
 # 7. Read the Hc from the red numbers on the spiral.
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs, modf
-import drawsvg as draw
+from sliderule import *
+#from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs, modf
+#import drawsvg as draw
 import datetime
 import sys
 import re
-from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project
+#from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project
 
-deg_symbol = "°"
-right_arrow = "➤"
-right_arrow3 = right_arrow+right_arrow+right_arrow
-left_arrow = "⮜"
-left_arrow3 = left_arrow+left_arrow+left_arrow
 output_file = "haversine.svg"
+output_a3_file = "haversine-a3.svg"
+
+dpi = 96
+outer_diameter = 170
+margin = 10
+a3_scaling = outer_diameter / 1000 * dpi / 25.4
+a3_height = (297 * dpi / 25.4) / a3_scaling
+a3_width = (420 * dpi / 25.4) / a3_scaling
 
 d = draw.Drawing(2000,1000, origin=(0,0))
-d.append_css("""
+a3 = draw.Drawing(a3_width, a3_height, origin=(0,0))
+css = """
 @font-face {
         font-family: "B612 Regular";
         font-style: normal;
@@ -91,100 +96,10 @@ text { font-family: "B612 Regular"; }
 	fill: red;
 	font-family: italic;
 }
-""")
+"""
 
-
-def draw_marker(label, radius, angle):
-	g = draw.Group(transform="translate(%.3f)" % (radius))
-	g.append(draw.Lines(
-		0, 0,
-		15, +5,
-		25, +5,
-		25, -5,
-		15, -5,
-		close=True,
-		fill="black",
-		stroke="none",
-		transform="rotate(%.3f)" % (angle),
-	))
-
-	g.append(draw.Text(label, 14, 0, -12 if angle == 0 else +21 ,
-		text_anchor="middle",
-		fill="white",
-		transform="rotate(%.3f)" % (90),
-	))
-
-	return g
-
-
-# decimal degrees
-def make_fractional_minutes(radius, include_marker=False, side=1, max_angle=100, offset = 0, font_sz = 15, include_red=False):
-	g = draw.Group(transform="rotate(%.3f)" % (offset))
-
-	for i in range(1 if include_marker else 0,max_angle*10):
-		a = 360 * i / (max_angle*10)
-		sz = None
-
-		if i % 100 == 0:
-			sz = font_sz + 2
-			c = "extra_thick"
-			l = 25
-		elif i % 10 == 0:
-			sz = font_sz
-			c = "thick"
-			l = 20
-		elif i % 5 == 0:
-			c = "thin"
-			l = 15
-		else:
-			c = "extra_thin"
-			l = 10
-
-		l1 = -l if side & 1 else 0
-		l2 = +l if side & 2 else 0
-
-		g.append(draw.Line(
-			radius + l1, 0, radius + l2, 0,
-			class_=c,
-			transform="rotate(%.3f)" % (a),
-		))
-
-		if not sz:
-			continue
-		xp = 1
-		yp = sz+10 if side & 1 else -10
-		g.append(draw.Text(
-			"%d" % (i // 10),
-			sz,
-			#+12 if side & 2 else -12,
-			#(sz-1),
-			+xp,
-			+yp,
-			class_="angle",
-			#text_anchor="start" if side & 2 else "start",
-			text_anchor="start",
-			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (a,radius),
-		))
-
-		if not include_red:
-			continue
-		g.append(draw.Text(
-			"%d" % (i // 10),
-			sz,
-			#+12 if side & 2 else -12,
-			#(font_sz-2) if side & 2 else -2,
-			#-2,
-			-xp,
-			+yp,
-			class_="red_angle",
-			text_anchor="end",
-			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (-a,radius),
-		))
-			
-	if include_marker:
-		g.append(draw_marker("0", radius, 0 if side & 2 else 180))
-
-	return g
+d.append_css(css)
+a3.append_css(css)
 
 # log cosine for CCL computatoin
 def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_angle=60):
@@ -552,14 +467,6 @@ def make_fractional_ccl2(R, max_h):
 
 	return g
 
-def text_circle(s, sz, r, start=0, end=360, cx=0, cy=0, **kargs):
-	p = draw.Path()
-	(sx,sy) = compute_xy(r, start)
-	(ex,ey) = compute_xy(r, end)
-	p.M(sx,sy).A(r, r, 0, 0, 1 if start < end else 0, ex, ey)
-	return draw.Text(s, sz, path=p, **kargs)
-
-
 ####
 #### Front side
 ####
@@ -661,6 +568,14 @@ front.append(make_pointer("pointer"))
 front.append(outer)
 front.append(inner)
 
+append(a3, outer, outer_cut+margin, outer_cut+margin, a3_scaling)
+
+
+# inner is slightly smaller, so tweak its position to just fit
+mid_h = a3_height - outer_cut - cut - 2 * margin
+d1 = sqrt((outer_cut + cut + margin)**2 - mid_h**2)
+append(a3, inner, outer_cut+margin+d1, a3_height - cut - margin, a3_scaling)
+
 ####
 #### Reverse side
 #### inner disk is the same size as the outer
@@ -710,7 +625,11 @@ back.append(inner)
 #front.append(outer)
 #front.append(inner)
 
+append(a3, inner, a3_width - margin - outer_cut - d1, cut + margin, a3_scaling)
+append(a3, outer, a3_width - margin - outer_cut, a3_height - margin - outer_cut, a3_scaling)
+
 d.append(front)
 d.append(back)
 d.save_svg(output_file)
 
+a3.save_svg(output_a3_file)
