@@ -4,52 +4,19 @@
 # astrolabe!
 #
 
-from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs
-import drawsvg as draw
+from sliderule import *
+import moonrule
 import datetime
 import sys
 import re
-from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project
 
 year = 2026 # for equation of time
 pointer_angle = 0
 inner_angle = 0
 outer_angle = 0
 draw_back = True
-output_file = "rule.svg"
-
-if len(sys.argv) > 1 and sys.argv[1].endswith(".png"):
-	# special case for the makefiles where
-	# all the parameters are in the file name
-	output_file = sys.argv[1]
-	group = re.match(r".*-(.*),(.*),(.*)\.png", output_file)
-	if group:
-		pointer_angle = float(group[1])*6
-		inner_angle = float(group[2])*6
-		outer_angle = float(group[3])*6
-		draw_back = 0
-elif len(sys.argv) > 1:
-	pointer_angle = float(sys.argv[1])
-if len(sys.argv) > 2:
-	inner_angle = float(sys.argv[2])
-if len(sys.argv) > 3:
-	outer_angle = float(sys.argv[3])
-if len(sys.argv) > 4:
-	draw_back = int(sys.argv[4])
-
-if len(sys.argv) > 5:
-	output_file = sys.argv[5]
-
-
-d = draw.Drawing(2000 if draw_back else 1000,1000, origin=(0,0))
-d.append_css("""
-.spinner {
-	-webkit-transition: all 2s;
-	-moz-transition: all 2s;
-	transition: all 2s;
-}
-""")
-
+cut = 420
+outer_cut = 500
 
 def compute_position(radius, angle, length, log_scale=False, spiral=False):
 	length = 10 # always force same spiral in
@@ -1258,86 +1225,6 @@ def make_radians(radius):
 		
 	return g
 
-def draw_marker(label, radius, angle):
-	g = draw.Group(transform="translate(%.3f)" % (radius))
-	g.append(draw.Lines(
-		0, 0,
-		15, +5,
-		25, +5,
-		25, -5,
-		15, -5,
-		close=True,
-		fill="black",
-		stroke="none",
-		transform="rotate(%.3f)" % (angle),
-	))
-
-	g.append(draw.Text(label, 14, 0, -12 if angle == 0 else +21 ,
-		text_anchor="middle",
-		fill="white",
-		transform="rotate(%.3f)" % (90),
-	))
-
-	return g
-
-def make_minutes(radius, side=3, red_offset=60, divisions=600, divisions2=None):
-	g = draw.Group()
-
-	major = frange(0,360,360/60)
-	minor1 = frange(0,360,360/120)
-	minor2 = frange(0,360,360/divisions)
-	if divisions2:
-		minor3 = frange(0,360,360/divisions2)
-		g.append(make_ticks(radius, minor3, 8, stroke_width=0.1, side=side))
-
-	g.append(make_ticks(radius, minor2, 10, stroke_width=0.2, side=side))
-	g.append(make_ticks(radius, minor1, 15, stroke_width=0.3, side=side))
-	g.append(make_ticks(radius, major, 25, stroke_width=0.5, side=side))
-	g.append(draw.Circle(0, 0, radius, fill="none", stroke="black", stroke_width=0.5))
-
-	# 0-60 minutes around the circle in black
-	#g.append(make_rule(radius, 360/60, 360/120, 360/600, pos=(2,9)))
-	# black numbers going clockwise
-	px = 2
-	py = 20 if side & 1 != 0 else -10
-
-	g.append(make_labels(radius, 6, 6, 360,
-		lambda x: "%.0f" % ((x/6) % 60),
-		size=11,
-		pos=(px,py),
-		text_anchor="start",
-		fill="black",
-	))
-
-	# red numbers going reverse around the circle
-	if red_offset is not None:
-		g.append(make_labels(radius, 6, 6, 360,
-			lambda x: "%.0f" % ((red_offset-x/6)),
-			pos=(-px,py),
-			size=11,
-			text_anchor="end",
-			fill="red",
-			font_style="italic",
-		))
-
-	# Special marker for the zeros
-	g.append(draw_marker("0", radius, 180 if side == 1 else 0))
-
-
-#	g.append(draw.Text("+", 30,
-#		2, -radius,
-#		fill="black",
-#		transform="rotate(90)",
-#	))
-#	g.append(draw.Text("-", 30,
-#		-20, -radius+15,
-#		fill="black",
-#		transform="rotate(90)",
-#	))
-		
-
-	return g
-
 def make_ninety_minus(radius, show_labels=True):
 	g = draw.Group()
 
@@ -1393,27 +1280,6 @@ def make_ninety_minus(radius, show_labels=True):
 
 	return g
 
-def make_fractional_minutes(radius):
-	g = draw.Group()
-	g.append(make_rule(radius, 360/100, 360/200, 360/1000,
-		fmt=lambda x: "%02.0f" % (x/360*100),
-		side=1,
-		pos=(1.5,+10),
-		size=8,
-		ticksize=18,
-	))
-
-	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 360/100, 0, 360,
-		lambda x: "%02.0f" % (((360-x) * 100 / 360) % 100),
-		pos=(-2,+10),
-		size=8,
-		text_anchor="end",
-		fill="red",
-		font_style="italic",
-	))
-
-	return g
 
 # one hour split into 15 degrees
 # this is the increments and corrections table for the sun,
@@ -2234,132 +2100,130 @@ def make_astrolabe_outer(scale, width):
 ####
 #### Front side
 ####
-# Outer rules for 0-360 degrees with negative markers
-front = draw.Group(transform="translate(500 500)")
-
-cut = 410
-outer_cut = 500
+def make_sun_front():
+	# Outer rules for 0-360 degrees with negative markers
 
 
-outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer", class_="spinner")
-inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_="spinner")
+	outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer", class_="spinner")
+	inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_="spinner")
 
-outer.append(make_minutes(cut, side=2, divisions2=None))
-inner.append(make_minutes(cut, side=1, divisions2=None))
+	outer.append(make_fractional_minutes(cut, side=2, include_red=True, max_angle=60, font_sz=12, include_marker=True))
+	inner.append(make_fractional_minutes(cut, side=1, include_red=True, max_angle=60, font_sz=12, include_marker=True))
 
-outer.append(make_ninety_minus(cut + 48))
-outer.append(make_fractional_minutes(cut + 88))
+	outer.append(make_ninety_minus(cut + 40))
+	outer.append(make_fractional_minutes(outer_cut, include_red=True))
 
-#inner.append(make_rule(400, 360/60, 360/120, 360/600))
-# add an reverse scale for the inner ring
-#inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
+	#inner.append(make_rule(400, 360/60, 360/120, 360/600))
+	# add an reverse scale for the inner ring
+	#inner.append(make_labels(400, 6, 0, 360, lambda x: "-%.0f" % ((60-x/6) % 60), pos=(-2,-2), text_anchor="end", fill="red", font_style="italic"))
 
-h_e_radius = cut - 35
-inner.append(make_height_of_eye(h_e_radius, -180))
+	h_e_radius = cut - 35
+	inner.append(make_height_of_eye(h_e_radius, -180))
 
-# The refraction, parallax and semi diameter can all be done with
-# the one Altitude Correction Table (ACT)
-inner.append(make_refraction(h_e_radius, -180))
-inner.append(make_semidiameter(h_e_radius))
-inner.append(make_d_lines(h_e_radius+10))
+	# The refraction, parallax and semi diameter can all be done with
+	# the one Altitude Correction Table (ACT)
+	inner.append(make_refraction(h_e_radius, -180))
+	inner.append(make_semidiameter(h_e_radius))
+	inner.append(make_d_lines(h_e_radius+10))
 
-inner.append(make_declination(cut-295))
+	inner.append(make_declination(cut-295))
 
-# Cut lines
-axle = draw.Circle(0,0, 5, fill="none", stroke="black", stroke_width=1)
-inner.append(axle)
-outer.append(axle)
-inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
-outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
+	# Cut lines
+	inner.append(draw_axle())
+	outer.append(draw_axle())
+	inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
+	outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
 
-pointer = draw.Group(transform="rotate(%.3f)" % (pointer_angle), id="pointer", class_="spinner")
-pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
-pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
-front.append(pointer)
-front.append(outer)
-front.append(inner)
-
-img_sz = cut*2
-inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=True))
-
-
+	img_sz = cut*2
+	inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=True))
+	return (inner,outer)
 
 ####
 #### Reverse side
 #### inner disk is the same size as the outer
 ####
-cut = outer_cut - 30
-img_sz = cut * 2
-back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
+def make_sun_back():
+	cut = outer_cut - 30
+	img_sz = cut * 2
+	back = draw.Group(transform="translate(1500 500) rotate(%.3f)" % (+outer_angle))
 
-outer = draw.Group(id="back_outer")
-inner = draw.Group(id="back_inner")
-#inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
+	outer = draw.Group(id="back_outer")
+	inner = draw.Group(id="back_inner")
+	#inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
 
-inner.append(axle)
-outer.append(axle)
-inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
-#outer.append(draw.Circle(0,0, cut-30, fill="none", stroke="black", stroke_width=1))
-outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
+	inner.append(axle)
+	outer.append(axle)
+	inner.append(draw.Circle(0,0, cut, fill="none", stroke="black", stroke_width=1))
+	#outer.append(draw.Circle(0,0, cut-30, fill="none", stroke="black", stroke_width=1))
+	outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
 
-# Make the minutes seconds rings with divisions every 5 seconds
-#inner.append(make_minutes(cut, side=1, divisions=60*6, divisions2=60*6*2))
-#outer.append(make_minutes(cut, side=2, divisions=60*6, divisions2=60*6*2))
-
-
-#outer.append(make_fractional_minutes(cut + 88))
-#outer.append(make_ninety_minus(450, False))
-#outer.append(make_sine_nolog(cut+45))
-#outer.append(make_haversine(cut+75))
-
-# rule for 360 degree circle with reverse angles as well
-#outer.append(make_fifteen_degrees(cut-40))
-#inner.append(make_360_clock(cut-60))
-#inner.append(make_equation_of_time(cut-180))
-#inner.append(make_offsets(cut - 25))
-
-# 90 degree circle and sine/cosine tables
-#back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
-#back.append(make_labels(365, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
-#back.append(make_sine(345))
-
-#back.append(make_gha_scale(240))
-
-# TODO: make the outer one half sided
-#outer.append(make_sqrt_scale(410, False))
-#inner.append(make_sqrt_scale(410, True))
-#inner.append(make_log_sine(360))
-#inner.append(make_log_tangent(305))
-#inner.append(make_sin_sin_scale(410))
+	# Make the minutes seconds rings with divisions every 5 seconds
+	#inner.append(make_minutes(cut, side=1, divisions=60*6, divisions2=60*6*2))
+	#outer.append(make_minutes(cut, side=2, divisions=60*6, divisions2=60*6*2))
 
 
-#back.append(make_log_cosine(320))
-#back.append(make_sin_sin_scale(200))
+	#outer.append(make_fractional_minutes(cut + 88))
+	#outer.append(make_ninety_minus(450, False))
+	#outer.append(make_sine_nolog(cut+45))
+	#outer.append(make_haversine(cut+75))
 
-inner.append(make_astrolabe(cut))
-outer.append(make_astrolabe_outer(cut, outer_cut-cut))
+	# rule for 360 degree circle with reverse angles as well
+	#outer.append(make_fifteen_degrees(cut-40))
+	#inner.append(make_360_clock(cut-60))
+	#inner.append(make_equation_of_time(cut-180))
+	#inner.append(make_offsets(cut - 25))
 
-back.append(outer)
-back.append(inner)
+	# 90 degree circle and sine/cosine tables
+	#back.append(make_rule(365, 4, 1, 0.5, fmt=lambda x: "%.0f" % (x // 4)))
+	#back.append(make_labels(365, 4, 0, 360, lambda x: "%.0f" % ((90 - x // 4) % 90), font_style="italic", fill="red", text_anchor="end", pos=(-2,-2)))
+	#back.append(make_sine(345))
 
-# The back pointer is 3D printed in the real version
-pointer = draw.Group()
-pointer.append(draw.Rectangle(-15,0, 30, 50, fill="blue"))
-pointer.append(draw.Circle(0, 0, 20, fill="blue"))
-pointer.append(draw.Rectangle(-15,50, 700, 30, fill="blue"))
-pointer.append(draw.Circle(0, 0, 10, fill="black"))
-pointer.append(draw.Rectangle(200, 0, 10, 50, fill="blue"))
-#back.append(pointer)
+	#back.append(make_gha_scale(240))
 
-d.append(front)
-d.append(back)
-
+	# TODO: make the outer one half sided
+	#outer.append(make_sqrt_scale(410, False))
+	#inner.append(make_sqrt_scale(410, True))
+	#inner.append(make_log_sine(360))
+	#inner.append(make_log_tangent(305))
+	#inner.append(make_sin_sin_scale(410))
 
 
+	#back.append(make_log_cosine(320))
+	#back.append(make_sin_sin_scale(200))
 
-if output_file.endswith(".png"):
-	d.save_png(output_file)
-else:
+	inner.append(make_astrolabe(cut))
+	outer.append(make_astrolabe_outer(cut, outer_cut-cut))
+
+	back.append(outer)
+	back.append(inner)
+
+	return back
+
+def make_sunrule():
+	output_file = "rule.svg"
+	d = draw.Drawing(2000,1000, origin=(0,0))
+	d.append_css(css)
+	a3 = draw_a3()
+
+	front = draw.Group(transform="translate(500 500)")
+	(front_inner,front_outer) = make_sun_front()
+
+	front.append(front_inner)
+	front.append(front_outer)
+	front.append(make_pointer())
+	d.append(front)
+
+	back = draw.Group(transform="translate(1500 500)")
+	(back_inner,back_outer) = moonrule.make_moon_back()
+	back.append(back_inner)
+	back.append(back_outer)
+	back.append(make_pointer())
+	d.append(back)
 	d.save_svg(output_file)
-#d.save_png('rule.png')
 
+	append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
+	a3.save_svg("rule-a3.svg")
+
+
+if __name__ == "__main__":
+	make_sunrule()

@@ -41,65 +41,10 @@ import re
 output_file = "haversine.svg"
 output_a3_file = "haversine-a3.svg"
 
-dpi = 96
-outer_diameter = 170
-margin = 10
-a3_scaling = outer_diameter / 1000 * dpi / 25.4
-a3_height = (297 * dpi / 25.4) / a3_scaling
-a3_width = (420 * dpi / 25.4) / a3_scaling
 
 d = draw.Drawing(2000,1000, origin=(0,0))
-a3 = draw.Drawing(a3_width, a3_height, origin=(0,0))
-css = """
-@font-face {
-        font-family: "B612 Regular";
-        font-style: normal;
-        src: url(fonts/B612-Regular.ttf);
-}
-@font-face {
-        font-family: "B612 Italic";
-        font-style: italic;
-        src: url(fonts/B612-Italic.ttf);
-}
-text { font-family: "B612 Regular"; }
-.italic { font-family: "B612 Italic"; }
-
-.spinner {
-	-webkit-transition: all 2s;
-	-moz-transition: all 2s;
-	transition: all 2s;
-}
-.extra_thick {
-	fill: none;
-	stroke: black;
-	stroke-width: 2;
-}
-.thick {
-	fill: none;
-	stroke: black;
-	stroke-width: 1;
-}
-.thin {
-	fill: none;
-	stroke: black;
-	stroke-width: 0.5;
-}
-.extra_thin {
-	fill: none;
-	stroke: gray;
-	stroke-width: 0.3;
-}
-.angle { 
-	fill: black;
-}
-.red_angle {
-	fill: red;
-	font-family: italic;
-}
-"""
-
 d.append_css(css)
-a3.append_css(css)
+a3 = draw_a3()
 
 # log cosine for CCL computatoin
 def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_angle=60):
@@ -470,166 +415,153 @@ def make_fractional_ccl2(R, max_h):
 ####
 #### Front side
 ####
-front = draw.Group(transform="translate(500 500)")
-cut = 430
+cut = 420
 outer_cut = 500
-outer = draw.Group(id="outer", class_="spinner")
-inner = draw.Group(id="inner", class_="spinner")
+def make_front():
+	outer = draw.Group(id="outer", class_="spinner")
+	inner = draw.Group(id="inner", class_="spinner")
 
-# Cut lines and axle
-inner.append(draw.Circle(0,0, cut, class_="thick"))
-outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
-axle = draw.Circle(0,0, 5, class_="thick")
-inner.append(axle)
-outer.append(axle)
+	# Cut lines and axle
+	inner.append(draw.Circle(0,0, cut, class_="thick"))
+	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
+	inner.append(draw_axle())
+	outer.append(draw_axle())
 
-# Pointer with hidden half so it spins around the center
-def make_pointer(id="pointer"):
-	pointer = draw.Group(id=id, class_="spinner")
-	pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
-	pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
-	return pointer
+	inner_offset = 150
+	#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
+	inner_division = 1 / 14 + 0.00051 #haversine(35)
+	#inner_division = haversine(30)
+	inner.append(make_haversine_spiral(cut, min_angle=3, include_red=True, sides=3, offset=inner_offset, division = inner_division, font_sz=12))
+	inner.append(draw_marker("", cut, 180))
+	#outer.append(draw_marker("", cut, 0))
 
-inner_offset = 150
-#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
-inner_division = 1 / 14 + 0.00051 #haversine(35)
-#inner_division = haversine(30)
-inner.append(make_haversine_spiral(cut, min_angle=3, include_red=True, sides=3, offset=inner_offset, division = inner_division, font_sz=12))
-inner.append(draw_marker("", cut, 180))
-#outer.append(draw_marker("", cut, 0))
+	outer.append(text_circle(
+	right_arrow3
+	+ "Start on other side "
+	+ right_arrow3
+	+ "1. Red Declination to Outer Index "
+	+right_arrow
+	+ "2. Pointer to Inner Index "
+	+right_arrow
+	+ "3. LHA to Pointer "
+	+right_arrow
+	+ "4. Pointer Clockwise to Latitude on Outer"
+	+right_arrow
+	+ "5. Carry and read Adjust Angle"
+	+right_arrow3,
+		15,
+		cut + 30,
+		180,
+		360,
+		text_anchor="end",
+	))
 
+	outer.append(text_circle(
+	"This side"
+	+ right_arrow
+	+ "6. Pointer to Outer Index"
+	+ right_arrow
+	+ "7. Adjust Angle on inner to Pointer, note Carry"
+	+right_arrow
+	+ "8. Pointer to Inner Index "
+	+right_arrow
+	+ "9. Lat-Dec to Pointer "
+	+right_arrow
+	+ "10. Pointer CW to Outer Index "
+	+right_arrow
+	+ "11. Carry and read Hc in red",
+		15,
+		cut + 30,
+		0,
+		180,
+		text_anchor="start",
+	))
 
-outer.append(text_circle(
-right_arrow3
-+ "Start on other side "
-+ right_arrow3
-+ "1. Red Declination to Outer Index "
-+right_arrow
-+ "2. Pointer to Inner Index "
-+right_arrow
-+ "3. LHA to Pointer "
-+right_arrow
-+ "4. Pointer Clockwise to Latitude on Outer"
-+right_arrow
-+ "5. Carry and read Adjust Angle"
-+right_arrow3,
-	15,
-	cut + 30,
-	180,
-	360,
-	text_anchor="end",
-))
+	inner.append(draw.Text("Lat-Dec", 20,
+		inner_offset-35, 25,
+		text_anchor="end",
+		transform="rotate(-20)",
+	))
+	inner.append(draw.Text("Height", 20,
+		inner_offset-35, -2,
+		text_anchor="end",
+		transform="rotate(-20)",
+		fill="red",
+	))
+	inner.append(draw.Text("Hav(90-Hc) = Hav(Dec-Lat) +\nHav(LHA)*Cos(Dec)*Cos(Lat)", 12,
+		0, inner_offset*.4,
+		text_anchor="middle",
+	))
 
-outer.append(text_circle(
-"This side"
-+ right_arrow
-+ "6. Pointer to Outer Index"
-+ right_arrow
-+ "7. Adjust Angle on inner to Pointer, note Carry"
-+right_arrow
-+ "8. Pointer to Inner Index "
-+right_arrow
-+ "9. Lat-Dec to Pointer "
-+right_arrow
-+ "10. Pointer CW to Outer Index "
-+right_arrow
-+ "11. Carry and read Hc in red",
-	15,
-	cut + 30,
-	0,
-	180,
-	text_anchor="start",
-))
+	# the outer scales help both with keeping track of your place
+	# as well as converting minutes to decimal degrees
+	outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
+	outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10, include_red=True))
+	outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
+	#outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
 
-inner.append(draw.Text("Lat-Dec", 20,
-	inner_offset-35, 25,
-	text_anchor="end",
-	transform="rotate(-20)",
-))
-inner.append(draw.Text("Height", 20,
-	inner_offset-35, -2,
-	text_anchor="end",
-	transform="rotate(-20)",
-	fill="red",
-))
-inner.append(draw.Text("Hav(90-Hc) = Hav(Dec-Lat) +\nHav(LHA)*Cos(Dec)*Cos(Lat)", 12,
-	0, inner_offset*.4,
-	text_anchor="middle",
-))
-
-# the outer scales help both with keeping track of your place
-# as well as converting minutes to decimal degrees
-outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
-outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10, include_red=True))
-outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
-#outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
-
-front.append(make_pointer("pointer"))
-front.append(outer)
-front.append(inner)
-
-append(a3, outer, outer_cut+margin, outer_cut+margin, a3_scaling)
-
-
-# inner is slightly smaller, so tweak its position to just fit
-mid_h = a3_height - outer_cut - cut - 2 * margin
-d1 = sqrt((outer_cut + cut + margin)**2 - mid_h**2)
-append(a3, inner, outer_cut+margin+d1, a3_height - cut - margin, a3_scaling)
+	return (inner,outer)
 
 ####
 #### Reverse side
 #### inner disk is the same size as the outer
 ####
+def make_back():
+	outer = draw.Group(id="back_outer", class_="spinner")
+	inner = draw.Group(id="back_inner", class_="spinner")
+	inner.append(draw_axle())
+	outer.append(draw_axle())
+	inner.append(draw.Circle(0,0, cut, class_="thick"))
+	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
+
+
+	inner_offset = 100
+	#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
+	log_scale_limit = -log(cos(radians(60.001)))
+	inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=160, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
+
+	# Inside log cosine for declination
+	#inner.append(make_log_cosine(cut, division=log_scale_limit, max_angle=25.01, side=1))
+	# outside log cosine for latitude
+	outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
+	outer.append(make_log_cosine(cut, division=log_scale_limit))
+	outer.append(make_log_cosine(outer_cut, division=log_scale_limit, side=1))
+	#outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10))
+
+	#outer.append(make_fractional_ccl(cut+25))
+	#outer.append(make_fractional_ccl2(cut, outer_cut - cut))
+
+	inner.append(text_circle(left_arrow3 + "Local Hour Angle", 20, inner_offset - 18, -180, 0, text_anchor="middle"))
+	inner.append(draw.Text("Hav(LHA)*Cos(DEC)*Cos(LAT)", 12,
+		0, inner_offset*.7,
+		text_anchor="middle",
+	))
+	#inner.append(text_circle("Declination" + right_arrow3, 15, cut - 20, 80, 53, text_anchor="end", fill="red"))
+
+	# repeat this one a few times
+	for a in []: #[0, 120, 240]:
+		outer.append(text_circle("Latitude" + right_arrow3, 15,
+			cut + 20, a-45, a, text_anchor="end", fill="black"))
+
+	return (inner,outer)
+
+
+front = draw.Group(transform="translate(500 500)")
+(front_inner,front_outer) = make_front()
+front.append(front_inner)
+front.append(front_outer)
+front.append(make_pointer("pointer"))
+
 back = draw.Group(transform="translate(1500 500)")
-
-outer = draw.Group(id="back_outer", class_="spinner")
-inner = draw.Group(id="back_inner", class_="spinner")
-inner.append(axle)
-outer.append(axle)
-inner.append(draw.Circle(0,0, cut, class_="thick"))
-outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
-
-
-inner_offset = 100
-#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
-log_scale_limit = -log(cos(radians(60.001)))
-inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=160, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
-
-# Inside log cosine for declination
-#inner.append(make_log_cosine(cut, division=log_scale_limit, max_angle=25.01, side=1))
-# outside log cosine for latitude
-outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
-outer.append(make_log_cosine(cut, division=log_scale_limit))
-outer.append(make_log_cosine(outer_cut, division=log_scale_limit, side=1))
-#outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10))
-
-#outer.append(make_fractional_ccl(cut+25))
-#outer.append(make_fractional_ccl2(cut, outer_cut - cut))
-
-inner.append(text_circle(left_arrow3 + "Local Hour Angle", 20, inner_offset - 18, -180, 0, text_anchor="middle"))
-inner.append(draw.Text("Hav(LHA)*Cos(DEC)*Cos(LAT)", 12,
-	0, inner_offset*.7,
-	text_anchor="middle",
-))
-#inner.append(text_circle("Declination" + right_arrow3, 15, cut - 20, 80, 53, text_anchor="end", fill="red"))
-
-# repeat this one a few times
-for a in []: #[0, 120, 240]:
-	outer.append(text_circle("Latitude" + right_arrow3, 15,
-		cut + 20, a-45, a, text_anchor="end", fill="black"))
-
-
+(back_inner,back_outer) = make_back()
+back.append(back_inner)
+back.append(back_outer)
 back.append(make_pointer("back_pointer"))
-back.append(outer)
-back.append(inner)
-#front.append(outer)
-#front.append(inner)
-
-append(a3, inner, a3_width - margin - outer_cut - d1, cut + margin, a3_scaling)
-append(a3, outer, a3_width - margin - outer_cut, a3_height - margin - outer_cut, a3_scaling)
 
 d.append(front)
 d.append(back)
 d.save_svg(output_file)
 
 a3.save_svg(output_a3_file)
+append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
+a3.save_svg("haversine-a3.svg")

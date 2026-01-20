@@ -10,6 +10,54 @@ right_arrow3 = right_arrow+right_arrow+right_arrow
 left_arrow = "⮜"
 left_arrow3 = left_arrow+left_arrow+left_arrow
 
+css = """
+@font-face {
+        font-family: "B612 Regular";
+        font-style: normal;
+        src: url(fonts/B612-Regular.ttf);
+}
+@font-face {
+        font-family: "B612 Italic";
+        font-style: italic;
+        src: url(fonts/B612-Italic.ttf);
+}
+text { font-family: "B612 Regular"; }
+.italic { font-family: "B612 Italic"; }
+
+.spinner {
+	-webkit-transition: all 2s;
+	-moz-transition: all 2s;
+	transition: all 2s;
+}
+.extra_thick {
+	fill: none;
+	stroke: black;
+	stroke-width: 2;
+}
+.thick {
+	fill: none;
+	stroke: black;
+	stroke-width: 1;
+}
+.thin {
+	fill: none;
+	stroke: black;
+	stroke-width: 0.5;
+}
+.extra_thin {
+	fill: none;
+	stroke: gray;
+	stroke-width: 0.3;
+}
+.angle { 
+	fill: black;
+}
+.red_angle {
+	fill: red;
+	font-family: "B612 Italic";
+}
+"""
+
 def draw_marker(label, radius, angle):
 	g = draw.Group(transform="translate(%.3f)" % (radius))
 	g.append(draw.Lines(
@@ -40,7 +88,7 @@ def make_fractional_minutes(
 	side=1,
 	max_angle=100,
 	offset = 0,
-	font_sz = 15,
+	font_sz = 10,
 	include_red=False,
 	divisions=10,
 ):
@@ -133,3 +181,44 @@ def append(d, g, x, y, s):
 	g2.append(g)
 	d.append(g2)
 	return d
+
+# Pointer with hidden half so it spins around the center
+def make_pointer(id="pointer"):
+	pointer = draw.Group(id=id, class_="spinner", transform="rotate(0)")
+	pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
+	pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
+	return pointer
+
+def draw_axle():
+	return draw.Circle(0,0, 5, class_="thick")
+
+def draw_a3():
+	a3 = draw.Drawing("420mm", "297mm", origin=(0,0))
+	a3.append_css(css)
+	return a3
+
+def append_a3(a3,
+	outer_cut,
+	inner_cut,
+	out1,
+	in1,
+	out2,
+	in2,
+	dpi = 96,
+	outer_diameter = 170,
+	margin = 10,
+):
+	a3_scaling = outer_diameter / 1000 * dpi / 25.4
+	a3_width = (420 * dpi / 25.4) / a3_scaling
+	a3_height = (297 * dpi / 25.4) / a3_scaling
+
+	# inner is slightly smaller, so tweak its position to just fit
+	mid_h = a3_height - outer_cut - inner_cut - 2 * margin
+	d1 = sqrt((outer_cut + inner_cut + margin)**2 - mid_h**2)
+
+	append(a3, out1, outer_cut+margin, outer_cut+margin, a3_scaling)
+	append(a3, in1, outer_cut+margin+d1, a3_height - inner_cut - margin, a3_scaling)
+	append(a3, out2, a3_width - margin - outer_cut, a3_height - margin - outer_cut, a3_scaling)
+	append(a3, in2, a3_width - margin - outer_cut - d1, inner_cut + margin, a3_scaling)
+
+
