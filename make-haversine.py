@@ -30,6 +30,8 @@
 # 6. Move in the additional carry number from the adjustment angle
 # 7. Read the Hc from the red numbers on the spiral.
 
+# It can also do the opposite, but takes some tweaks
+
 from sliderule import *
 #from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs, modf
 #import drawsvg as draw
@@ -47,22 +49,35 @@ d.append_css(css)
 a3 = draw_a3()
 
 # log cosine for CCL computatoin
-def make_log_cosine(radius, side=2, include_marker=True, division = 1.0, max_angle=60):
+def make_log_cosine(R,
+	side=2,
+	include_marker=True,
+	division = 1.0,
+	min_angle=0,
+	max_angle=60,
+):
 	g = draw.Group()
+
+	g.append(draw.Circle(0, 0, R, class_="thin"))
 
 	# 
 	steps = 100
-	ranges = frange(3*steps,10*steps, steps//2)
-	ranges += frange(10*steps, min(16,max_angle)*steps, steps//4)
-	ranges += frange(16*steps, min(40,max_angle)*steps, steps//10)
-	ranges += frange(40*steps,max_angle*steps, steps//20)
+	ranges = []
+	if min_angle < 40:
+		ranges += frange(3*steps,10*steps, steps//2)
+		ranges += frange(10*steps, min(16,max_angle)*steps, steps//4)
+		ranges += frange(16*steps, min(40,max_angle)*steps, steps//10)
+	ranges += frange(max(min_angle,40)*steps,max_angle*steps, steps//20)
 	for i in ranges:
 		lc = log(cos(radians(i/steps)))
 		whole = int(lc / division)
 		frac = -((-lc) % division)
 		#(frac,whole) = modf(lc)
-		if whole != 0:
-			print("uh oh", i, lc, frac, whole)
+		if whole == 0:
+			radius = R
+		else:
+			radius = R + 30
+			#print("uh oh", i, lc, frac, whole)
 		if side == 1:
 			a = +frac * 360 / division
 		else:
@@ -130,20 +145,24 @@ def make_haversine_spiral(R,
 	sides = 1,
 	include_red = False,
 	include_marker = False,
+	offset_angle = 90,
 	division = 0.1,
+	divs = None,
 ):
 	g = draw.Group()
 	pts = []
 	if log_scale:
 		max_h = log(haversine(max_angle))
 		min_h = log(haversine(min_angle))
-		divs = int(min_h / division + 0.5)
-		print(max_h, min_h, divs)
+		if not divs:
+			divs = int(min_h / division-0.5)
+		else:
+			divs = -divs
 		def r_func(h):
 			r_major = int(h / division)
 			#r_major = h / division
 			#return offset + (r_major  ((r_major-min_h-0.1)/range_h)*(R-offset-spacing*3)
-			return offset + (divs - r_major) / divs * (R - offset - spacing - 25) + 25
+			return offset + (divs - r_major) / divs * (R - offset - spacing)
 		def a_func(h):
 			r_minor = (h % division) / division
 			return -r_minor*360
@@ -151,7 +170,8 @@ def make_haversine_spiral(R,
 		# include space for the red numbers too
 		max_h = haversine(max_angle)
 		min_h = haversine(min_angle)
-		divs = int(max_h / division)
+		if not divs:
+			divs = int(max_h / division+0.5)
 		def r_func(h):
 			r_major = int(h / division) # discrete levels
 			#r_major = h / division # continuous spiral
@@ -175,7 +195,13 @@ def make_haversine_spiral(R,
 			.A(div_r, div_r, 0, 1, 1, ex, ey)
 			)
 
-	for angle in frange(min_angle,max_angle+0.01,0.05):
+	angles = []
+	angles += frange(min_angle,min(140,max_angle)+0.01, 0.05)
+	angles += frange(140, min(150,max_angle)+0.01, 0.1)
+	angles += frange(150, min(160,max_angle)+0.01, 0.5)
+	angles += frange(160, min(170,max_angle)+0.01, 1)
+	angles += frange(170, min(180,max_angle)+0.01, 2)
+	for angle in angles: #frange(min_angle,max_angle+0.01,0.05):
 		h = haversine(angle)
 		if log_scale:
 			h = log(h)
@@ -195,24 +221,35 @@ def make_haversine_spiral(R,
 				c = "extra_thick"
 				l = 30
 				l2 = 8
-				sz = font_sz + 5
+				if angle > 150:
+					sz = font_sz - 3
+				elif angle > 100:
+					sz = font_sz
+				else:
+					sz = font_sz + 5
 			else:
 				c = "thick"
 				l = 25
 				l2 = 5
-				sz = font_sz
-			gt.append(draw.Text("%d" % (angle) + (deg_symbol if log_scale else ""),
+				if angle > 160 and int(angle % 2) == 0:
+					sz = font_sz - 5
+				elif angle < 5 or angle > 150:
+					sz = font_sz - 3
+				else:
+					sz = font_sz
+			gt.append(draw.Text("%d" % (angle) + (deg_symbol if not log_scale else ""),
 				sz,
-				-7,
+				-7 if sides & 1 else +12,
 				-3 if log_scale else sz,
-				class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
-				text_anchor="end",
+				#class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
+				class_="angle",
+				text_anchor="end" if sides & 1 else "start",
 			))
 			if include_red:
-				gt.append(draw.Text("%d" % (90-angle),
+				gt.append(draw.Text("%d" % (offset_angle - angle) + (deg_symbol if not log_scale else ""),
 					sz,
 					-7,
-					-3,
+					-3 if not log_scale else sz,
 					class_="red_angle",
 					text_anchor="end",
 				))
@@ -237,8 +274,8 @@ def make_haversine_spiral(R,
 			c = "extra_thin"
 
 		gt.append(draw.Lines(
-			-l if sides & 1 else 0, 0,
-			l2, 0, #+l if sides & 2 else 0, 0,
+			-l if sides & 1 else +l, 0,
+			l2 if sides & 1 else -l2, 0, #+l if sides & 2 else 0, 0,
 			class_=c,
 		))
 
@@ -279,7 +316,7 @@ def make_haversine_spiral(R,
 				text_anchor="end",
 			))
 			if include_red:
-				gt.append(draw.Text("%d" % (90-angle),
+				gt.append(draw.Text("%d" % (offset_angle-angle),
 					sz,
 					-7,
 					-3,
@@ -423,19 +460,34 @@ def make_front():
 
 	# Cut lines and axle
 	inner.append(draw.Circle(0,0, cut, class_="thick"))
+	outer.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 	inner.append(draw_axle())
 	outer.append(draw_axle())
 
-	inner_offset = 150
+	inner_offset = 120
 	#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
+	#inner_division = 1 / 16 + 0.00051 #haversine(35)
 	inner_division = 1 / 14 + 0.00051 #haversine(35)
+	inner_division = haversine(36.6)
 	#inner_division = haversine(30)
-	inner.append(make_haversine_spiral(cut, min_angle=3, include_red=True, sides=3, offset=inner_offset, division = inner_division, font_sz=12))
-	inner.append(draw_marker("", cut, 180))
-	#outer.append(draw_marker("", cut, 0))
+	inner.append(make_haversine_spiral(cut,
+		min_angle=3,
+		max_angle=125,
+		include_red=True,
+		sides=3,
+		offset=inner_offset,
+		division = inner_division,
+		font_sz=12,
+		divs=8,
+	))
+	log_scale_limit = -log(cos(radians(60.001)))
+	#inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=160, min_angle=10.2, division=log_scale_limit, offset = inner_offset, divs=7))
 
-	outer.append(text_circle(
+	inner.append(draw_marker("", cut, 180))
+	outer.append(draw_marker("", cut, 0))
+
+	if False: outer.append(text_circle(
 	right_arrow3
 	+ "Start on other side "
 	+ right_arrow3
@@ -456,7 +508,7 @@ def make_front():
 		text_anchor="end",
 	))
 
-	outer.append(text_circle(
+	if False: outer.append(text_circle(
 	"This side"
 	+ right_arrow
 	+ "6. Pointer to Outer Index"
@@ -477,18 +529,18 @@ def make_front():
 		text_anchor="start",
 	))
 
-	inner.append(draw.Text("Lat-Dec", 20,
-		inner_offset-35, 25,
+	inner.append(draw.Text("Hav(Z)", 20,
+		inner_offset+5, 25,
 		text_anchor="end",
-		transform="rotate(-20)",
+		transform="rotate(-25)",
 	))
-	inner.append(draw.Text("Height", 20,
-		inner_offset-35, -2,
+	inner.append(draw.Text("Hav(90-Z)", 20,
+		inner_offset+5, -2,
 		text_anchor="end",
-		transform="rotate(-20)",
+		transform="rotate(-25)",
 		fill="red",
 	))
-	inner.append(draw.Text("Hav(90-Hc) = Hav(Dec-Lat) +\nHav(LHA)*Cos(Dec)*Cos(Lat)", 12,
+	if False: inner.append(draw.Text("Hav(90-Hc) = Hav(Dec-Lat) +\nHav(LHA)*Cos(Dec)*Cos(Lat)", 12,
 		0, inner_offset*.4,
 		text_anchor="middle",
 	))
@@ -496,8 +548,12 @@ def make_front():
 	# the outer scales help both with keeping track of your place
 	# as well as converting minutes to decimal degrees
 	outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
-	outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10, include_red=True))
-	outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
+
+	outer.append(make_fractional_minutes(outer_cut-5, side=1, font_sz=10, include_red=True))
+	outer.append(draw.Circle(0, 0, outer_cut-5, class_="thin"))
+
+	outer.append(make_haversine_spiral(outer_cut-40, offset=cut, max_angle=36.5, sides=2, include_red=False, spacing=+30, division = inner_division))
+	#outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
 	#outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
 
 	return (inner,outer)
@@ -512,27 +568,39 @@ def make_back():
 	inner.append(draw_axle())
 	outer.append(draw_axle())
 	inner.append(draw.Circle(0,0, cut, class_="thick"))
+	outer.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 
 
-	inner_offset = 100
+	inner_offset = 120
 	#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
 	log_scale_limit = -log(cos(radians(60.001)))
-	inner.append(make_haversine_spiral(cut, log_scale=True, max_angle=160, min_angle=10.2, division=log_scale_limit, offset = inner_offset))
+	inner.append(make_haversine_spiral(cut,
+		log_scale=True,
+		max_angle=175,
+		min_angle=7.2,
+		font_sz = 10,
+		division=log_scale_limit,
+		include_red=True,
+		offset_angle=360,
+		offset = inner_offset,
+		divs=8,
+	))
 
 	# Inside log cosine for declination
 	#inner.append(make_log_cosine(cut, division=log_scale_limit, max_angle=25.01, side=1))
 	# outside log cosine for latitude
 	outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
-	outer.append(make_log_cosine(cut, division=log_scale_limit))
-	outer.append(make_log_cosine(outer_cut, division=log_scale_limit, side=1))
+	outer.append(make_log_cosine(cut+5, division=log_scale_limit, max_angle=60))
+	#outer.append(make_log_cosine(cut+5, division=log_scale_limit, min_angle=60, max_angle=72))
+	outer.append(make_log_cosine(outer_cut-5, division=log_scale_limit, side=1, include_marker=False))
 	#outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10))
 
 	#outer.append(make_fractional_ccl(cut+25))
 	#outer.append(make_fractional_ccl2(cut, outer_cut - cut))
 
-	inner.append(text_circle(left_arrow3 + "Local Hour Angle", 20, inner_offset - 18, -180, 0, text_anchor="middle"))
-	inner.append(draw.Text("Hav(LHA)*Cos(DEC)*Cos(LAT)", 12,
+	if False: inner.append(text_circle(left_arrow3 + "Local Hour Angle", 20, inner_offset - 18, -180, 0, text_anchor="middle"))
+	if False: inner.append(draw.Text("Hav(LHA)*Cos(DEC)*Cos(LAT)", 12,
 		0, inner_offset*.7,
 		text_anchor="middle",
 	))
@@ -562,6 +630,5 @@ d.append(front)
 d.append(back)
 d.save_svg(output_file)
 
-a3.save_svg(output_a3_file)
 append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 a3.save_svg("haversine-a3.svg")
