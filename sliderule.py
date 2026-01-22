@@ -192,15 +192,18 @@ def make_pointer(id="pointer"):
 def draw_axle():
 	return draw.Circle(0,0, 5, class_="thick")
 
+def draw_page(w,h):
+	def mm2dpi (mm):
+		return mm/25.4*96
+	page = draw.Drawing(mm2dpi(w), mm2dpi(h), origin=(0,0))
+	page.append_css(css)
+	return page
+
 def draw_a3():
-	a3 = draw.Drawing("420mm", "297mm", origin=(0,0))
-	a3.append_css(css)
-	return a3
+	return draw_page(420,297)
 
 def draw_a4():
-	a4 = draw.Drawing("297mm", "210mm", origin=(0,0))
-	a4.append_css(css)
-	return a4
+	return draw_page(297,210)
 
 def append_a3(a3,
 	outer_cut,

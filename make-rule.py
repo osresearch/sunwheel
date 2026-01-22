@@ -2228,9 +2228,12 @@ def make_sunrule():
 	append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 	a3.save_svg("rule-a3.svg")
 
+	# create a4 SVGs
 	append_a4(a4_pages, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=177, margin=25)
-	for p in range(len(a4_pages)):
-		a4_pages[p].save_svg("rule-a4_%d.svg" % (p+1))
+	for i in range(len(a4_pages)):
+		basename="rule-a4_%d" % i
+		svgpage=basename+ ".svg"
+		a4_pages[i].save_svg(svgpage)
 
 if __name__ == "__main__":
 	make_sunrule()
