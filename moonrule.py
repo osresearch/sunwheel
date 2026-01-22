@@ -361,7 +361,7 @@ def make_moon_back():
 	#inner.append(make_fractional_minutes(cut, side=1, max_angle=60, divisions=10, font_sz=10, include_marker=True))
 	outer.append(make_fractional_minutes(cut, side=2, max_angle=60, divisions=10, font_sz=12, include_red=True, include_marker=True))
 	outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10, include_red=True))
-	outer.append(make_fractional_minutes(outer_cut - 50, side=2, max_angle=15, divisions=60, font_sz=12, include_red=True, include_marker=False))
+	outer.append(make_fractional_minutes(outer_cut - 50, side=2, max_angle=14+19/60, divisions=60, font_sz=12, include_red=False, include_marker=False))
 
 	#outer.append(make_fractional_ccl(cut+25))
 	#outer.append(make_fractional_ccl2(cut, outer_cut - cut))

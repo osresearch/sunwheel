@@ -2110,7 +2110,7 @@ def make_sun_front():
 	outer.append(make_fractional_minutes(cut, side=2, include_red=True, max_angle=60, font_sz=12, include_marker=True))
 	inner.append(make_fractional_minutes(cut, side=1, include_red=True, max_angle=60, font_sz=12, include_marker=True))
 
-	outer.append(make_ninety_minus(cut + 40))
+	outer.append(make_fractional_minutes(cut+32, max_angle=15, include_red=True, include_marker=False, divisions=60, side=2))
 	outer.append(make_fractional_minutes(outer_cut, include_red=True))
 
 	#inner.append(make_rule(400, 360/60, 360/120, 360/600))
