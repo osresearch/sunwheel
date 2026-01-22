@@ -94,16 +94,19 @@ def make_fractional_minutes(
 ):
 	g = draw.Group(transform="rotate(%.3f)" % (offset))
 
-	for i in range(1 if include_marker else 0,max_angle*divisions):
+	for i in range(1 if include_marker else 0,int(max_angle*divisions)):
 		a = 360 * i / (max_angle*divisions)
 		sz = None
+		ta = None
 
 		if i % (10*divisions) == 0:
 			sz = font_sz + 2
 			c = "extra_thick"
 			l = 25
+			ta = 0 #90
 		elif i % divisions == 0:
 			sz = font_sz
+			ta = 0
 			c = "thick"
 			l = 20
 		elif i % (divisions//2) == 0:
@@ -130,19 +133,28 @@ def make_fractional_minutes(
 
 		if not sz:
 			continue
-		xp = 1
-		yp = sz+10 if side & 1 else -10
+
+		if ta == 90:
+			xp1 = 1
+			yp1 = sz+10 if side & 1 else -10
+			xp2 = -1
+			yp2 = sz+10 if side & 1 else -10
+		else:
+			xp1 = -20 if side & 1 else +5
+			yp1 = sz
+			xp2 = xp1
+			yp2 = -2
 		g.append(draw.Text(
 			"%d" % (i // divisions),
 			sz,
 			#+12 if side & 2 else -12,
 			#(sz-1),
-			+xp,
-			+yp,
+			xp1,
+			yp1,
 			class_="angle",
 			#text_anchor="start" if side & 2 else "start",
-			text_anchor="start",
-			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (a,radius),
+			text_anchor="start", # if ta == 90 else "end",
+			transform="rotate(%.3f) translate(%.3f 0) rotate(%d)" % (a,radius, ta),
 		))
 
 		if not include_red:
@@ -153,11 +165,11 @@ def make_fractional_minutes(
 			#+12 if side & 2 else -12,
 			#(font_sz-2) if side & 2 else -2,
 			#-2,
-			-xp,
-			+yp,
+			xp2,
+			yp2,
 			class_="red_angle",
-			text_anchor="end",
-			transform="rotate(%.3f) translate(%.3f 0) rotate(90)" % (-a,radius),
+			text_anchor="start" if ta != 90 else "end",
+			transform="rotate(%.3f) translate(%.3f 0) rotate(%d)" % (-a,radius, ta),
 		))
 			
 	if include_marker:
