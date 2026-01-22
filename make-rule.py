@@ -2204,6 +2204,10 @@ def make_sunrule():
 	d = draw.Drawing(2000,1000, origin=(0,0))
 	d.append_css(css)
 	a3 = draw_a3()
+	
+	a4_pages =[]
+	for i in range(3):
+		a4_pages.append(draw_a4())
 
 	front = draw.Group(transform="translate(500 500)")
 	(front_inner,front_outer) = make_sun_front()
@@ -2224,6 +2228,9 @@ def make_sunrule():
 	append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 	a3.save_svg("rule-a3.svg")
 
+	append_a4(a4_pages, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=177, margin=25)
+	for p in range(len(a4_pages)):
+		a4_pages[p].save_svg("rule-a4_%d.svg" % (p+1))
 
 if __name__ == "__main__":
 	make_sunrule()

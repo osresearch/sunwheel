@@ -197,6 +197,11 @@ def draw_a3():
 	a3.append_css(css)
 	return a3
 
+def draw_a4():
+	a4 = draw.Drawing("297mm", "210mm", origin=(0,0))
+	a4.append_css(css)
+	return a4
+
 def append_a3(a3,
 	outer_cut,
 	inner_cut,
@@ -221,4 +226,26 @@ def append_a3(a3,
 	append(a3, out2, a3_width - margin - outer_cut, a3_height - margin - outer_cut, a3_scaling)
 	append(a3, in2, a3_width - margin - outer_cut - d1, inner_cut + margin, a3_scaling)
 
+def append_a4(pages,
+	outer_cut,
+	inner_cut,
+	out1,
+	in1,
+	out2,
+	in2,
+	dpi = 96,
+	outer_diameter = 170,
+	margin = 10,
+):
+	a4_scaling = outer_diameter / 1000 * dpi / 25.4
+	a4_width = (297 * dpi / 25.4) / a4_scaling
+	a4_height = (210 * dpi / 25.4) / a4_scaling
 
+	# inner is slightly smaller, so tweak its position to just fit
+	mid_h = a4_height - outer_cut - inner_cut - 2 * margin
+	d1 = sqrt((outer_cut + inner_cut + margin)**2 - mid_h**2)
+
+	append(pages[0], out1, outer_cut+margin, a4_height/2, a4_scaling)
+	append(pages[1], out2, outer_cut+margin, a4_height/2, a4_scaling)
+	append(pages[2], in1, inner_cut+margin, inner_cut+margin, a4_scaling)
+	append(pages[2], in2, a4_width -(inner_cut+margin), a4_height-(inner_cut+margin), a4_scaling)
