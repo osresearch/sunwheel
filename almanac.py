@@ -141,6 +141,14 @@ def compute_ld(when):
 		degrees(moon.dec),
 		degrees(moon.ha),
 	)
+
+
+def correct_ld(old, hs, hm, hp):
+	dz = compute_lha(hm, hs, old)
+	rs = refraction(hs) / 60
+	rm = refraction(hm) / 60
+	(ld,_) = compute_hczn(hm + hp * cos(radians(hm))/60 + rm, hs + rs, dz)
+	return ld
 	
 
 months = [
