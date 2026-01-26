@@ -2106,6 +2106,8 @@ def make_sun_front():
 
 	outer = draw.Group(transform="rotate(%.3f)" % (-outer_angle), id="outer", class_="spinner")
 	inner = draw.Group(transform="rotate(%.3f)" % (-inner_angle), id="inner", class_="spinner")
+	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
+	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
 
 	outer.append(make_fractional_minutes(cut, side=2, include_red=True, max_angle=60, font_sz=12, include_marker=True))
 	inner.append(make_fractional_minutes(cut, side=1, include_red=True, max_angle=60, font_sz=12, include_marker=True))
@@ -2149,6 +2151,8 @@ def make_sun_back():
 
 	outer = draw.Group(id="back_outer")
 	inner = draw.Group(id="back_inner")
+	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
+	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
 	#inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="longitude.svg", embed=True))
 
 	inner.append(axle)
@@ -2208,15 +2212,15 @@ def make_sunrule():
 	front = draw.Group(transform="translate(500 500)")
 	(front_inner,front_outer) = make_sun_front()
 
-	front.append(front_inner)
 	front.append(front_outer)
+	front.append(front_inner)
 	front.append(make_pointer())
 	d.append(front)
 
 	back = draw.Group(transform="translate(1500 500)")
 	(back_inner,back_outer) = moonrule.make_moon_back()
-	back.append(back_inner)
 	back.append(back_outer)
+	back.append(back_inner)
 	back.append(make_pointer())
 	d.append(back)
 	d.save_svg(output_file)

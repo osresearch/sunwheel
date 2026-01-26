@@ -276,6 +276,13 @@ def make_lunar_parallax(R, offset=200):
 
 		if int(alt % 10) != 0 or alt == 0:
 			continue
+
+		pts = []
+		for hp in frange(hp_min+0.25, 61.5 + 0.01, 0.1):
+			a = a_func(hp,alt)
+			r = r_func(hp,alt)
+			pts += compute_xy(r, a-0.5)
+		path = draw.Lines(*pts)
 		g.append(draw.Text(("%d") % (alt), 12,
 			path=path,
 			text_anchor="start",
@@ -318,6 +325,8 @@ def make_moon_front():
 	inner = draw.Group(id="inner", class_="spinner")
 
 	# Cut lines and axle
+	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
+	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
 	inner.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
 	inner.append(draw_axle())
@@ -348,6 +357,8 @@ def make_moon_front():
 def make_moon_back():
 	outer = draw.Group(id="back_outer", class_="spinner", transform="rotate(0)")
 	inner = draw.Group(id="back_inner", class_="spinner", transform="rotate(0)")
+	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
+	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
 	inner.append(draw_axle())
 	outer.append(draw_axle())
 	inner.append(draw.Circle(0,0, cut, class_="thick"))

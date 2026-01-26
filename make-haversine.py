@@ -376,11 +376,20 @@ def make_front():
 	inner = draw.Group(id="inner", class_="spinner")
 
 	# Cut lines and axle
+	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
+	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
+
 	inner.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
+
 	inner.append(draw_axle())
 	outer.append(draw_axle())
+
+	outer.append(text_circle("Haversine", 25, 100, -180, 0, text_anchor="middle"))
+
+	now = datetime.datetime.today()
+	outer.append(text_circle("%04d-%02d-%02d" % (now.year, now.month, now.day), 15, 80, -180, 0, text_anchor="middle"))
 
 	inner_offset = 120
 	#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
@@ -482,11 +491,18 @@ def make_front():
 def make_back():
 	outer = draw.Group(id="back_outer", class_="spinner")
 	inner = draw.Group(id="back_inner", class_="spinner")
+	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
+	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
 	inner.append(draw_axle())
 	outer.append(draw_axle())
 	inner.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, cut, class_="thick"))
 	outer.append(draw.Circle(0,0, outer_cut, class_="thick"))
+
+	outer.append(text_circle("Log Haversine", 25, 100, -180, 0, text_anchor="middle"))
+
+	now = datetime.datetime.today()
+	outer.append(text_circle("%04d-%02d-%02d" % (now.year, now.month, now.day), 15, 80, -180, 0, text_anchor="middle"))
 
 
 	inner_offset = 120
@@ -531,14 +547,14 @@ def make_back():
 
 front = draw.Group(transform="translate(500 500)")
 (front_inner,front_outer) = make_front()
-front.append(front_inner)
 front.append(front_outer)
+front.append(front_inner)
 front.append(make_pointer("pointer"))
 
 back = draw.Group(transform="translate(1500 500)")
 (back_inner,back_outer) = make_back()
-back.append(back_inner)
 back.append(back_outer)
+back.append(back_inner)
 back.append(make_pointer("back_pointer"))
 
 d.append(front)

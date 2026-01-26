@@ -49,12 +49,23 @@ text { font-family: "B612 Regular"; }
 }
 /*]]>*/</style>
 <defs>
+<path d="M-100.0,-1.2246467991473532e-14 A100,100,0,0,1,100.0,0.0" id="d0" />
+<path d="M-80.0,-9.797174393178826e-15 A80,80,0,0,1,80.0,0.0" id="d1" />
+<path d="M-100.0,-1.2246467991473532e-14 A100,100,0,0,1,100.0,0.0" id="d2" />
+<path d="M-80.0,-9.797174393178826e-15 A80,80,0,0,1,80.0,0.0" id="d3" />
 </defs>
 <g transform="scale(0.650 0.650) translate(510.000 510.000)">
 <g id="outer" class="spinner">
+<circle cx="0" cy="0" r="500" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="420" class="thick" />
 <circle cx="0" cy="0" r="500" class="thick" />
 <circle cx="0" cy="0" r="5" class="thick" />
+<text font-size="25" text-anchor="middle"><textPath xlink:href="#d0" startOffset="50%">
+<tspan dy="0em">Haversine</tspan>
+</textPath></text>
+<text font-size="15" text-anchor="middle"><textPath xlink:href="#d1" startOffset="50%">
+<tspan dy="0em">2026-01-26</tspan>
+</textPath></text>
 <g transform="translate(420.000)">
 <path d="M0,0 L15,5 L25,5 L25,-5 L15,-5 Z" fill="black" stroke="none" transform="rotate(0.000)" />
 <text x="0" y="-12" font-size="14" text-anchor="middle" fill="white" transform="rotate(90.000)"></text>
@@ -3450,6 +3461,7 @@ text { font-family: "B612 Regular"; }
 </g>
 <g transform="scale(0.650 0.650) translate(1005.917 1296.744)">
 <g id="inner" class="spinner">
+<circle cx="0" cy="0" r="420" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="420" class="thick" />
 <circle cx="0" cy="0" r="5" class="thick" />
 <g>
@@ -10809,9 +10821,16 @@ text { font-family: "B612 Regular"; }
 </g>
 <g transform="scale(0.650 0.650) translate(1931.860 1216.744)">
 <g id="back_outer" class="spinner">
+<circle cx="0" cy="0" r="500" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="5" class="thick" />
 <circle cx="0" cy="0" r="420" class="thick" />
 <circle cx="0" cy="0" r="500" class="thick" />
+<text font-size="25" text-anchor="middle"><textPath xlink:href="#d2" startOffset="50%">
+<tspan dy="0em">Log Haversine</tspan>
+</textPath></text>
+<text font-size="15" text-anchor="middle"><textPath xlink:href="#d3" startOffset="50%">
+<tspan dy="0em">2026-01-26</tspan>
+</textPath></text>
 <path d="M420,0 L500,0" class="extra_thick" />
 <g>
 <circle cx="0" cy="0" r="425" class="thin" />
@@ -12287,6 +12306,7 @@ text { font-family: "B612 Regular"; }
 </g>
 <g transform="scale(0.650 0.650) translate(1435.944 430.000)">
 <g id="back_inner" class="spinner">
+<circle cx="0" cy="0" r="420" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="5" class="thick" />
 <circle cx="0" cy="0" r="420" class="thick" />
 <g>
