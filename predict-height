@@ -110,6 +110,8 @@ def compute_hc(lat, lon, when):
 	# but the sun hour angle is increasing going west.
 	# so the angle between them is the sum, not the difference
 	lha = lon - (-sun_gha)
+	if lha < -180:
+		lha += 360
 	(hc,zn) = compute_hczn(lat, sun_dec, lha)
 
 	return (hc,zn,sun_dec,sun_gha,lha)
@@ -131,8 +133,8 @@ print("EOT ", fmt_deg(noon_gha), "DECL", fmt_deg(noon_decl), "%.2f" % (decl_d))
 
 
 #      00:00 27.68 26.96 26.84  -7.1  56.7 -179.4 -309.4 -309.7 +14.401 47.25 50.89
-print("UTC   Hs    Ho    Hc     err   Zn   GHA    DR_LHA LHA    Decl    T1    T2")
-for h in range(0,23):
+print("UTC   Hs    Ho    Hc     err   Zn   GHA    DR_LHA  LHA   Decl    T1    T2")
+for h in range(0,24):
 	for m in [0,15,30,45]:
 		d = day + datetime.timedelta(hours=h, minutes=m)
 
@@ -155,6 +157,8 @@ for h in range(0,23):
 		# use the DR position to compute the LHA,
 		# since the actual lon is unknown when taking the sights
 		dr_lha = dr_lon - (-gha)
+		if dr_lha < -180:
+			dr_lha += 360
 
 		(hc,zn_dr) = compute_hczn(dr_lat, decl, dr_lha)
 		d = (hc - ho) * 60
