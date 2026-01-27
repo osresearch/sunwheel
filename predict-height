@@ -4,9 +4,11 @@ import datetime
 import sys
 import re
 import ephem
-from almanac import haversine, ahaversine, compute_hczn
+from almanac import haversine, ahaversine, compute_hczn, height_of_eye, refraction
 
 # TODO: use the more recent skyfield library?
+# YES we need to do this because ephem generates data that doesn't
+# match the almanac.
 #import skyfield
 
 def parse_dms(x):
@@ -26,6 +28,7 @@ if len(sys.argv) > 2:
 else:
 	lat = +(52 + 21/60 + 48.8/3600)
 	lon = +(4 + 54/60 + 7.9/3600)
+height_eye = 4.5
 dr_lat = trunc(lat)
 dr_lon = trunc(lon)
 
@@ -113,45 +116,60 @@ def compute_hc(lat, lon, when):
 
 
 tz = datetime.timezone(datetime.timedelta(hours=1))
-day = datetime.datetime(2025, 11, 29, 0, 0)
+day = datetime.datetime(2026, 4, 29, 0, 0)
 (_,_,noon_decl,noon_gha,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12))
+(_,_,noon2_decl,_,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12+24))
+decl_d = 60 * (noon2_decl - noon_decl) / 24
 
+print("Date", day)
 print("Location", fmt_deg(lat), fmt_deg(lon))
 print("DR  ", fmt_deg(dr_lat), fmt_deg(dr_lon))
-print("EOT ", fmt_deg(noon_gha), "DECL", fmt_deg(noon_decl))
+print("EOT ", fmt_deg(noon_gha), "DECL", fmt_deg(noon_decl), "%.2f" % (decl_d))
 
 #print(compute_hczn(52,-21, -26))
 #print(compute_hczn(52,-21, +44))
 
 
-for h in range(9,16):
+#      00:00 27.68 26.96 26.84  -7.1  56.7 -179.4 -309.4 -309.7 +14.401 47.25 50.89
+print("UTC   Hs    Ho    Hc     err   Zn   GHA    DR_LHA LHA    Decl    T1    T2")
+for h in range(0,23):
 	for m in [0,15,30,45]:
 		d = day + datetime.timedelta(hours=h, minutes=m)
-		(hc,zn,decl,gha,lha) = compute_hc(lat,lon, d)
+
+		# the exact height that you should see
+		(ho,zn,decl,gha,lha) = compute_hc(lat,lon, d)
+		if ho < 0:
+			continue
+
+
+		# hs is the height before sextant corrections
+		# it will be higher than the actual height
+		dip = height_of_eye(ho)
+		refr = refraction(ho)
+		hs = ho + (dip + refr)/60
+
 		#(hc2,zn2) = compute_hc_ephem(lat,lon, d)
 
+		# compute the DR height based on the assumed latitude
+		# and longitude.
 		# use the DR position to compute the LHA,
 		# since the actual lon is unknown when taking the sights
 		dr_lha = dr_lon - (-gha)
 
-		(decl_remainder,_) = modf(decl)
+		(hc,zn_dr) = compute_hczn(dr_lat, decl, dr_lha)
+		d = (hc - ho) * 60
 
-		# round decl towards interger part,
-		# round lha towards larger value
-		#table_dec = trunc(decl)
-		#table_lha = trunc(fabs(lha) + 0.5)
-		#(hc2,_) = compute_hczn(dr_lat, table_dec, table_lha)
-
-		# lookup the table values and compute the
-		# expected value for the computation
-		(hc2,_,d) = hczn_table(dr_lat, decl, dr_lha)
-		hc3 = hc2 + d * fabs(decl_remainder) / 100
+		transfer = ahaversine(haversine(dr_lha) * cos(radians(dr_lat)) * cos(radians(decl)))
+		transfer2 = ahaversine(haversine(90-decl) - haversine(dr_lat - hc))
 
 		print("%02d:%02d" % (h,m),
-			"%.0f %5.2f" % (zn, hc),
-			"%5.2f %+4d" % (hc2, d),
-			"%5.2f %+6.2f" % (hc3, hc - hc3),
-			fmt_deg(gha),
-			fmt_deg(dr_lha),
-			fmt_deg(decl),
+			"%5.2f %5.2f" % (hs, ho),
+			"%5.2f %+5.1f %5.1f" % (hc, d, zn),
+			"%+6.1f %+6.1f %+6.1f %+6.3f" % (gha, dr_lha, lha, decl),
+			#"%5.2f %+6.2f" % (hc3, hc - hc3),
+			#fmt_deg(gha),
+			#fmt_deg(dr_lha),
+			#fmt_deg(lha),
+			#fmt_deg(decl),
+			"%5.2f %5.2f" % (transfer, transfer2),
 		)
