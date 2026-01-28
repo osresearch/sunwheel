@@ -3,7 +3,7 @@
  * to act as the center cursor.
  */
 
-len = 85;
+len = 87;
 shaft = 2.25;
 paper_thick = 2.4;
 thick = 10/2;
@@ -15,7 +15,13 @@ astrolabe_arm_offset = len/2 - 8;
 astrolabe_arm_width = 8;
 
 nut = true;
-pin_slop = 0.3;
+pin_slop = 0.1;
+
+module mirror_dupe(v=[0,1,0])
+{
+	children();
+	mirror(v) children();
+}
 
 module bolt(nut)
 {
@@ -80,6 +86,17 @@ scale([0.5,1,1]) cylinder(d=14,h=thick*2, $fn=90);
 scale([0.5,1,1]) cylinder(d=11,h=thick*2, $fn=90);
 	}
 }
+
+	// add nubbins to each side for each of the spiral rings
+	l1 = 26.5;
+	l2 = 70.0;
+	mirror_dupe([0,1,0])
+	for(o = [0:7]) {
+		translate([l1 + (l2-l1)*o/7, 8-o/6, 0])
+		rotate([0,0,5])
+		scale([0.5,2,1])
+		cylinder(d2=3, d1=1, h=thick-paper_thick/2, $fn=30);
+	}
 }
 
 
