@@ -28,7 +28,9 @@ if len(sys.argv) > 2:
 else:
 	lat = +(52 + 21/60 + 48.8/3600)
 	lon = +(4 + 54/60 + 7.9/3600)
-height_eye = 4.5
+
+index_error = 1.0
+eye_height = 4.5
 dr_lat = trunc(lat)
 dr_lon = trunc(lon)
 
@@ -72,7 +74,7 @@ def sun_position(when):
 	gha = degrees(sun.ha)
 	if gha > 180:
 		gha -= 360
-	return (degrees(sun.dec),gha)
+	return (degrees(sun.dec),gha,degrees(sun.radius)*60)
 	
 
 # double check with the epehm library
@@ -105,7 +107,7 @@ def hczn_table(lat, dec, lha):
 
 # Given a lat/lon and time, compute the height of the sun at that position
 def compute_hc(lat, lon, when):
-	(sun_dec,sun_gha) = sun_position(when)
+	(sun_dec,sun_gha,sd) = sun_position(when)
 	# note that longitude is increasing going east,
 	# but the sun hour angle is increasing going west.
 	# so the angle between them is the sum, not the difference
@@ -114,19 +116,23 @@ def compute_hc(lat, lon, when):
 		lha += 360
 	(hc,zn) = compute_hczn(lat, sun_dec, lha)
 
-	return (hc,zn,sun_dec,sun_gha,lha)
+	return (hc,zn,sun_dec,sun_gha,lha,sd)
 
 
 tz = datetime.timezone(datetime.timedelta(hours=1))
-day = datetime.datetime(2026, 4, 29, 0, 0)
-(_,_,noon_decl,noon_gha,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12))
-(_,_,noon2_decl,_,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12+24))
+day = datetime.datetime(2026, 7, 9, 0, 0)
+(_,_,noon_decl,noon_gha,_,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12))
+(_,_,noon2_decl,_,_,_) = compute_hc(lat,lon, day + datetime.timedelta(hours=12+24))
 decl_d = 60 * (noon2_decl - noon_decl) / 24
+(eot_sec,eot_min) = modf(noon_gha / 15 * 60)
+if eot_min < 0:
+	eot_sec = -eot_sec
 
 print("Date", day)
 print("Location", fmt_deg(lat), fmt_deg(lon))
 print("DR  ", fmt_deg(dr_lat), fmt_deg(dr_lon))
-print("EOT ", fmt_deg(noon_gha), "DECL", fmt_deg(noon_decl), "%.2f" % (decl_d))
+print("EOT ", fmt_deg(noon_gha), "%d:%02d" % (eot_min, eot_sec*60))
+print("DECL", fmt_deg(noon_decl), "%.2f" % (decl_d))
 
 #print(compute_hczn(52,-21, -26))
 #print(compute_hczn(52,-21, +44))
@@ -139,16 +145,17 @@ for h in range(0,24):
 		d = day + datetime.timedelta(hours=h, minutes=m)
 
 		# the exact height that you should see
-		(ho,zn,decl,gha,lha) = compute_hc(lat,lon, d)
+		(ho,zn,decl,gha,lha,sd) = compute_hc(lat,lon, d)
 		if ho < 0:
 			continue
 
 
 		# hs is the height before sextant corrections
 		# it will be higher than the actual height
-		dip = height_of_eye(ho)
+		dip = height_of_eye(eye_height)
 		refr = refraction(ho)
-		hs = ho + (dip + refr)/60
+		hs = ho + (index_error + dip + refr - sd)/60
+		#print(dip,refr,sd)
 
 		#(hc2,zn2) = compute_hc_ephem(lat,lon, d)
 
@@ -164,12 +171,14 @@ for h in range(0,24):
 		d = (hc - ho) * 60
 
 		transfer = ahaversine(haversine(dr_lha) * cos(radians(dr_lat)) * cos(radians(decl)))
+		hc = 90 - ahaversine(haversine(transfer) + haversine(dr_lat - decl))
+		print(dr_lat - decl)
 		transfer2 = ahaversine(haversine(90-decl) - haversine(dr_lat - hc))
 
 		print("%02d:%02d" % (h,m),
-			"%5.2f %5.2f" % (hs, ho),
-			"%5.2f %+5.1f %5.1f" % (hc, d, zn),
-			"%+6.1f %+6.1f %+6.1f %+6.3f" % (gha, dr_lha, lha, decl),
+			"%5.3f %5.3f" % (hs, ho),
+			"%5.3f %+5.1f %5.1f" % (hc, d, zn),
+			"%+6.2f %+6.2f %+6.2f %+6.3f" % (gha, dr_lha, lha, decl),
 			#"%5.2f %+6.2f" % (hc3, hc - hc3),
 			#fmt_deg(gha),
 			#fmt_deg(dr_lha),
