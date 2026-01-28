@@ -87,7 +87,7 @@ def compute_lha(lat, dec, hc):
 
 # Height of eye is 1.76 sqrt(H_e) in meters
 def height_of_eye(H_e):
-	return 1.76 * sqrt(H_e) * 6
+	return 1.76 * sqrt(H_e)
 
 # compute the height of eye required to see that distance in km,
 # then convert that to a angle with height_of_eye
@@ -102,7 +102,7 @@ def horizon_distance(km):
 def refraction(H_a, p=1010, t=10):
 	r = 1/tan(radians(H_a + 7.31 / (H_a + 4.4)))
 	f = p / (273+t) * 283/1010
-	return f * r * -6
+	return f * r
 
 
 # minutes that the sun is ahead of noon

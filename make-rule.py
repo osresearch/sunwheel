@@ -124,17 +124,17 @@ def make_rule(radius, major, minor1, minor2, minor3=None, fmt=deg2sec, pos=(1,9)
 
 def make_height_of_eye(radius,angle):
 	g = draw.Group(transform="rotate(%.3f)" % (angle))
-	major = [height_of_eye(H_e) for H_e in frange(0,40.1,1)]
-	minor1 = [height_of_eye(H_e) for H_e in frange(0,40,0.5)]
-	minor2 = [height_of_eye(H_e) for H_e in frange(0,5,0.1)]
-	minor2 += [height_of_eye(H_e) for H_e in frange(5,10,0.25)]
+	major = [height_of_eye(H_e)*6 for H_e in frange(0,40.1,1)]
+	minor1 = [height_of_eye(H_e)*6 for H_e in frange(0,40,0.5)]
+	minor2 = [height_of_eye(H_e)*6 for H_e in frange(0,5,0.1)]
+	minor2 += [height_of_eye(H_e)*6 for H_e in frange(5,10,0.25)]
 
 	g.append(make_ticks(radius-10, minor2, 2, stroke_width=0.1))
 	g.append(make_ticks(radius-10, minor1, 5, stroke_width=0.2))
 	g.append(make_ticks(radius-10, major,  10, stroke_width=0.3))
 
 	# Meters
-	labels = [[height_of_eye(h_e), "%.0f" % (h_e)] for h_e in
+	labels = [[height_of_eye(h_e)*6, "%.0f" % (h_e)] for h_e in
 		[1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 30, 35, 40]]
 
 	g.append(make_tick_labels(
@@ -145,7 +145,7 @@ def make_height_of_eye(radius,angle):
 	))
 	g.append(make_tick_labels(
 		radius-10,
-		[[height_of_eye(42.5), "m"]],
+		[[height_of_eye(42.5)*6, "m"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		#stroke="red",
@@ -156,10 +156,10 @@ def make_height_of_eye(radius,angle):
 	# Feet
 	ft_radius = radius - 50
 	ft_per_m = 3.281
-	major = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,130.1,5)]
-	minor1 = [height_of_eye(H_e/ft_per_m) for H_e in frange(0,130.1,1)]
+	major = [height_of_eye(H_e/ft_per_m)*6 for H_e in frange(0,130.1,5)]
+	minor1 = [height_of_eye(H_e/ft_per_m)*6 for H_e in frange(0,130.1,1)]
 
-	labels = [[height_of_eye(h_e/ft_per_m), "%.0f" % (h_e)] for h_e in
+	labels = [[height_of_eye(h_e/ft_per_m)*6, "%.0f" % (h_e)] for h_e in
 		[5,10,15,20,25,30,35,40,45,50,60,70,80,90,100,110,120,130]]
 
 	g.append(make_ticks(ft_radius, minor1,  5, stroke_width=0.2))
@@ -172,7 +172,7 @@ def make_height_of_eye(radius,angle):
 	))
 	g.append(make_tick_labels(
 		ft_radius,
-		[[height_of_eye(42.5), "ft"]],
+		[[height_of_eye(42.5)*6, "ft"]],
 		pos=(-10,+3),
 		text_anchor="end",
 		#stroke="red",
@@ -183,21 +183,21 @@ def make_height_of_eye(radius,angle):
 	# as a helpful reference, add the distance to the horizon
 	dist_radius = ft_radius - 80
 	dist_max = 22 + 0.01
-	major = [horizon_distance(x) for x in frange(1, dist_max, 1)]
-	minor1 = [horizon_distance(x) for x in frange(1, dist_max, 0.5)]
-	minor2 = [horizon_distance(x) for x in frange(1, dist_max, 0.25)]
+	major = [horizon_distance(x)*6 for x in frange(1, dist_max, 1)]
+	minor1 = [horizon_distance(x)*6 for x in frange(1, dist_max, 0.5)]
+	minor2 = [horizon_distance(x)*6 for x in frange(1, dist_max, 0.25)]
 	g.append(make_ticks(dist_radius, minor2, 3, stroke_width=0.2))
 	g.append(make_ticks(dist_radius, minor1, 5, stroke_width=0.2))
 	g.append(make_ticks(dist_radius, major,  8, stroke_width=0.3))
 	g.append(make_tick_labels(
 		dist_radius,
-		[[horizon_distance(_),"%.0f" % _] for _ in frange(1,dist_max,1)],
+		[[horizon_distance(_)*6,"%.0f" % _] for _ in frange(1,dist_max,1)],
 		pos=(+10,+3),
 		text_anchor="start",
 	))
 	g.append(make_tick_labels(
 		dist_radius,
-		[[horizon_distance(dist_max+1), "km"]],
+		[[horizon_distance(dist_max+1)*6, "km"]],
 		pos=(+5,+0),
 		text_anchor="start",
 		#stroke="red",
@@ -209,21 +209,21 @@ def make_height_of_eye(radius,angle):
 	dist_radius = dist_radius - 20
 	dist_max = 12 + 0.01
 	nm_per_km = 1.852
-	major = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 1)]
-	minor1 = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 0.5)]
-	minor2 = [horizon_distance(x*nm_per_km) for x in frange(1, dist_max, 0.25)]
+	major = [horizon_distance(x*nm_per_km)*6 for x in frange(1, dist_max, 1)]
+	minor1 = [horizon_distance(x*nm_per_km)*6 for x in frange(1, dist_max, 0.5)]
+	minor2 = [horizon_distance(x*nm_per_km)*6 for x in frange(1, dist_max, 0.25)]
 	g.append(make_ticks(dist_radius, minor2,  3, stroke_width=0.2))
 	g.append(make_ticks(dist_radius, minor1,  5, stroke_width=0.2))
 	g.append(make_ticks(dist_radius, major,   8, stroke_width=0.3))
 	g.append(make_tick_labels(
 		dist_radius,
-		[[horizon_distance(_*nm_per_km),"%.0f" % _] for _ in frange(1,dist_max,1)],
+		[[horizon_distance(_*nm_per_km)*6,"%.0f" % _] for _ in frange(1,dist_max,1)],
 		pos=(-10,+3),
 		text_anchor="end",
 	))
 	g.append(make_tick_labels(
 		dist_radius,
-		[[horizon_distance(dist_max*nm_per_km+1), "nm"]],
+		[[horizon_distance(dist_max*nm_per_km+1)*6, "nm"]],
 		pos=(-5,+0),
 		text_anchor="end",
 		#stroke="red",
@@ -266,16 +266,16 @@ def make_refraction(radius, angle):
 	pressure = 1010
 
 	for h_a in majors:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.4))
+		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6), stroke_width=0.4))
 	for h_a in minors1:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.2))
+		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6), stroke_width=0.2))
 	for h_a in minors2:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)), stroke_width=0.1))
+		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6), stroke_width=0.1))
 
 	for t in [-10,-5,0,5,10,15,20,25,30,35,40]:
 		r = t_scale(t)
 		g.append(make_arcs(minors2,
-			lambda a: (r, refraction(a,pressure,t)),
+			lambda a: (r, refraction(a,pressure,t)*-6),
 			stroke_width= 0.8 if (t % 10 == 0) else 0.1,
 		))
 
@@ -284,7 +284,7 @@ def make_refraction(radius, angle):
 		g.append(draw.Text(
 			"%d°F" % (t * 9/5 + 32),
 			8.5, -8, -2,
-			transform="rotate(%f) translate(%f)" % (refraction(3,pressure,t), r),
+			transform="rotate(%f) translate(%f)" % (refraction(3,pressure,t)*-6, r),
 			text_anchor="center",
 		))
 		g.append(draw.Text(
@@ -296,7 +296,7 @@ def make_refraction(radius, angle):
 
 	g.append(make_tick_labels(
 		radius+2,
-		[[refraction(a,pressure,-9), "%.0f" % (a)] for a in majors],
+		[[refraction(a,pressure,-9)*-6, "%.0f" % (a)] for a in majors],
 		size=8.5,
 		pos=(-5,+3),
 		text_anchor="start",
