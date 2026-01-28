@@ -55,7 +55,7 @@ text { font-family: "B612 Regular"; }
 <path d="M-80.0,-9.797174393178826e-15 A80,80,0,0,1,80.0,0.0" id="d3" />
 </defs>
 <g transform="scale(0.650 0.650) translate(510.000 510.000)">
-<g id="outer" class="spinner">
+<g id="outer" class="spinner" transform="rotate(0)">
 <circle cx="0" cy="0" r="500" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="420" class="thick" />
 <circle cx="0" cy="0" r="500" class="thick" />
@@ -64,7 +64,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em">Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d1" startOffset="50%">
-<tspan dy="0em">2026-01-26</tspan>
+<tspan dy="0em">2026-01-28</tspan>
 </textPath></text>
 <g transform="translate(420.000)">
 <path d="M0,0 L15,5 L25,5 L25,-5 L15,-5 Z" fill="black" stroke="none" transform="rotate(0.000)" />
@@ -1275,2192 +1275,2192 @@ text { font-family: "B612 Regular"; }
 </g>
 <circle cx="0" cy="0" r="495" class="thin" />
 <g>
-<g transform="rotate(0.000) translate(430.000 0)">
+<g transform="rotate(-0.000) translate(430.000 0)">
 <path d="M25,0 L-5,0" class="extra_thick" />
 </g>
-<g transform="rotate(0.001) translate(430.000 0)">
+<g transform="rotate(-0.001) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.003) translate(430.000 0)">
+<g transform="rotate(-0.003) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.007) translate(430.000 0)">
+<g transform="rotate(-0.007) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.012) translate(430.000 0)">
+<g transform="rotate(-0.012) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.018) translate(430.000 0)">
+<g transform="rotate(-0.018) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.026) translate(430.000 0)">
+<g transform="rotate(-0.026) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.036) translate(430.000 0)">
+<g transform="rotate(-0.036) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.046) translate(430.000 0)">
+<g transform="rotate(-0.046) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.059) translate(430.000 0)">
+<g transform="rotate(-0.059) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.073) translate(430.000 0)">
+<g transform="rotate(-0.073) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(0.088) translate(430.000 0)">
+<g transform="rotate(-0.088) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.104) translate(430.000 0)">
+<g transform="rotate(-0.104) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.123) translate(430.000 0)">
+<g transform="rotate(-0.123) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.142) translate(430.000 0)">
+<g transform="rotate(-0.142) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.163) translate(430.000 0)">
+<g transform="rotate(-0.163) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.186) translate(430.000 0)">
+<g transform="rotate(-0.186) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.210) translate(430.000 0)">
+<g transform="rotate(-0.210) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.235) translate(430.000 0)">
+<g transform="rotate(-0.235) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.262) translate(430.000 0)">
+<g transform="rotate(-0.262) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.290) translate(430.000 0)">
-<text x="12" y="9" font-size="9" class="angle" text-anchor="start">1</text>
+<g transform="rotate(-0.290) translate(430.000 0)">
+<text x="12" y="-3" font-size="9" class="angle" text-anchor="start">1</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(0.320) translate(430.000 0)">
+<g transform="rotate(-0.320) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.351) translate(430.000 0)">
+<g transform="rotate(-0.351) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.384) translate(430.000 0)">
+<g transform="rotate(-0.384) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.418) translate(430.000 0)">
+<g transform="rotate(-0.418) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.453) translate(430.000 0)">
+<g transform="rotate(-0.453) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.490) translate(430.000 0)">
+<g transform="rotate(-0.490) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.529) translate(430.000 0)">
+<g transform="rotate(-0.529) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.569) translate(430.000 0)">
+<g transform="rotate(-0.569) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.610) translate(430.000 0)">
+<g transform="rotate(-0.610) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.653) translate(430.000 0)">
+<g transform="rotate(-0.653) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(0.697) translate(430.000 0)">
+<g transform="rotate(-0.697) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.743) translate(430.000 0)">
+<g transform="rotate(-0.743) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.790) translate(430.000 0)">
+<g transform="rotate(-0.790) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.839) translate(430.000 0)">
+<g transform="rotate(-0.839) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.889) translate(430.000 0)">
+<g transform="rotate(-0.889) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(0.940) translate(430.000 0)">
+<g transform="rotate(-0.940) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(0.993) translate(430.000 0)">
+<g transform="rotate(-0.993) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.048) translate(430.000 0)">
+<g transform="rotate(-1.048) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(1.103) translate(430.000 0)">
+<g transform="rotate(-1.103) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.161) translate(430.000 0)">
-<text x="12" y="9" font-size="9" class="angle" text-anchor="start">2</text>
+<g transform="rotate(-1.161) translate(430.000 0)">
+<text x="12" y="-3" font-size="9" class="angle" text-anchor="start">2</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(1.219) translate(430.000 0)">
+<g transform="rotate(-1.219) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.280) translate(430.000 0)">
+<g transform="rotate(-1.280) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(1.341) translate(430.000 0)">
+<g transform="rotate(-1.341) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.404) translate(430.000 0)">
+<g transform="rotate(-1.404) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(1.469) translate(430.000 0)">
+<g transform="rotate(-1.469) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.535) translate(430.000 0)">
+<g transform="rotate(-1.535) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(1.602) translate(430.000 0)">
+<g transform="rotate(-1.602) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.671) translate(430.000 0)">
+<g transform="rotate(-1.671) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(1.742) translate(430.000 0)">
+<g transform="rotate(-1.742) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.814) translate(430.000 0)">
+<g transform="rotate(-1.814) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(1.887) translate(430.000 0)">
+<g transform="rotate(-1.887) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(1.961) translate(430.000 0)">
+<g transform="rotate(-1.961) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(2.038) translate(430.000 0)">
+<g transform="rotate(-2.038) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(2.115) translate(430.000 0)">
+<g transform="rotate(-2.115) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(2.194) translate(430.000 0)">
+<g transform="rotate(-2.194) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(2.275) translate(430.000 0)">
+<g transform="rotate(-2.275) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(2.357) translate(430.000 0)">
+<g transform="rotate(-2.357) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(2.440) translate(430.000 0)">
+<g transform="rotate(-2.440) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(2.525) translate(430.000 0)">
+<g transform="rotate(-2.525) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(2.611) translate(430.000 0)">
-<text x="12" y="9" font-size="9" class="angle" text-anchor="start">3</text>
+<g transform="rotate(-2.611) translate(430.000 0)">
+<text x="12" y="-3" font-size="9" class="angle" text-anchor="start">3</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(2.699) translate(430.000 0)">
+<g transform="rotate(-2.699) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(2.788) translate(430.000 0)">
+<g transform="rotate(-2.788) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(2.879) translate(430.000 0)">
+<g transform="rotate(-2.879) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(2.971) translate(430.000 0)">
+<g transform="rotate(-2.971) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(3.065) translate(430.000 0)">
+<g transform="rotate(-3.065) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(3.160) translate(430.000 0)">
+<g transform="rotate(-3.160) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(3.256) translate(430.000 0)">
+<g transform="rotate(-3.256) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(3.354) translate(430.000 0)">
+<g transform="rotate(-3.354) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(3.453) translate(430.000 0)">
+<g transform="rotate(-3.453) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(3.554) translate(430.000 0)">
+<g transform="rotate(-3.554) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(3.656) translate(430.000 0)">
+<g transform="rotate(-3.656) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(3.760) translate(430.000 0)">
+<g transform="rotate(-3.760) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(3.865) translate(430.000 0)">
+<g transform="rotate(-3.865) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(3.972) translate(430.000 0)">
+<g transform="rotate(-3.972) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(4.080) translate(430.000 0)">
+<g transform="rotate(-4.080) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(4.189) translate(430.000 0)">
+<g transform="rotate(-4.189) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(4.300) translate(430.000 0)">
+<g transform="rotate(-4.300) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(4.412) translate(430.000 0)">
+<g transform="rotate(-4.412) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(4.526) translate(430.000 0)">
+<g transform="rotate(-4.526) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(4.641) translate(430.000 0)">
-<text x="12" y="9" font-size="9" class="angle" text-anchor="start">4</text>
+<g transform="rotate(-4.641) translate(430.000 0)">
+<text x="12" y="-3" font-size="9" class="angle" text-anchor="start">4</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(4.758) translate(430.000 0)">
+<g transform="rotate(-4.758) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(4.876) translate(430.000 0)">
+<g transform="rotate(-4.876) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(4.996) translate(430.000 0)">
+<g transform="rotate(-4.996) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(5.117) translate(430.000 0)">
+<g transform="rotate(-5.117) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(5.240) translate(430.000 0)">
+<g transform="rotate(-5.240) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(5.363) translate(430.000 0)">
+<g transform="rotate(-5.363) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(5.489) translate(430.000 0)">
+<g transform="rotate(-5.489) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(5.616) translate(430.000 0)">
+<g transform="rotate(-5.616) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(5.744) translate(430.000 0)">
+<g transform="rotate(-5.744) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(5.874) translate(430.000 0)">
+<g transform="rotate(-5.874) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(6.005) translate(430.000 0)">
+<g transform="rotate(-6.005) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(6.138) translate(430.000 0)">
+<g transform="rotate(-6.138) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(6.272) translate(430.000 0)">
+<g transform="rotate(-6.272) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(6.407) translate(430.000 0)">
+<g transform="rotate(-6.407) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(6.544) translate(430.000 0)">
+<g transform="rotate(-6.544) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(6.683) translate(430.000 0)">
+<g transform="rotate(-6.683) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(6.822) translate(430.000 0)">
+<g transform="rotate(-6.822) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(6.964) translate(430.000 0)">
+<g transform="rotate(-6.964) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(7.106) translate(430.000 0)">
+<g transform="rotate(-7.106) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(7.251) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">5</text>
+<g transform="rotate(-7.251) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">5</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(7.396) translate(430.000 0)">
+<g transform="rotate(-7.396) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(7.543) translate(430.000 0)">
+<g transform="rotate(-7.543) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(7.692) translate(430.000 0)">
+<g transform="rotate(-7.692) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(7.842) translate(430.000 0)">
+<g transform="rotate(-7.842) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(7.993) translate(430.000 0)">
+<g transform="rotate(-7.993) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(8.146) translate(430.000 0)">
+<g transform="rotate(-8.146) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(8.300) translate(430.000 0)">
+<g transform="rotate(-8.300) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(8.456) translate(430.000 0)">
+<g transform="rotate(-8.456) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(8.613) translate(430.000 0)">
+<g transform="rotate(-8.613) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(8.772) translate(430.000 0)">
+<g transform="rotate(-8.772) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(8.932) translate(430.000 0)">
+<g transform="rotate(-8.932) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(9.094) translate(430.000 0)">
+<g transform="rotate(-9.094) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(9.257) translate(430.000 0)">
+<g transform="rotate(-9.257) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(9.421) translate(430.000 0)">
+<g transform="rotate(-9.421) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(9.587) translate(430.000 0)">
+<g transform="rotate(-9.587) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(9.754) translate(430.000 0)">
+<g transform="rotate(-9.754) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(9.923) translate(430.000 0)">
+<g transform="rotate(-9.923) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(10.093) translate(430.000 0)">
+<g transform="rotate(-10.093) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(10.265) translate(430.000 0)">
+<g transform="rotate(-10.265) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(10.438) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">6</text>
+<g transform="rotate(-10.438) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">6</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(10.613) translate(430.000 0)">
+<g transform="rotate(-10.613) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(10.789) translate(430.000 0)">
+<g transform="rotate(-10.789) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(10.966) translate(430.000 0)">
+<g transform="rotate(-10.966) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(11.145) translate(430.000 0)">
+<g transform="rotate(-11.145) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(11.325) translate(430.000 0)">
+<g transform="rotate(-11.325) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(11.507) translate(430.000 0)">
+<g transform="rotate(-11.507) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(11.690) translate(430.000 0)">
+<g transform="rotate(-11.690) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(11.875) translate(430.000 0)">
+<g transform="rotate(-11.875) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(12.061) translate(430.000 0)">
+<g transform="rotate(-12.061) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(12.248) translate(430.000 0)">
+<g transform="rotate(-12.248) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(12.437) translate(430.000 0)">
+<g transform="rotate(-12.437) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(12.628) translate(430.000 0)">
+<g transform="rotate(-12.628) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(12.819) translate(430.000 0)">
+<g transform="rotate(-12.819) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(13.013) translate(430.000 0)">
+<g transform="rotate(-13.013) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(13.207) translate(430.000 0)">
+<g transform="rotate(-13.207) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(13.404) translate(430.000 0)">
+<g transform="rotate(-13.404) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(13.601) translate(430.000 0)">
+<g transform="rotate(-13.601) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(13.800) translate(430.000 0)">
+<g transform="rotate(-13.800) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(14.001) translate(430.000 0)">
+<g transform="rotate(-14.001) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(14.203) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">7</text>
+<g transform="rotate(-14.203) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">7</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(14.406) translate(430.000 0)">
+<g transform="rotate(-14.406) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(14.611) translate(430.000 0)">
+<g transform="rotate(-14.611) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(14.817) translate(430.000 0)">
+<g transform="rotate(-14.817) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(15.025) translate(430.000 0)">
+<g transform="rotate(-15.025) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(15.234) translate(430.000 0)">
+<g transform="rotate(-15.234) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(15.444) translate(430.000 0)">
+<g transform="rotate(-15.444) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(15.656) translate(430.000 0)">
+<g transform="rotate(-15.656) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(15.870) translate(430.000 0)">
+<g transform="rotate(-15.870) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(16.085) translate(430.000 0)">
+<g transform="rotate(-16.085) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(16.301) translate(430.000 0)">
+<g transform="rotate(-16.301) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(16.519) translate(430.000 0)">
+<g transform="rotate(-16.519) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(16.738) translate(430.000 0)">
+<g transform="rotate(-16.738) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(16.959) translate(430.000 0)">
+<g transform="rotate(-16.959) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(17.181) translate(430.000 0)">
+<g transform="rotate(-17.181) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(17.404) translate(430.000 0)">
+<g transform="rotate(-17.404) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(17.629) translate(430.000 0)">
+<g transform="rotate(-17.629) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(17.855) translate(430.000 0)">
+<g transform="rotate(-17.855) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(18.083) translate(430.000 0)">
+<g transform="rotate(-18.083) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(18.313) translate(430.000 0)">
+<g transform="rotate(-18.313) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(18.543) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">8</text>
+<g transform="rotate(-18.543) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">8</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(18.775) translate(430.000 0)">
+<g transform="rotate(-18.775) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(19.009) translate(430.000 0)">
+<g transform="rotate(-19.009) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(19.244) translate(430.000 0)">
+<g transform="rotate(-19.244) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(19.480) translate(430.000 0)">
+<g transform="rotate(-19.480) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(19.718) translate(430.000 0)">
+<g transform="rotate(-19.718) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(19.958) translate(430.000 0)">
+<g transform="rotate(-19.958) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(20.198) translate(430.000 0)">
+<g transform="rotate(-20.198) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(20.441) translate(430.000 0)">
+<g transform="rotate(-20.441) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(20.684) translate(430.000 0)">
+<g transform="rotate(-20.684) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(20.929) translate(430.000 0)">
+<g transform="rotate(-20.929) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(21.176) translate(430.000 0)">
+<g transform="rotate(-21.176) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(21.424) translate(430.000 0)">
+<g transform="rotate(-21.424) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(21.673) translate(430.000 0)">
+<g transform="rotate(-21.673) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(21.924) translate(430.000 0)">
+<g transform="rotate(-21.924) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(22.176) translate(430.000 0)">
+<g transform="rotate(-22.176) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(22.430) translate(430.000 0)">
+<g transform="rotate(-22.430) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(22.685) translate(430.000 0)">
+<g transform="rotate(-22.685) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(22.941) translate(430.000 0)">
+<g transform="rotate(-22.941) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(23.199) translate(430.000 0)">
+<g transform="rotate(-23.199) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(23.459) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">9</text>
+<g transform="rotate(-23.459) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">9</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(23.720) translate(430.000 0)">
+<g transform="rotate(-23.720) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(23.982) translate(430.000 0)">
+<g transform="rotate(-23.982) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(24.245) translate(430.000 0)">
+<g transform="rotate(-24.245) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(24.511) translate(430.000 0)">
+<g transform="rotate(-24.511) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(24.777) translate(430.000 0)">
+<g transform="rotate(-24.777) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(25.045) translate(430.000 0)">
+<g transform="rotate(-25.045) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(25.315) translate(430.000 0)">
+<g transform="rotate(-25.315) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(25.585) translate(430.000 0)">
+<g transform="rotate(-25.585) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(25.858) translate(430.000 0)">
+<g transform="rotate(-25.858) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(26.131) translate(430.000 0)">
+<g transform="rotate(-26.131) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(26.407) translate(430.000 0)">
+<g transform="rotate(-26.407) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(26.683) translate(430.000 0)">
+<g transform="rotate(-26.683) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(26.961) translate(430.000 0)">
+<g transform="rotate(-26.961) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(27.241) translate(430.000 0)">
+<g transform="rotate(-27.241) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(27.522) translate(430.000 0)">
+<g transform="rotate(-27.522) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(27.804) translate(430.000 0)">
+<g transform="rotate(-27.804) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(28.088) translate(430.000 0)">
+<g transform="rotate(-28.088) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(28.373) translate(430.000 0)">
+<g transform="rotate(-28.373) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(28.659) translate(430.000 0)">
+<g transform="rotate(-28.659) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(28.947) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">10</text>
+<g transform="rotate(-28.947) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">10</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(29.237) translate(430.000 0)">
+<g transform="rotate(-29.237) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(29.528) translate(430.000 0)">
+<g transform="rotate(-29.528) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(29.820) translate(430.000 0)">
+<g transform="rotate(-29.820) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(30.114) translate(430.000 0)">
+<g transform="rotate(-30.114) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(30.409) translate(430.000 0)">
+<g transform="rotate(-30.409) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(30.706) translate(430.000 0)">
+<g transform="rotate(-30.706) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(31.004) translate(430.000 0)">
+<g transform="rotate(-31.004) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(31.303) translate(430.000 0)">
+<g transform="rotate(-31.303) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(31.604) translate(430.000 0)">
+<g transform="rotate(-31.604) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(31.906) translate(430.000 0)">
+<g transform="rotate(-31.906) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(32.210) translate(430.000 0)">
+<g transform="rotate(-32.210) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(32.515) translate(430.000 0)">
+<g transform="rotate(-32.515) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(32.822) translate(430.000 0)">
+<g transform="rotate(-32.822) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(33.130) translate(430.000 0)">
+<g transform="rotate(-33.130) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(33.439) translate(430.000 0)">
+<g transform="rotate(-33.439) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(33.750) translate(430.000 0)">
+<g transform="rotate(-33.750) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(34.062) translate(430.000 0)">
+<g transform="rotate(-34.062) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(34.376) translate(430.000 0)">
+<g transform="rotate(-34.376) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(34.691) translate(430.000 0)">
+<g transform="rotate(-34.691) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(35.008) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">11</text>
+<g transform="rotate(-35.008) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">11</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(35.326) translate(430.000 0)">
+<g transform="rotate(-35.326) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(35.645) translate(430.000 0)">
+<g transform="rotate(-35.645) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(35.966) translate(430.000 0)">
+<g transform="rotate(-35.966) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(36.288) translate(430.000 0)">
+<g transform="rotate(-36.288) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(36.612) translate(430.000 0)">
+<g transform="rotate(-36.612) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(36.937) translate(430.000 0)">
+<g transform="rotate(-36.937) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(37.263) translate(430.000 0)">
+<g transform="rotate(-37.263) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(37.591) translate(430.000 0)">
+<g transform="rotate(-37.591) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(37.921) translate(430.000 0)">
+<g transform="rotate(-37.921) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(38.252) translate(430.000 0)">
+<g transform="rotate(-38.252) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(38.584) translate(430.000 0)">
+<g transform="rotate(-38.584) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(38.917) translate(430.000 0)">
+<g transform="rotate(-38.917) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(39.252) translate(430.000 0)">
+<g transform="rotate(-39.252) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(39.589) translate(430.000 0)">
+<g transform="rotate(-39.589) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(39.927) translate(430.000 0)">
+<g transform="rotate(-39.927) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(40.266) translate(430.000 0)">
+<g transform="rotate(-40.266) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(40.607) translate(430.000 0)">
+<g transform="rotate(-40.607) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(40.949) translate(430.000 0)">
+<g transform="rotate(-40.949) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(41.293) translate(430.000 0)">
+<g transform="rotate(-41.293) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(41.638) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">12</text>
+<g transform="rotate(-41.638) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">12</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(41.984) translate(430.000 0)">
+<g transform="rotate(-41.984) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(42.332) translate(430.000 0)">
+<g transform="rotate(-42.332) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(42.681) translate(430.000 0)">
+<g transform="rotate(-42.681) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(43.032) translate(430.000 0)">
+<g transform="rotate(-43.032) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(43.384) translate(430.000 0)">
+<g transform="rotate(-43.384) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(43.737) translate(430.000 0)">
+<g transform="rotate(-43.737) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(44.092) translate(430.000 0)">
+<g transform="rotate(-44.092) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(44.449) translate(430.000 0)">
+<g transform="rotate(-44.449) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(44.807) translate(430.000 0)">
+<g transform="rotate(-44.807) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(45.166) translate(430.000 0)">
+<g transform="rotate(-45.166) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(45.526) translate(430.000 0)">
+<g transform="rotate(-45.526) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(45.888) translate(430.000 0)">
+<g transform="rotate(-45.888) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(46.252) translate(430.000 0)">
+<g transform="rotate(-46.252) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(46.617) translate(430.000 0)">
+<g transform="rotate(-46.617) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(46.983) translate(430.000 0)">
+<g transform="rotate(-46.983) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(47.351) translate(430.000 0)">
+<g transform="rotate(-47.351) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(47.720) translate(430.000 0)">
+<g transform="rotate(-47.720) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(48.090) translate(430.000 0)">
+<g transform="rotate(-48.090) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(48.462) translate(430.000 0)">
+<g transform="rotate(-48.462) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(48.835) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">13</text>
+<g transform="rotate(-48.835) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">13</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(49.210) translate(430.000 0)">
+<g transform="rotate(-49.210) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(49.586) translate(430.000 0)">
+<g transform="rotate(-49.586) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(49.964) translate(430.000 0)">
+<g transform="rotate(-49.964) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(50.343) translate(430.000 0)">
+<g transform="rotate(-50.343) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(50.723) translate(430.000 0)">
+<g transform="rotate(-50.723) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(51.105) translate(430.000 0)">
+<g transform="rotate(-51.105) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(51.488) translate(430.000 0)">
+<g transform="rotate(-51.488) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(51.873) translate(430.000 0)">
+<g transform="rotate(-51.873) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(52.259) translate(430.000 0)">
+<g transform="rotate(-52.259) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(52.647) translate(430.000 0)">
+<g transform="rotate(-52.647) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(53.035) translate(430.000 0)">
+<g transform="rotate(-53.035) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(53.426) translate(430.000 0)">
+<g transform="rotate(-53.426) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(53.817) translate(430.000 0)">
+<g transform="rotate(-53.817) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(54.210) translate(430.000 0)">
+<g transform="rotate(-54.210) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(54.605) translate(430.000 0)">
+<g transform="rotate(-54.605) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(55.001) translate(430.000 0)">
+<g transform="rotate(-55.001) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(55.398) translate(430.000 0)">
+<g transform="rotate(-55.398) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(55.797) translate(430.000 0)">
+<g transform="rotate(-55.797) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(56.197) translate(430.000 0)">
+<g transform="rotate(-56.197) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(56.599) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">14</text>
+<g transform="rotate(-56.599) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">14</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(57.002) translate(430.000 0)">
+<g transform="rotate(-57.002) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(57.406) translate(430.000 0)">
+<g transform="rotate(-57.406) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(57.812) translate(430.000 0)">
+<g transform="rotate(-57.812) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(58.219) translate(430.000 0)">
+<g transform="rotate(-58.219) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(58.628) translate(430.000 0)">
+<g transform="rotate(-58.628) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(59.038) translate(430.000 0)">
+<g transform="rotate(-59.038) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(59.449) translate(430.000 0)">
+<g transform="rotate(-59.449) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(59.862) translate(430.000 0)">
+<g transform="rotate(-59.862) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(60.276) translate(430.000 0)">
+<g transform="rotate(-60.276) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(60.692) translate(430.000 0)">
+<g transform="rotate(-60.692) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(61.109) translate(430.000 0)">
+<g transform="rotate(-61.109) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(61.527) translate(430.000 0)">
+<g transform="rotate(-61.527) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(61.947) translate(430.000 0)">
+<g transform="rotate(-61.947) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(62.368) translate(430.000 0)">
+<g transform="rotate(-62.368) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(62.791) translate(430.000 0)">
+<g transform="rotate(-62.791) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(63.215) translate(430.000 0)">
+<g transform="rotate(-63.215) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(63.640) translate(430.000 0)">
+<g transform="rotate(-63.640) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(64.067) translate(430.000 0)">
+<g transform="rotate(-64.067) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(64.495) translate(430.000 0)">
+<g transform="rotate(-64.495) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(64.925) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">15</text>
+<g transform="rotate(-64.925) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">15</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(65.356) translate(430.000 0)">
+<g transform="rotate(-65.356) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(65.789) translate(430.000 0)">
+<g transform="rotate(-65.789) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(66.222) translate(430.000 0)">
+<g transform="rotate(-66.222) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(66.658) translate(430.000 0)">
+<g transform="rotate(-66.658) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(67.094) translate(430.000 0)">
+<g transform="rotate(-67.094) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(67.532) translate(430.000 0)">
+<g transform="rotate(-67.532) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(67.972) translate(430.000 0)">
+<g transform="rotate(-67.972) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(68.413) translate(430.000 0)">
+<g transform="rotate(-68.413) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(68.855) translate(430.000 0)">
+<g transform="rotate(-68.855) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(69.299) translate(430.000 0)">
+<g transform="rotate(-69.299) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(69.744) translate(430.000 0)">
+<g transform="rotate(-69.744) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(70.190) translate(430.000 0)">
+<g transform="rotate(-70.190) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(70.638) translate(430.000 0)">
+<g transform="rotate(-70.638) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(71.087) translate(430.000 0)">
+<g transform="rotate(-71.087) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(71.538) translate(430.000 0)">
+<g transform="rotate(-71.538) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(71.990) translate(430.000 0)">
+<g transform="rotate(-71.990) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(72.443) translate(430.000 0)">
+<g transform="rotate(-72.443) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(72.898) translate(430.000 0)">
+<g transform="rotate(-72.898) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(73.355) translate(430.000 0)">
+<g transform="rotate(-73.355) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(73.812) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">16</text>
+<g transform="rotate(-73.812) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">16</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(74.271) translate(430.000 0)">
+<g transform="rotate(-74.271) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(74.732) translate(430.000 0)">
+<g transform="rotate(-74.732) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(75.193) translate(430.000 0)">
+<g transform="rotate(-75.193) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(75.657) translate(430.000 0)">
+<g transform="rotate(-75.657) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(76.121) translate(430.000 0)">
+<g transform="rotate(-76.121) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(76.587) translate(430.000 0)">
+<g transform="rotate(-76.587) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(77.055) translate(430.000 0)">
+<g transform="rotate(-77.055) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(77.523) translate(430.000 0)">
+<g transform="rotate(-77.523) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(77.994) translate(430.000 0)">
+<g transform="rotate(-77.994) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(78.465) translate(430.000 0)">
+<g transform="rotate(-78.465) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(78.938) translate(430.000 0)">
+<g transform="rotate(-78.938) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(79.412) translate(430.000 0)">
+<g transform="rotate(-79.412) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(79.888) translate(430.000 0)">
+<g transform="rotate(-79.888) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(80.365) translate(430.000 0)">
+<g transform="rotate(-80.365) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(80.844) translate(430.000 0)">
+<g transform="rotate(-80.844) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(81.324) translate(430.000 0)">
+<g transform="rotate(-81.324) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(81.805) translate(430.000 0)">
+<g transform="rotate(-81.805) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(82.288) translate(430.000 0)">
+<g transform="rotate(-82.288) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(82.772) translate(430.000 0)">
+<g transform="rotate(-82.772) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(83.257) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">17</text>
+<g transform="rotate(-83.257) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">17</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(83.744) translate(430.000 0)">
+<g transform="rotate(-83.744) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(84.232) translate(430.000 0)">
+<g transform="rotate(-84.232) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(84.722) translate(430.000 0)">
+<g transform="rotate(-84.722) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(85.213) translate(430.000 0)">
+<g transform="rotate(-85.213) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(85.705) translate(430.000 0)">
+<g transform="rotate(-85.705) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(86.199) translate(430.000 0)">
+<g transform="rotate(-86.199) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(86.694) translate(430.000 0)">
+<g transform="rotate(-86.694) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(87.191) translate(430.000 0)">
+<g transform="rotate(-87.191) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(87.689) translate(430.000 0)">
+<g transform="rotate(-87.689) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(88.188) translate(430.000 0)">
+<g transform="rotate(-88.188) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(88.689) translate(430.000 0)">
+<g transform="rotate(-88.689) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(89.191) translate(430.000 0)">
+<g transform="rotate(-89.191) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(89.694) translate(430.000 0)">
+<g transform="rotate(-89.694) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(90.199) translate(430.000 0)">
+<g transform="rotate(-90.199) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(90.705) translate(430.000 0)">
+<g transform="rotate(-90.705) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(91.213) translate(430.000 0)">
+<g transform="rotate(-91.213) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(91.722) translate(430.000 0)">
+<g transform="rotate(-91.722) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(92.232) translate(430.000 0)">
+<g transform="rotate(-92.232) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(92.744) translate(430.000 0)">
+<g transform="rotate(-92.744) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(93.257) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">18</text>
+<g transform="rotate(-93.257) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">18</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(93.772) translate(430.000 0)">
+<g transform="rotate(-93.772) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(94.288) translate(430.000 0)">
+<g transform="rotate(-94.288) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(94.805) translate(430.000 0)">
+<g transform="rotate(-94.805) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(95.324) translate(430.000 0)">
+<g transform="rotate(-95.324) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(95.844) translate(430.000 0)">
+<g transform="rotate(-95.844) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(96.365) translate(430.000 0)">
+<g transform="rotate(-96.365) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(96.888) translate(430.000 0)">
+<g transform="rotate(-96.888) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(97.412) translate(430.000 0)">
+<g transform="rotate(-97.412) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(97.937) translate(430.000 0)">
+<g transform="rotate(-97.937) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(98.464) translate(430.000 0)">
+<g transform="rotate(-98.464) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(98.993) translate(430.000 0)">
+<g transform="rotate(-98.993) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(99.522) translate(430.000 0)">
+<g transform="rotate(-99.522) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(100.053) translate(430.000 0)">
+<g transform="rotate(-100.053) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(100.586) translate(430.000 0)">
+<g transform="rotate(-100.586) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(101.120) translate(430.000 0)">
+<g transform="rotate(-101.120) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(101.655) translate(430.000 0)">
+<g transform="rotate(-101.655) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(102.191) translate(430.000 0)">
+<g transform="rotate(-102.191) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(102.729) translate(430.000 0)">
+<g transform="rotate(-102.729) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(103.269) translate(430.000 0)">
+<g transform="rotate(-103.269) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(103.809) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">19</text>
+<g transform="rotate(-103.809) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">19</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(104.351) translate(430.000 0)">
+<g transform="rotate(-104.351) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(104.895) translate(430.000 0)">
+<g transform="rotate(-104.895) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(105.439) translate(430.000 0)">
+<g transform="rotate(-105.439) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(105.986) translate(430.000 0)">
+<g transform="rotate(-105.986) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(106.533) translate(430.000 0)">
+<g transform="rotate(-106.533) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(107.082) translate(430.000 0)">
+<g transform="rotate(-107.082) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(107.632) translate(430.000 0)">
+<g transform="rotate(-107.632) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(108.184) translate(430.000 0)">
+<g transform="rotate(-108.184) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(108.737) translate(430.000 0)">
+<g transform="rotate(-108.737) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(109.291) translate(430.000 0)">
+<g transform="rotate(-109.291) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(109.847) translate(430.000 0)">
+<g transform="rotate(-109.847) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(110.404) translate(430.000 0)">
+<g transform="rotate(-110.404) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(110.963) translate(430.000 0)">
+<g transform="rotate(-110.963) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(111.522) translate(430.000 0)">
+<g transform="rotate(-111.522) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(112.084) translate(430.000 0)">
+<g transform="rotate(-112.084) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(112.646) translate(430.000 0)">
+<g transform="rotate(-112.646) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(113.210) translate(430.000 0)">
+<g transform="rotate(-113.210) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(113.775) translate(430.000 0)">
+<g transform="rotate(-113.775) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(114.342) translate(430.000 0)">
+<g transform="rotate(-114.342) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(114.910) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">20</text>
+<g transform="rotate(-114.910) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">20</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(115.479) translate(430.000 0)">
+<g transform="rotate(-115.479) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(116.050) translate(430.000 0)">
+<g transform="rotate(-116.050) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(116.622) translate(430.000 0)">
+<g transform="rotate(-116.622) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(117.196) translate(430.000 0)">
+<g transform="rotate(-117.196) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(117.771) translate(430.000 0)">
+<g transform="rotate(-117.771) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(118.347) translate(430.000 0)">
+<g transform="rotate(-118.347) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(118.924) translate(430.000 0)">
+<g transform="rotate(-118.924) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(119.503) translate(430.000 0)">
+<g transform="rotate(-119.503) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(120.084) translate(430.000 0)">
+<g transform="rotate(-120.084) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(120.665) translate(430.000 0)">
+<g transform="rotate(-120.665) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(121.248) translate(430.000 0)">
+<g transform="rotate(-121.248) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(121.832) translate(430.000 0)">
+<g transform="rotate(-121.832) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(122.418) translate(430.000 0)">
+<g transform="rotate(-122.418) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(123.005) translate(430.000 0)">
+<g transform="rotate(-123.005) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(123.594) translate(430.000 0)">
+<g transform="rotate(-123.594) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(124.184) translate(430.000 0)">
+<g transform="rotate(-124.184) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(124.775) translate(430.000 0)">
+<g transform="rotate(-124.775) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(125.367) translate(430.000 0)">
+<g transform="rotate(-125.367) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(125.961) translate(430.000 0)">
+<g transform="rotate(-125.961) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(126.556) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">21</text>
+<g transform="rotate(-126.556) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">21</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(127.153) translate(430.000 0)">
+<g transform="rotate(-127.153) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(127.751) translate(430.000 0)">
+<g transform="rotate(-127.751) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(128.350) translate(430.000 0)">
+<g transform="rotate(-128.350) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(128.951) translate(430.000 0)">
+<g transform="rotate(-128.951) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(129.553) translate(430.000 0)">
+<g transform="rotate(-129.553) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(130.156) translate(430.000 0)">
+<g transform="rotate(-130.156) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(130.761) translate(430.000 0)">
+<g transform="rotate(-130.761) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(131.367) translate(430.000 0)">
+<g transform="rotate(-131.367) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(131.974) translate(430.000 0)">
+<g transform="rotate(-131.974) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(132.583) translate(430.000 0)">
+<g transform="rotate(-132.583) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(133.193) translate(430.000 0)">
+<g transform="rotate(-133.193) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(133.804) translate(430.000 0)">
+<g transform="rotate(-133.804) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(134.417) translate(430.000 0)">
+<g transform="rotate(-134.417) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(135.031) translate(430.000 0)">
+<g transform="rotate(-135.031) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(135.647) translate(430.000 0)">
+<g transform="rotate(-135.647) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(136.263) translate(430.000 0)">
+<g transform="rotate(-136.263) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(136.882) translate(430.000 0)">
+<g transform="rotate(-136.882) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(137.501) translate(430.000 0)">
+<g transform="rotate(-137.501) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(138.122) translate(430.000 0)">
+<g transform="rotate(-138.122) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(138.744) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">22</text>
+<g transform="rotate(-138.744) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">22</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(139.368) translate(430.000 0)">
+<g transform="rotate(-139.368) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(139.993) translate(430.000 0)">
+<g transform="rotate(-139.993) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(140.619) translate(430.000 0)">
+<g transform="rotate(-140.619) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(141.247) translate(430.000 0)">
+<g transform="rotate(-141.247) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(141.876) translate(430.000 0)">
+<g transform="rotate(-141.876) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(142.506) translate(430.000 0)">
+<g transform="rotate(-142.506) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(143.137) translate(430.000 0)">
+<g transform="rotate(-143.137) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(143.770) translate(430.000 0)">
+<g transform="rotate(-143.770) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(144.405) translate(430.000 0)">
+<g transform="rotate(-144.405) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(145.040) translate(430.000 0)">
+<g transform="rotate(-145.040) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(145.677) translate(430.000 0)">
+<g transform="rotate(-145.677) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(146.316) translate(430.000 0)">
+<g transform="rotate(-146.316) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(146.955) translate(430.000 0)">
+<g transform="rotate(-146.955) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(147.596) translate(430.000 0)">
+<g transform="rotate(-147.596) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(148.239) translate(430.000 0)">
+<g transform="rotate(-148.239) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(148.882) translate(430.000 0)">
+<g transform="rotate(-148.882) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(149.527) translate(430.000 0)">
+<g transform="rotate(-149.527) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(150.174) translate(430.000 0)">
+<g transform="rotate(-150.174) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(150.821) translate(430.000 0)">
+<g transform="rotate(-150.821) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(151.470) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">23</text>
+<g transform="rotate(-151.470) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">23</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(152.121) translate(430.000 0)">
+<g transform="rotate(-152.121) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(152.773) translate(430.000 0)">
+<g transform="rotate(-152.773) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(153.426) translate(430.000 0)">
+<g transform="rotate(-153.426) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(154.080) translate(430.000 0)">
+<g transform="rotate(-154.080) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(154.736) translate(430.000 0)">
+<g transform="rotate(-154.736) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(155.393) translate(430.000 0)">
+<g transform="rotate(-155.393) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(156.051) translate(430.000 0)">
+<g transform="rotate(-156.051) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(156.711) translate(430.000 0)">
+<g transform="rotate(-156.711) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(157.372) translate(430.000 0)">
+<g transform="rotate(-157.372) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(158.034) translate(430.000 0)">
+<g transform="rotate(-158.034) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(158.698) translate(430.000 0)">
+<g transform="rotate(-158.698) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(159.363) translate(430.000 0)">
+<g transform="rotate(-159.363) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(160.029) translate(430.000 0)">
+<g transform="rotate(-160.029) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(160.697) translate(430.000 0)">
+<g transform="rotate(-160.697) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(161.366) translate(430.000 0)">
+<g transform="rotate(-161.366) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(162.036) translate(430.000 0)">
+<g transform="rotate(-162.036) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(162.708) translate(430.000 0)">
+<g transform="rotate(-162.708) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(163.381) translate(430.000 0)">
+<g transform="rotate(-163.381) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(164.055) translate(430.000 0)">
+<g transform="rotate(-164.055) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(164.731) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">24</text>
+<g transform="rotate(-164.731) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">24</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(165.408) translate(430.000 0)">
+<g transform="rotate(-165.408) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(166.086) translate(430.000 0)">
+<g transform="rotate(-166.086) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(166.766) translate(430.000 0)">
+<g transform="rotate(-166.766) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(167.447) translate(430.000 0)">
+<g transform="rotate(-167.447) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(168.129) translate(430.000 0)">
+<g transform="rotate(-168.129) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(168.813) translate(430.000 0)">
+<g transform="rotate(-168.813) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(169.498) translate(430.000 0)">
+<g transform="rotate(-169.498) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(170.184) translate(430.000 0)">
+<g transform="rotate(-170.184) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(170.871) translate(430.000 0)">
+<g transform="rotate(-170.871) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(171.560) translate(430.000 0)">
+<g transform="rotate(-171.560) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(172.250) translate(430.000 0)">
+<g transform="rotate(-172.250) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(172.942) translate(430.000 0)">
+<g transform="rotate(-172.942) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(173.635) translate(430.000 0)">
+<g transform="rotate(-173.635) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(174.329) translate(430.000 0)">
+<g transform="rotate(-174.329) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(175.024) translate(430.000 0)">
+<g transform="rotate(-175.024) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(175.721) translate(430.000 0)">
+<g transform="rotate(-175.721) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(176.419) translate(430.000 0)">
+<g transform="rotate(-176.419) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(177.119) translate(430.000 0)">
+<g transform="rotate(-177.119) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(177.820) translate(430.000 0)">
+<g transform="rotate(-177.820) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(178.522) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">25</text>
+<g transform="rotate(-178.522) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">25</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(179.225) translate(430.000 0)">
+<g transform="rotate(-179.225) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(179.930) translate(430.000 0)">
+<g transform="rotate(-179.930) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(180.636) translate(430.000 0)">
+<g transform="rotate(-180.636) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(181.343) translate(430.000 0)">
+<g transform="rotate(-181.343) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(182.052) translate(430.000 0)">
+<g transform="rotate(-182.052) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(182.762) translate(430.000 0)">
+<g transform="rotate(-182.762) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(183.473) translate(430.000 0)">
+<g transform="rotate(-183.473) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(184.185) translate(430.000 0)">
+<g transform="rotate(-184.185) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(184.899) translate(430.000 0)">
+<g transform="rotate(-184.899) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(185.615) translate(430.000 0)">
+<g transform="rotate(-185.615) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(186.331) translate(430.000 0)">
+<g transform="rotate(-186.331) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(187.049) translate(430.000 0)">
+<g transform="rotate(-187.049) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(187.768) translate(430.000 0)">
+<g transform="rotate(-187.768) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(188.488) translate(430.000 0)">
+<g transform="rotate(-188.488) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(189.210) translate(430.000 0)">
+<g transform="rotate(-189.210) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(189.933) translate(430.000 0)">
+<g transform="rotate(-189.933) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(190.657) translate(430.000 0)">
+<g transform="rotate(-190.657) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(191.383) translate(430.000 0)">
+<g transform="rotate(-191.383) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(192.110) translate(430.000 0)">
+<g transform="rotate(-192.110) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(192.838) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">26</text>
+<g transform="rotate(-192.838) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">26</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(193.568) translate(430.000 0)">
+<g transform="rotate(-193.568) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(194.299) translate(430.000 0)">
+<g transform="rotate(-194.299) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(195.031) translate(430.000 0)">
+<g transform="rotate(-195.031) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(195.764) translate(430.000 0)">
+<g transform="rotate(-195.764) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(196.499) translate(430.000 0)">
+<g transform="rotate(-196.499) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(197.235) translate(430.000 0)">
+<g transform="rotate(-197.235) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(197.973) translate(430.000 0)">
+<g transform="rotate(-197.973) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(198.711) translate(430.000 0)">
+<g transform="rotate(-198.711) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(199.451) translate(430.000 0)">
+<g transform="rotate(-199.451) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(200.193) translate(430.000 0)">
+<g transform="rotate(-200.193) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(200.935) translate(430.000 0)">
+<g transform="rotate(-200.935) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(201.679) translate(430.000 0)">
+<g transform="rotate(-201.679) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(202.424) translate(430.000 0)">
+<g transform="rotate(-202.424) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(203.171) translate(430.000 0)">
+<g transform="rotate(-203.171) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(203.918) translate(430.000 0)">
+<g transform="rotate(-203.918) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(204.668) translate(430.000 0)">
+<g transform="rotate(-204.668) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(205.418) translate(430.000 0)">
+<g transform="rotate(-205.418) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(206.170) translate(430.000 0)">
+<g transform="rotate(-206.170) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(206.923) translate(430.000 0)">
+<g transform="rotate(-206.923) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(207.677) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">27</text>
+<g transform="rotate(-207.677) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">27</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(208.432) translate(430.000 0)">
+<g transform="rotate(-208.432) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(209.189) translate(430.000 0)">
+<g transform="rotate(-209.189) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(209.947) translate(430.000 0)">
+<g transform="rotate(-209.947) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(210.707) translate(430.000 0)">
+<g transform="rotate(-210.707) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(211.467) translate(430.000 0)">
+<g transform="rotate(-211.467) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(212.229) translate(430.000 0)">
+<g transform="rotate(-212.229) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(212.993) translate(430.000 0)">
+<g transform="rotate(-212.993) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(213.757) translate(430.000 0)">
+<g transform="rotate(-213.757) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(214.523) translate(430.000 0)">
+<g transform="rotate(-214.523) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(215.290) translate(430.000 0)">
+<g transform="rotate(-215.290) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(216.059) translate(430.000 0)">
+<g transform="rotate(-216.059) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(216.828) translate(430.000 0)">
+<g transform="rotate(-216.828) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(217.599) translate(430.000 0)">
+<g transform="rotate(-217.599) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(218.372) translate(430.000 0)">
+<g transform="rotate(-218.372) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(219.145) translate(430.000 0)">
+<g transform="rotate(-219.145) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(219.920) translate(430.000 0)">
+<g transform="rotate(-219.920) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(220.696) translate(430.000 0)">
+<g transform="rotate(-220.696) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(221.474) translate(430.000 0)">
+<g transform="rotate(-221.474) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(222.252) translate(430.000 0)">
+<g transform="rotate(-222.252) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(223.032) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">28</text>
+<g transform="rotate(-223.032) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">28</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(223.814) translate(430.000 0)">
+<g transform="rotate(-223.814) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(224.596) translate(430.000 0)">
+<g transform="rotate(-224.596) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(225.380) translate(430.000 0)">
+<g transform="rotate(-225.380) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(226.165) translate(430.000 0)">
+<g transform="rotate(-226.165) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(226.951) translate(430.000 0)">
+<g transform="rotate(-226.951) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(227.739) translate(430.000 0)">
+<g transform="rotate(-227.739) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(228.528) translate(430.000 0)">
+<g transform="rotate(-228.528) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(229.318) translate(430.000 0)">
+<g transform="rotate(-229.318) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(230.110) translate(430.000 0)">
+<g transform="rotate(-230.110) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(230.903) translate(430.000 0)">
+<g transform="rotate(-230.903) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(231.697) translate(430.000 0)">
+<g transform="rotate(-231.697) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(232.492) translate(430.000 0)">
+<g transform="rotate(-232.492) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(233.288) translate(430.000 0)">
+<g transform="rotate(-233.288) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(234.086) translate(430.000 0)">
+<g transform="rotate(-234.086) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(234.885) translate(430.000 0)">
+<g transform="rotate(-234.885) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(235.686) translate(430.000 0)">
+<g transform="rotate(-235.686) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(236.488) translate(430.000 0)">
+<g transform="rotate(-236.488) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(237.291) translate(430.000 0)">
+<g transform="rotate(-237.291) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(238.095) translate(430.000 0)">
+<g transform="rotate(-238.095) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(238.900) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">29</text>
+<g transform="rotate(-238.900) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">29</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(239.707) translate(430.000 0)">
+<g transform="rotate(-239.707) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(240.515) translate(430.000 0)">
+<g transform="rotate(-240.515) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(241.324) translate(430.000 0)">
+<g transform="rotate(-241.324) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(242.135) translate(430.000 0)">
+<g transform="rotate(-242.135) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(242.947) translate(430.000 0)">
+<g transform="rotate(-242.947) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(243.760) translate(430.000 0)">
+<g transform="rotate(-243.760) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(244.574) translate(430.000 0)">
+<g transform="rotate(-244.574) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(245.390) translate(430.000 0)">
+<g transform="rotate(-245.390) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(246.207) translate(430.000 0)">
+<g transform="rotate(-246.207) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(247.025) translate(430.000 0)">
+<g transform="rotate(-247.025) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(247.844) translate(430.000 0)">
+<g transform="rotate(-247.844) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(248.665) translate(430.000 0)">
+<g transform="rotate(-248.665) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(249.487) translate(430.000 0)">
+<g transform="rotate(-249.487) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(250.310) translate(430.000 0)">
+<g transform="rotate(-250.310) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(251.135) translate(430.000 0)">
+<g transform="rotate(-251.135) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(251.960) translate(430.000 0)">
+<g transform="rotate(-251.960) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(252.787) translate(430.000 0)">
+<g transform="rotate(-252.787) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(253.616) translate(430.000 0)">
+<g transform="rotate(-253.616) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(254.445) translate(430.000 0)">
+<g transform="rotate(-254.445) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(255.276) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">30</text>
+<g transform="rotate(-255.276) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">30</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(256.108) translate(430.000 0)">
+<g transform="rotate(-256.108) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(256.941) translate(430.000 0)">
+<g transform="rotate(-256.941) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(257.776) translate(430.000 0)">
+<g transform="rotate(-257.776) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(258.612) translate(430.000 0)">
+<g transform="rotate(-258.612) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(259.449) translate(430.000 0)">
+<g transform="rotate(-259.449) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(260.287) translate(430.000 0)">
+<g transform="rotate(-260.287) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(261.126) translate(430.000 0)">
+<g transform="rotate(-261.126) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(261.967) translate(430.000 0)">
+<g transform="rotate(-261.967) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(262.809) translate(430.000 0)">
+<g transform="rotate(-262.809) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(263.653) translate(430.000 0)">
+<g transform="rotate(-263.653) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(264.497) translate(430.000 0)">
+<g transform="rotate(-264.497) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(265.343) translate(430.000 0)">
+<g transform="rotate(-265.343) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(266.190) translate(430.000 0)">
+<g transform="rotate(-266.190) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(267.038) translate(430.000 0)">
+<g transform="rotate(-267.038) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(267.888) translate(430.000 0)">
+<g transform="rotate(-267.888) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(268.739) translate(430.000 0)">
+<g transform="rotate(-268.739) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(269.591) translate(430.000 0)">
+<g transform="rotate(-269.591) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(270.444) translate(430.000 0)">
+<g transform="rotate(-270.444) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(271.298) translate(430.000 0)">
+<g transform="rotate(-271.298) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(272.154) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">31</text>
+<g transform="rotate(-272.154) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">31</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(273.011) translate(430.000 0)">
+<g transform="rotate(-273.011) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(273.869) translate(430.000 0)">
+<g transform="rotate(-273.869) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(274.729) translate(430.000 0)">
+<g transform="rotate(-274.729) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(275.590) translate(430.000 0)">
+<g transform="rotate(-275.590) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(276.452) translate(430.000 0)">
+<g transform="rotate(-276.452) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(277.315) translate(430.000 0)">
+<g transform="rotate(-277.315) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(278.179) translate(430.000 0)">
+<g transform="rotate(-278.179) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(279.045) translate(430.000 0)">
+<g transform="rotate(-279.045) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(279.912) translate(430.000 0)">
+<g transform="rotate(-279.912) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(280.780) translate(430.000 0)">
+<g transform="rotate(-280.780) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(281.650) translate(430.000 0)">
+<g transform="rotate(-281.650) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(282.520) translate(430.000 0)">
+<g transform="rotate(-282.520) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(283.392) translate(430.000 0)">
+<g transform="rotate(-283.392) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(284.265) translate(430.000 0)">
+<g transform="rotate(-284.265) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(285.140) translate(430.000 0)">
+<g transform="rotate(-285.140) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(286.015) translate(430.000 0)">
+<g transform="rotate(-286.015) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(286.892) translate(430.000 0)">
+<g transform="rotate(-286.892) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(287.770) translate(430.000 0)">
+<g transform="rotate(-287.770) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(288.649) translate(430.000 0)">
+<g transform="rotate(-288.649) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(289.530) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">32</text>
+<g transform="rotate(-289.530) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">32</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(290.412) translate(430.000 0)">
+<g transform="rotate(-290.412) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(291.295) translate(430.000 0)">
+<g transform="rotate(-291.295) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(292.179) translate(430.000 0)">
+<g transform="rotate(-292.179) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(293.064) translate(430.000 0)">
+<g transform="rotate(-293.064) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(293.951) translate(430.000 0)">
+<g transform="rotate(-293.951) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(294.839) translate(430.000 0)">
+<g transform="rotate(-294.839) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(295.728) translate(430.000 0)">
+<g transform="rotate(-295.728) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(296.618) translate(430.000 0)">
+<g transform="rotate(-296.618) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(297.510) translate(430.000 0)">
+<g transform="rotate(-297.510) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(298.403) translate(430.000 0)">
+<g transform="rotate(-298.403) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(299.297) translate(430.000 0)">
+<g transform="rotate(-299.297) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(300.192) translate(430.000 0)">
+<g transform="rotate(-300.192) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(301.089) translate(430.000 0)">
+<g transform="rotate(-301.089) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(301.986) translate(430.000 0)">
+<g transform="rotate(-301.986) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(302.885) translate(430.000 0)">
+<g transform="rotate(-302.885) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(303.785) translate(430.000 0)">
+<g transform="rotate(-303.785) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(304.687) translate(430.000 0)">
+<g transform="rotate(-304.687) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(305.589) translate(430.000 0)">
+<g transform="rotate(-305.589) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(306.493) translate(430.000 0)">
+<g transform="rotate(-306.493) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(307.398) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">33</text>
+<g transform="rotate(-307.398) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">33</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(308.304) translate(430.000 0)">
+<g transform="rotate(-308.304) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(309.212) translate(430.000 0)">
+<g transform="rotate(-309.212) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(310.120) translate(430.000 0)">
+<g transform="rotate(-310.120) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(311.030) translate(430.000 0)">
+<g transform="rotate(-311.030) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(311.941) translate(430.000 0)">
+<g transform="rotate(-311.941) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(312.854) translate(430.000 0)">
+<g transform="rotate(-312.854) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(313.767) translate(430.000 0)">
+<g transform="rotate(-313.767) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(314.682) translate(430.000 0)">
+<g transform="rotate(-314.682) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(315.598) translate(430.000 0)">
+<g transform="rotate(-315.598) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(316.515) translate(430.000 0)">
+<g transform="rotate(-316.515) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(317.433) translate(430.000 0)">
+<g transform="rotate(-317.433) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(318.353) translate(430.000 0)">
+<g transform="rotate(-318.353) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(319.274) translate(430.000 0)">
+<g transform="rotate(-319.274) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(320.196) translate(430.000 0)">
+<g transform="rotate(-320.196) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(321.119) translate(430.000 0)">
+<g transform="rotate(-321.119) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(322.043) translate(430.000 0)">
+<g transform="rotate(-322.043) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(322.969) translate(430.000 0)">
+<g transform="rotate(-322.969) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(323.895) translate(430.000 0)">
+<g transform="rotate(-323.895) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(324.824) translate(430.000 0)">
+<g transform="rotate(-324.824) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(325.753) translate(430.000 0)">
-<text x="12" y="12" font-size="12" class="angle" text-anchor="start">34</text>
+<g transform="rotate(-325.753) translate(430.000 0)">
+<text x="12" y="-3" font-size="12" class="angle" text-anchor="start">34</text>
 <path d="M25,0 L-5,0" class="thick" />
 </g>
-<g transform="rotate(326.683) translate(430.000 0)">
+<g transform="rotate(-326.683) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(327.615) translate(430.000 0)">
+<g transform="rotate(-327.615) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(328.548) translate(430.000 0)">
+<g transform="rotate(-328.548) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(329.482) translate(430.000 0)">
+<g transform="rotate(-329.482) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(330.417) translate(430.000 0)">
+<g transform="rotate(-330.417) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(331.353) translate(430.000 0)">
+<g transform="rotate(-331.353) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(332.291) translate(430.000 0)">
+<g transform="rotate(-332.291) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(333.230) translate(430.000 0)">
+<g transform="rotate(-333.230) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(334.170) translate(430.000 0)">
+<g transform="rotate(-334.170) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(335.111) translate(430.000 0)">
+<g transform="rotate(-335.111) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(336.053) translate(430.000 0)">
+<g transform="rotate(-336.053) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(336.997) translate(430.000 0)">
+<g transform="rotate(-336.997) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(337.942) translate(430.000 0)">
+<g transform="rotate(-337.942) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(338.888) translate(430.000 0)">
+<g transform="rotate(-338.888) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(339.835) translate(430.000 0)">
+<g transform="rotate(-339.835) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(340.783) translate(430.000 0)">
+<g transform="rotate(-340.783) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(341.733) translate(430.000 0)">
+<g transform="rotate(-341.733) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(342.684) translate(430.000 0)">
+<g transform="rotate(-342.684) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(343.636) translate(430.000 0)">
+<g transform="rotate(-343.636) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(344.589) translate(430.000 0)">
-<text x="12" y="16" font-size="16" class="angle" text-anchor="start">35</text>
+<g transform="rotate(-344.589) translate(430.000 0)">
+<text x="12" y="-3" font-size="16" class="angle" text-anchor="start">35</text>
 <path d="M30,0 L-8,0" class="extra_thick" />
 </g>
-<g transform="rotate(345.543) translate(430.000 0)">
+<g transform="rotate(-345.543) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(346.498) translate(430.000 0)">
+<g transform="rotate(-346.498) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(347.455) translate(430.000 0)">
+<g transform="rotate(-347.455) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(348.413) translate(430.000 0)">
+<g transform="rotate(-348.413) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(349.372) translate(430.000 0)">
+<g transform="rotate(-349.372) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(350.332) translate(430.000 0)">
+<g transform="rotate(-350.332) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(351.294) translate(430.000 0)">
+<g transform="rotate(-351.294) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(352.256) translate(430.000 0)">
+<g transform="rotate(-352.256) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(353.220) translate(430.000 0)">
+<g transform="rotate(-353.220) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(354.185) translate(430.000 0)">
+<g transform="rotate(-354.185) translate(430.000 0)">
 <path d="M15,0 L-5,0" class="thin" />
 </g>
-<g transform="rotate(355.151) translate(430.000 0)">
+<g transform="rotate(-355.151) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(356.119) translate(430.000 0)">
+<g transform="rotate(-356.119) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<g transform="rotate(357.087) translate(430.000 0)">
+<g transform="rotate(-357.087) translate(430.000 0)">
 <path d="M6,0 L0,0" class="extra_thin" />
 </g>
-<g transform="rotate(358.057) translate(430.000 0)">
+<g transform="rotate(-358.057) translate(430.000 0)">
 <path d="M10,0 L0,0" class="thin" />
 </g>
-<path d="M430.0,0.0 L429.99999996552555,0.005445000348617902 L429.99999944840897,0.0217799972389073 L429.9999972075722,0.049004978151790266 L429.99999117455707,0.08711992205069602 L429.9999784535333,0.13612479911328823 L429.99995532130936,0.19601957037112833 L429.99991722734745,0.2668041872318767 L429.9998587937811,0.34847859091420197 L429.99977381543636,0.4410427117509511 L429.99965525985704,0.5444964684161537 L429.99949526733326,0.6588397670330064 L429.99928515093427,0.7840725001707797 L429.9990153965448,0.9201945457544793 L429.99867566290635,1.0672057658571066 L429.9982547816625,1.2251060053856422 L429.9977407574093,1.3938950906734766 L429.9971207677501,1.573572827961836 L429.9963811633563,1.7641390017733933 L429.9955074680331,1.9655933731828568 L429.9944843787912,2.1779356779924877 L429.9932957659251,2.4011656247871738 L429.9919246730971,2.635282892897652 L429.99035331742886,2.8802871302512862 L429.98856308959995,3.136177951124695 L429.9865345539539,3.40295493378875 L429.98424744861256,3.6806176180475654 L429.981680685599,3.96916550267468 L429.9788123509686,4.268598042746476 L429.97561970495104,4.578914646868115 L429.9720791821007,4.90011467430155 L429.96816639145834,5.232197431976616 L429.96385611672343,5.575162171415407 L429.95912231643797,5.929008085535063 L429.95393812418274,6.293734305359201 L429.9482758487855,6.669339896620543 L429.9421069745431,7.055823856256446 L429.93540216145703,7.4531851088116365 L429.9281312454836,7.861422502718075 L429.92026323879924,8.280534806493309 L429.91176633008195,8.71052070481608 L429.9026078848084,9.151378794512631 L429.8927544455695,9.603107580428405 L429.8821717324027,10.065705471204222 L429.87082464314375,10.539170774949143 L429.8586772537979,11.023501694797401 L429.84569281893084,11.518696324382814 L429.83183377208115,12.024752643194303 L429.81706172619454,12.541668511831684 L429.8013374740806,13.06944166716655 L429.7846209888934,13.608069717387838 L429.766871424636,14.15755013695589 L429.74804711669105,14.717880261446224 L429.72810558237694,15.289057282300492 L429.70700352153153,15.871078241459479 L429.68469681712315,16.46394002591634 L429.6611405358924,17.067639362142607 L429.6362889290217,17.68217281043794 L429.61009543283797,18.307536759156225 L429.5825126695458,18.94372741884618 L429.5534924479945,19.59074081628299 L429.5229857644792,20.248572788397393 L429.4909428035767,20.91721897611679 L429.4573129390182,21.596674818086797 L429.4220447345989,22.286935544308456 L429.38508594512604,22.98799616966896 L429.34638351740745,23.69985148736794 L429.3058835912793,24.4224960622568 L429.2635315006775,25.155924224064567 L429.21927177475055,25.900130060538906 L429.17304813901825,26.655107410474226 L429.1248035165752,27.420849856646015 L429.0744800293404,28.197350718661326 L429.02201899935625,28.984603045686043 L428.96736095013614,29.782599609093698 L428.91044560806216,30.59133289501386 L428.8512119038357,31.410795096772645 L428.78959797398034,32.24097810725263 L428.72554116239957,33.081873511148586 L428.6589780219909,33.933472577122934 L428.5898443163159,34.79576624987682 L428.51807502133073,35.6687451421152 L428.4436043271745,36.552399526426946 L428.3663656400207,37.4467193270662 L428.28629158399093,38.35169411163839 L428.2033140031329,39.26731308269483 L428.1173639634635,40.19356506924086 L428.028371755081,41.130438518136124 L427.9362668943432,42.07792148542359 L427.84097812611816,43.03600162755022 L427.74243342610526,44.00466619250633 L427.6405600032301,44.98390201087197 L427.53528430211395,45.97369548677369 L427.42653200561926,46.97403258875409 L427.31422803747347,47.98489884055308 L427.19829656497245,49.006279311796796 L427.07866100176426,50.03815860860748 L426.9552440107161,51.08052086412063 L426.82796750686606,52.133349728918155 L426.6967526604596,53.19662836137822 L426.5615199000743,54.27033941794076 L426.4221889158342,55.354465043288144 L426.2786786627142,56.44898686044287 L426.1309073639382,57.5538859607821 L425.97879251447006,58.66914289397866 L425.82225088460183,59.79473765785092 L425.66119852363886,60.930649688144086 L425.49555076368546,62.07685784821903 L425.32522222353015,63.23334041868035 L425.1501268126353,64.4000750869139 L424.9701777352307,65.57703893655457 L424.78528749451334,66.76420843688393 L424.5953678969571,67.96155943213516 L424.4003300567297,69.16906713075502 L424.2000844002246,70.38670609456244 L423.9945406707033,71.61445022786475 L423.78360793305677,72.85227276647737 L423.5671945786806,74.1001462666986 L423.3452083304718,75.35804259420115 L423.1175562479452,76.62593291286541 L422.88414473247286,77.90378767354578 L422.6448795326501,79.19157660276555 L422.3996657497837,80.48926869136636 L422.1484078435127,81.79683218308192 L421.8910096375585,83.11423456304895 L421.62737432560476,84.44144254627791 L421.3574044773142,85.77842206604772 L421.0810020444804,87.12513826225057 L420.7980683673161,88.4815554696887 L420.5085041808835,89.84763720630548 L420.21220962166433,91.22334616137717 L419.9090842342741,92.60864418364697 L419.59902697832126,94.00349226941519 L419.281936235415,95.4078505505776 L418.95770981632194,96.82167828261697 L418.6262449682704,98.24493383256791 L418.2874383824149,99.67757466691006 L417.9411862014489,101.11955733944748 L417.5873840273768,102.57083747913991 L417.2259269294467,104.03136977788952 L416.856709452241,105.50110797830494 L416.4796256239308,106.98000486142459 L416.0945689646941,108.46801223441595 L415.70143249530304,109.96508091823048 L415.3001087458757,111.47116073524923 L414.89048976479967,112.9862004968954 L414.4724671278305,114.51014799121279 L414.04593194735804,116.04294997044727 L413.6107748818563,117.58455213857985 L413.16688614550367,119.13489913886863 L412.71415551798776,120.69393454136055 L412.2524723544909,122.26160083039024 L411.781725595856,123.83783939208223 L411.30180377894374,125.42259050182018 L410.81259504716826,127.01579331174277 L410.3139871612309,128.6173858382033 L409.8058675100382,130.22730494925042 L409.2881231218143,131.84548635210305 L408.760640675409,133.47186458062683 L408.22330651180033,135.10637298281952 L407.6760066457955,136.7489437083055 L407.118626777931,138.39950769584306 L406.55105230657625,140.05799466083857 L405.9731683402378,141.72433308288635 L405.38485971006924,143.39845019332492 L404.7860109825873,145.08027196281625 L404.1765064725985,146.76972308894486 L403.5562302563319,148.46672698385458 L402.92506618478814,150.17120576190393 L402.2828978972947,151.88308022737357 L401.62960883528496,153.6022698621865 L400.96508225628526,155.3286928136923 L400.28920124812436,157.06226588247912 L399.6018487433642,158.8029045102308 L398.90290753394555,160.55052276764619 L398.19226028605976,162.3050333424038 L397.4697895552482,164.06634752717173 L396.7353778017188,165.83437520769758 L395.9889074058964,167.6090248509442 L395.2302606841976,169.39020349329883 L394.45931990503885,171.17781672884553 L393.6759673050683,172.97176869772363 L392.8800851056401,174.77196207454162 L392.07155552951366,176.5782980568889 L391.25026081779083,178.3906763539246 L390.4160832470898,180.20899517505077 L389.56890514695374,182.03315121868252 L388.70860891750266,183.863039661102 L387.83507704731574,185.69855414542852 L386.94819213156535,187.53958677066876 L386.0478368903825,189.3860280808926 L385.1338941874691,191.23776705451087 L384.20624704895647,193.0946910936606 L383.2647786825031,194.95668601371926 L382.3093724966375,196.8236360329401 L381.3399121203535,198.69542376220213 L380.3562814229433,200.57193019490725 L379.3583645340867,202.45303469699584 L378.3460458641813,204.33861499711412 L377.31921012492603,206.22854717691706 L376.2777423501524,208.12270566152156 L375.22152791690576,210.02096321011084 L374.1504525667771,211.92319090669594 L373.0644024274873,213.8292581510346 L371.9632640347179,215.73903264972415 L370.84692435420186,217.65238040744896 L369.7152708040552,219.5691657184226 L368.56819127737083,221.48925115799057 L367.4055741650611,223.4124975744235 L366.22730837894704,225.33876408090916 L365.03328337511147,227.267908047717 L363.82338917749297,229.1997850945819 L362.5975164017418,231.13424908327315 L361.35555627931996,233.07115211038723 L360.0974006818594,235.01034450033978 L358.82294214576876,236.95167479858478 L357.5320738970939,238.89498976504933 L356.2246898766231,240.84013436780782 L354.90068476525335,242.78695177697315 L353.5599540095994,244.73528335883643 L352.2023938478505,246.68496867025283 L350.8279013358828,248.63584545326543 L349.43637437361514,250.58774962999024 L348.0277117316126,252.54051529775882 L346.6018130779346,254.49397472452756 L345.1585790052348,256.44795834454806 L343.697911058096,258.40229475432517 L342.2197117606149,260.35681070884556 L340.72388464422806,262.31133111809476 L339.2103342757713,264.2656790438734 L337.67896628579064,266.21967569689485 L336.1296873970801,268.1731404342001 L334.5624054534583,270.1258907568761 L332.9770294487847,272.0777423080822 L331.3734695562023,274.02850887140323 L329.7516371576124,275.97800236952645 L328.11144487338106,277.9260328632463 L326.45280659227177,279.8724085508051 L324.775637501599,281.8169357675829 L323.079854117611,283.75941898612496 L321.3653743160886,285.69966081652996 L319.63211736316015,287.6374620071993 L317.8800039463382,289.57262144594404 L316.1089562057676,291.50493616146554 L314.3188977656738,293.4342013252237 L312.50975376603543,295.36021025366955 L310.6814508944485,297.28275441088135 L308.8339174181963,299.20162341158965 L306.96708321652,301.1166050246018 L305.08087981307926,303.02748517663787 L303.17524040861315,304.93404795656977 L301.25009991377783,306.8360756200921 L299.30539498217894,308.7333485948058 L297.34106404358323,310.62564548573533 L295.3570473373069,312.5127430812828 L293.35328694577214,314.3944163596285 L291.3297268282466,316.2704384955686 L289.28631285473097,318.14058086782126 L287.2229928400296,320.0046130667749 L285.139716577954,321.8623029027228 L283.0364358756968,323.7134164145542 L280.91310458834965,325.55771787892684 L278.7696786535583,327.3949698199284 L276.6061161263254,329.22493301921986 L274.4223772139357,331.04736652668356 L272.2184243110216,332.86202767156334 L269.9942220347446,334.66867207411724 L267.74973726009597,336.4670536577832 L265.48493915531265,338.25692466186104 L263.19979921739366,340.0380356547244 L260.8942913077278,341.8101355475558 L258.56839168780783,343.572971608624 L256.2220790550362,345.3262894781032 L253.85533457861763,347.069833183436 L251.4681419355255,348.80334515525277 L249.0604873465426,350.5265662438479 L246.63235961235856,352.2392357362255 L244.18375014973267,353.94109137371 L241.7146530277073,355.6318693701327 L239.22506500385666,357.3113044306051 L236.7149855605851,358.9791297708712 L234.1844169414453,360.63507713725704 L231.6333641874809,362.278876827217 L229.06183517359247,363.9102577104772 L226.4698406448934,365.5289472507979 L223.85739425308705,367.1346715283343 L221.22451259281573,368.72715526262925 L218.5712152380104,370.3061218362172 L215.89752477820036,371.87129331886644 L213.20346685480524,373.42239049244483 L210.48907019737322,374.95913287643134 L207.75436665978003,376.4812387540628 L204.99939125635828,377.98842519913563 L202.22418219797325,379.48040810345 L199.428780928013,380.9569022049169 L196.61323215828875,382.41762111632727 L193.77758390486036,383.86227735477576 L190.9218875237308,385.2905823717677 L188.04619774645013,386.7022465839874 L185.1505727155837,388.0969794047505 L182.23507402004682,389.4744892761374 L179.29976673030595,390.8344837018068 L176.34471943341714,392.17666928050346 L173.3700042679014,393.5007517402576 L170.37569695845002,394.80643597327844 L167.36187685044976,396.09342607154554 L164.32862694429218,397.3614253631115 L161.27603392950712,398.6101364490979 L158.20418821865218,399.83926124141095 L155.11318398098896,401.04850100116306 L152.00311917591247,402.2375563778118 L148.87409558613928,403.4061274490127 L145.72621885061423,404.5539137611981 L142.55959849717033,405.6806143708688 L139.37434797487268,406.78592788662087 L136.17058468608664,407.8695525118899 L132.94843001822997,408.9311860884271 L129.70800937519192,409.97052614050824 L126.4494522084381,410.9872699198674 L123.17289204774757,411.98111445137135 L119.87846653160221,412.9517565794236 L116.56631743720004,413.8988930151057 L113.23659071008794,414.82222038405325 L109.8894364933852,415.72143527507245 L106.52500915660305,416.5962342894924 L103.14346732404375,417.44631409125407 L99.74497390274914,418.2713714577414 L96.32969611000847,419.07110333134807 L92.89780550039897,419.84520687178275 L89.44947799233977,420.59337950911436 L85.98489389416035,421.31531899755316 L82.50423792966633,422.01072346996705 L79.0076992631702,422.6792914931372 L75.49547152400231,423.32072212374453 L71.96775283045976,423.93471496509204 L68.42474581320381,424.5209702245561 L64.8666576380685,425.07918877176945 L61.29370002828357,425.60907219753057 L57.70608928608279,426.11032287343926 L54.104046313701105,426.58264401225335 L50.487796633724216,427.0257397289673 L46.857570408791936,427.4393151026062 L43.21360246062877,427.8230762387353 L39.556132288401,428.1767303326776 L35.88540408637152,428.4999857334395 L32.20166676083784,428.7925520083388 L28.505173946348545,429.0541400083309 L24.796184021174064,429.2844619340282 L21.074960122017885,429.48323140240916 L17.34177015795867,429.65016351421133 L13.596886823584947,429.78497492200285 L9.840587611347955,429.88738389892694 L6.073154823078745,429.95711040811375 L2.2948755806626178,429.9938761727535 L-1.493958164120151,429.99740474682386 L-5.2930496206446085,429.96742158646555 L-9.102097151360285,429.90365412199884 L-12.92079426461891,429.80583183057365 L-16.748829608420092,429.6736863094459 L-20.58588696508093,429.50695134987154 L-24.431645246869426,429.305363011611 L-28.285778492585035,429.0686596980353 L-32.14795586513827,428.79658223182366 L-36.017841650111876,428.48887393124625 L-39.8950952553463,428.14528068701964 L-43.77937121154523,427.7655510397275 L-47.67031917393944,427.3494362577945 L-51.567583924994594,426.89669041600524 L-55.47080537820721,426.4070704745561 L-59.37961858299824,425.88033635862746 L-63.29365373070206,425.316251038469 L-67.21253616169349,424.7145806099822 L-71.13588637365035,424.0750943757899 L-75.06332003096786,423.3975649267819 L-78.99444797535821,422.6817682241197 L-82.9288762376304,421.92748368169117 L-86.86620605067286,421.1344942490012 L-90.80603386366089,420.30258649448217 L-94.74795135749706,419.43155068921243 L-98.69154546150062,418.52118089102794 L-102.63639837137114,417.5712750290101 L-106.58208756842083,416.5816349883387 L-110.52818584011254,415.55206669549074 L-114.47426130190986,414.4823802037694 L-118.41987742045067,413.3723897791499 L-122.36459303805795,412.22191398642366 L-126.30796239862013,411.03077577562095 L-130.24953517482885,409.7988025687008 L-134.18885649681079,408.52582634648485 L-138.12546698215155,407.21168373582134 L-142.0589027673392,405.85621609695676 L-145.98869554063978,404.4592696110974 L-149.91437257640038,403.02069536814633 L-153.8354567708178,401.5403494545895 L-157.75146667917912,400.01809304151215 L-161.66191655457422,398.45379247273064 L-165.56631638810853,396.8473193530136 L-169.46417195062492,395.1985506363719 L-173.3549848359454,393.50736871439796 L-177.23825250564238,391.77366150463223 L-181.11346833536047,389.9973225389328 L-184.98012166269635,388.1782510518255 L-188.8376978366339,386.3163520688196 L-192.6856782685815,384.4115364946488 L-196.52354048498304,382.4637212014327 L-200.3507581815412,380.4728291167211 L-204.16680127904996,378.4387893114036 L-207.9711359808494,376.3615370874594 L-211.76322483191882,374.24101406551665 L-215.54252677961225,372.0771682722015 L-219.30849723604217,369.86995422725124 L-223.06058814212918,367.61933303036096 L-226.79824803332681,365.3252724477374 L-230.5209221070123,362.9877469983426 L-234.22805229158013,360.6067380397832 L-237.919077317221,358.1822338538334 L-241.59343278841027,355.71422973155273 L-245.25055125809573,353.2027280579811 L-248.88986230361522,350.64773839636763 L-252.51079260432505,348.04927757192024 L-256.112766020963,345.40736975503495 L-259.6952036767476,342.72204654397797 L-263.2575240402068,339.9933470469973 L-266.7991430097599,337.22131796382274 L-270.3194740000435,334.40601366653055 L-273.81792802998586,331.54749627974195 L-277.2939138126453,328.6458357601162 L-280.74683784678854,325.70110997512586 L-284.1761045102549,322.71340478104827 L-287.58111615505464,319.68281410018426 L-290.9612732042479,316.6094399972354 L-294.3159742505876,313.4933927548194 L-297.6446161569141,310.3347909481038 L-300.94659415832393,307.1337615185036 L-304.22130196610334,303.8904398464173 L-307.4681318734182,300.60496982297263 L-310.6864748627653,297.2775039207446 L-313.8757207151839,293.9082032634065 L-317.03525812122285,290.4972376942845 L-320.16447479365837,287.0447858437789 L-323.26275758195527,283.5510351956241 L-326.3294925884829,280.0161821519308 L-329.3640652864531,276.44043209700897 L-332.3658606396054,272.82399945989795 L-335.3342632236067,269.16710777559894 L-338.2686573491742,265.4699897449559 L-341.1684271869104,261.732887293152 L-344.03295689383674,257.95605162679055 L-346.86163074162226,254.13974328951872 L-349.6538332464972,250.28423221615606 L-352.4089493008396,246.38979778529443 L-355.12636430641976,242.4567288703369 L-357.805464309306,238.48532388891766 L-360.44563613639514,234.47589085070013 L-363.04626753357905,230.42874740348037 L-365.6067473055195,226.3442208775785 L-368.12646545701534,222.2226483284836 L-370.6048133359596,218.06437657769442 L-373.0411837778566,213.86976225173908 L-375.43497125188793,209.63917181932885 L-377.7855720085141,205.37298162659997 L-380.0923842285904,201.07157793041168 L-382.35480817396586,196.735356929683 L-384.5722463395766,192.36472479467747 L-386.74410360697476,187.96009769426485 L-388.8697873993015,183.52190182106887 L-390.94870783767044,179.0505734144848 L-392.98027789893456,174.5465587815359 L-394.96391357482196,170.010314315516 L-396.89903403241027,165.44230651239016 L-398.7850617759169,160.84301198491076 L-400.62142280977906,156.2129174744145 L-402.4075468029942,151.55251986026502 L-404.14286725469606,146.8623261669006 L-405.82682166093764,142.14285356844894 L-407.45885168264874,137.39462939088003 L-409.03840331474356,132.61819111164652 L-410.5649270563406,127.81408635679301 L-412.03787808206994,122.98287289547778 L-413.4567164144263,118.12511863190103 L-414.8209070971465,113.24140159456054 L-416.1299203695656,108.33230992284344 L-417.38323184192245,103.39844185089078 L-418.58032267157773,98.44040568871023 L-419.72067974010645,93.45881980050366 L-420.8037958312275,88.4543125801711 L-421.8291698095339,83.42752242395453 L-422.79630679997933,78.37909770020163 L-423.7047183680848,73.30969671620501 L-424.5539227008239,68.21998768207798 L-425.3434447881408,63.11064867166126 L-426.0728166050642,57.98236758038879 L-426.7415772943668,52.83584208012564 L-427.34927334973014,47.67177957091182 L-427.8954587993682,42.4908971295993 L-428.3796953900618,37.29392145535093 L-428.80155277155893,32.08158881196465 L-429.16060868129125,26.854644967000027 L-429.4564491293572,21.613845127690265 L-429.6886685837252,16.359953873577297 L-429.8568701556011,11.093745085890227 L-429.9606657849138,5.816001873600021 L-429.99967642586233,0.5275164961502339 L-429.9735322324742,-4.770909717176919 L-429.8818727441188,-10.078466451263502 L-429.7243470709225,-15.39433449257704 L-429.50061407902905,-20.717685820017984 L-429.2103425756492,-26.047683699205315 L-428.8532114938422,-31.383482780244005 L-428.4289100769697,-36.724229198987445 L-427.9371380627671,-42.06906068179121 L-427.377605866966,-47.417106653825435 L-426.7500347664159,-52.76748835090431 L-426.05415708163514,-58.11931893490644 L-425.28971635873626,-63.47170361275679 L-424.45646755065894,-68.82373975901339 L-423.55417719764785,-74.17451704206461 L-422.582623606912,-79.52311755394744 L-421.5415970314012,-84.86861594379734 L-420.4308998476313,-90.21007955495338 L-419.2503467324957,-95.54656856571113 L-417.99976483899087,-100.87713613375576 L-416.678993970797,-106.20082854424685 L-415.28788675563345,-111.51668536160919 L-413.82630881733235,-116.82373958499134 L-412.29413894655073,-122.12101780742859 L-410.69126927005783,-127.40754037869523 L-409.01760541852116,-132.68232157186188 L-407.27306669272843,-137.94436975353642 L-405.4575862281617,-143.19268755782483 L-403.5711111578615,-148.42627206397466 L-401.6136027735021,-153.6441149777226 L-399.58503668460685,-158.8452028163311 L-397.48540297583065,-164.02851709730683 L-395.31470636222735,-169.1930345308161 L-393.0729663424402,-174.33772721575457 L-390.76021734972926,-179.46156283949043 L-388.3765089007631,-184.56350488126162 L-385.9219057421017,-189.6425128192104 L-383.39648799428545,-194.69754234105721 L-380.80035129346675,-199.72754555837386 L-378.13360693049367,-204.7314712244674 L-375.3963819873761,-209.70826495583808 L-372.588819471054,-214.6568694572021 L-369.7110784443877,-219.5762247500577 L-366.7633341542971,-224.46526840476545 L-363.74577815696745,-229.3229357761282 L-360.65861844003956,-234.1481602424455 L-357.50207954171805,-238.93987344800175 L-354.27640266669937,-243.6970055489863 L-350.98184579886436,-248.41848546278155 L-347.61868381062635,-253.10324112062997 L-344.18720856888996,-257.75019972359956 L-340.68772903751125,-262.35828800185317 L-337.12057137619905,-266.9264324771623 L-333.48607903576755,-271.45355972863905 L-329.7846128496652,-275.9385966616421 L-326.0165511217077,-280.3804707798083 L-322.1822897099171,-284.7781104601881 L-318.28224210641235,-289.1304452314129 L-314.3168395132557,-293.4364060548695 L-310.28653091417664,-297.69492560882816 L-306.1917831421126,-301.904938575462 L-302.033080942466,-306.06538193072697 L-297.81092703201256,-310.17519523703584 L-293.52584215339226,-314.23332093866463 L-289.1783651250781,-318.23870465986226 L-284.7690528867794,-322.1902955055702 L-280.2984805401865,-326.08704636471333 L-275.76724138497923,-329.9279142159975 L-271.17594695002816,-333.7118604361486 L-266.5252270197274,-337.43785111051596 L-261.81572965536054,-341.10485734599433 L-257.04812121144903,-344.7118555861753 L-252.22308634699786,-348.2578279286696 L-247.34132803157013,-351.741762444523 L-242.40356754612884,-355.16265349964567 L-237.41054447855814,-358.5195020781918 L-232.36301671381318,-361.811316107797 L-227.26176041862016,-365.03711078660166 L-222.1075700206648,-368.1959089119751 L-216.90125818218948,-371.28674121086414 L-211.64365576796058,-374.3086466716646 L-206.33561180751593,-377.26067287754506 L-200.97799345163935,-380.14187634112716 L-195.5716859230136,-382.9513228404233 L-190.11759246095122,-385.6880877559633 L-184.6166342602058,-388.3512564089801 L-179.06975040373976,-390.93992440059424 L-173.47789778944386,-393.45319795187237 L-167.84205105071533,-395.89019424467824 L-162.16320247086855,-398.250041763202 L-156.44236189131345,-400.53188063607035 L-150.68055661343936,-402.73486297893817 L-144.87883129417662,-404.8581532374438 L-139.03824783518056,-406.9009285304261 L-133.15988526557152,-408.8623789932987 L-127.24483961822135,-410.74170812145815 L-121.29422379950911,-412.5381331136245 L-115.30916745253403,-414.2508852149908 L-109.29081681371693,-415.87921006007326 L-103.2403345627784,-417.4223680151383 L-97.15889966604338,-418.8796345200895 L-91.04770721304425,-420.25030042969365 L-84.9079682463682,-421.53367235402885 L-78.74090958477595,-422.72907299801625 L-72.54777363948385,-423.8358414999305 L-66.32981822365588,-424.8533337687452 L-60.08831635503361,-425.78092282019566 L-53.824556051708996,-426.6179991114257 L-47.53984012100761,-427.3639708740888 L-41.235485941462834,-428.01826444577273 L-34.91282523788973,-428.58032459961174 L-28.573203849506793,-429.0496148719569 L-22.217981491131198,-429.4256178879641 L-15.848531507417475,-429.70783568496677 L-9.466240620144225,-429.89579003349354 L-3.072508668547805,-429.9890227557928 L3.331251657306529,-429.98709604172507 L9.743615090108106,-429.8895927618809 L16.16314406583684,-429.696116777784 L22.588389011239297,-429.4062932490358 L29.017888638232122,-429.0197689372591 L35.45017024523969,-428.53621250669534 L41.883750025426096,-427.9553148213112 L48.31713338181404,-427.2767892382688 L54.748815249274,-426.50037189761144 L61.17728042334937,-425.6258220080202 L67.6010038958913,-424.6529221284927 L74.0184511974964,-423.58147844579304 L80.42807874666845,-422.4113210475303 L86.82833420571642,-421.14230419070986 L93.21765684331844,-419.7743065656131 L99.59447790373271,-418.30723155485003 L105.95722098257167,-416.74100748744473 L112.30430240914855,-415.07558788779005 L118.63413163529583,-413.3109517193312 L124.94511163062529,-411.44710362282365 L131.23563928415535,-409.48407414901874 L137.50410581227675,-407.4219199856166 L143.7488971729524,-405.2607241783491 L149.9683944861097,-403.00059634603343 L156.16097446014714,-400.6416728894503 L162.32500982449307,-398.1841171938909 L168.4588697681072,-395.6281198252368 L174.56092038388064,-392.9738987194092 L180.6295251188402,-390.2216993650434 L186.6630452300447,-387.3717949792503 L192.65984024612825,-384.42448667629947 L198.61826843435313,-381.380103629095 L204.53668727309855,-378.2390032232883 L210.4134539296842,-375.00157120388263 L216.24692574340895,-371.66822181419354 L222.0354607137174,-368.2393979270106 L227.77741799336476,-364.7155711678293 L233.47115838647852,-361.0972420300048 L239.11504485139602,-357.3849399816882 L244.70744300814135,-353.57922356441884 L250.24672165044714,-349.6806804832141 L255.73125326216726,-345.68992768803844 L261.1594145379532,-341.60761144651553 L266.52958690806986,-337.4344074077415 L271.8401570671958,-333.17102065708286 L277.08951750708445,-328.8181857618145 L282.27606705292965,-324.37666680747856 L287.3982114032729,-319.84725742485216 L292.4543636733442,-315.2307808073624 L297.44294494161744,-310.52808971888186 L302.36238479948446,-305.7400664917317 L307.21112190384355,-300.8676230148099 L311.98760453244137,-295.9117007117308 L316.69029114183235,-290.8732705088274 L321.3176509277281,-285.7533327929644 L325.8681643876178,-280.55291735899755 L330.3403238854401,-275.273083346815 L334.7326342181391,-269.91491916784724 L339.0436131839308,-264.4795424209311 L343.27179215206434,-258.96809979746524 L347.4157166339196,-253.3817669757239 L351.4739468552149,-247.72174850427962 L355.4450583291511,-241.98927767441756 L359.3276424302816,-236.1856163814716 L363.1203069689064,-230.31205497499946 L366.8216767657822,-224.36991209772316 L370.43039422694306,-218.36053451315684 L373.9451199184156,-212.28529692185876 L377.36453314062135,-206.14560176622956 L380.687332502238,-199.9428790238114 L383.912236493311,-193.67858598901435 L387.03798405738667,-187.35420704322095 L390.0633351624382,-180.9712534132297 L392.98707137037104,-174.53126291796238 L395.80799640485895,-168.0357997034298 L398.524936717295,-161.48645396588535 L401.13674205061494,-154.88484166314797 L403.642286000754,-148.2326042140714 L406.0404665755086,-141.53140818610999 L408.33020675054786,-134.7829449709971 L410.51045502234746,-127.9889304484776 L412.58018595778896,-121.15110463811824 L414.538400740184,-114.27123133917229 L416.384127711475,-107.35109775849567 L418.11642291035935,-100.3925141265301 L419.73437060609086,-93.39731330134062 L421.2370838277006,-86.36735036073941 L422.62370488838457,-79.30450218250932 L423.8934059048049,-72.21066701273611 L425.0453893110446,-65.08776402229952 L426.07888836695923,-57.93773285153924 L426.9931676606684,-50.7625331431391 L427.7875236049242,-43.564144063281965 L428.4612849270983,-36.34456381111104 L429.01381315252564,-29.105809116562604 L429.44450308094434,-21.849914726625 L429.75278325576653,-14.578932880089074" class="thick" />
+<path d="M430.0,-0.0 L429.99999996552555,-0.005445000348617902 L429.99999944840897,-0.0217799972389073 L429.9999972075722,-0.049004978151790266 L429.99999117455707,-0.08711992205069602 L429.9999784535333,-0.13612479911328823 L429.99995532130936,-0.19601957037112833 L429.99991722734745,-0.2668041872318767 L429.9998587937811,-0.34847859091420197 L429.99977381543636,-0.4410427117509511 L429.99965525985704,-0.5444964684161537 L429.99949526733326,-0.6588397670330064 L429.99928515093427,-0.7840725001707797 L429.9990153965448,-0.9201945457544793 L429.99867566290635,-1.0672057658571066 L429.9982547816625,-1.2251060053856422 L429.9977407574093,-1.3938950906734766 L429.9971207677501,-1.573572827961836 L429.9963811633563,-1.7641390017733933 L429.9955074680331,-1.9655933731828568 L429.9944843787912,-2.1779356779924877 L429.9932957659251,-2.4011656247871738 L429.9919246730971,-2.635282892897652 L429.99035331742886,-2.8802871302512862 L429.98856308959995,-3.136177951124695 L429.9865345539539,-3.40295493378875 L429.98424744861256,-3.6806176180475654 L429.981680685599,-3.96916550267468 L429.9788123509686,-4.268598042746476 L429.97561970495104,-4.578914646868115 L429.9720791821007,-4.90011467430155 L429.96816639145834,-5.232197431976616 L429.96385611672343,-5.575162171415407 L429.95912231643797,-5.929008085535063 L429.95393812418274,-6.293734305359201 L429.9482758487855,-6.669339896620543 L429.9421069745431,-7.055823856256446 L429.93540216145703,-7.4531851088116365 L429.9281312454836,-7.861422502718075 L429.92026323879924,-8.280534806493309 L429.91176633008195,-8.71052070481608 L429.9026078848084,-9.151378794512631 L429.8927544455695,-9.603107580428405 L429.8821717324027,-10.065705471204222 L429.87082464314375,-10.539170774949143 L429.8586772537979,-11.023501694797401 L429.84569281893084,-11.518696324382814 L429.83183377208115,-12.024752643194303 L429.81706172619454,-12.541668511831684 L429.8013374740806,-13.06944166716655 L429.7846209888934,-13.608069717387838 L429.766871424636,-14.15755013695589 L429.74804711669105,-14.717880261446224 L429.72810558237694,-15.289057282300492 L429.70700352153153,-15.871078241459479 L429.68469681712315,-16.46394002591634 L429.6611405358924,-17.067639362142607 L429.6362889290217,-17.68217281043794 L429.61009543283797,-18.307536759156225 L429.5825126695458,-18.94372741884618 L429.5534924479945,-19.59074081628299 L429.5229857644792,-20.248572788397393 L429.4909428035767,-20.91721897611679 L429.4573129390182,-21.596674818086797 L429.4220447345989,-22.286935544308456 L429.38508594512604,-22.98799616966896 L429.34638351740745,-23.69985148736794 L429.3058835912793,-24.4224960622568 L429.2635315006775,-25.155924224064567 L429.21927177475055,-25.900130060538906 L429.17304813901825,-26.655107410474226 L429.1248035165752,-27.420849856646015 L429.0744800293404,-28.197350718661326 L429.02201899935625,-28.984603045686043 L428.96736095013614,-29.782599609093698 L428.91044560806216,-30.59133289501386 L428.8512119038357,-31.410795096772645 L428.78959797398034,-32.24097810725263 L428.72554116239957,-33.081873511148586 L428.6589780219909,-33.933472577122934 L428.5898443163159,-34.79576624987682 L428.51807502133073,-35.6687451421152 L428.4436043271745,-36.552399526426946 L428.3663656400207,-37.4467193270662 L428.28629158399093,-38.35169411163839 L428.2033140031329,-39.26731308269483 L428.1173639634635,-40.19356506924086 L428.028371755081,-41.130438518136124 L427.9362668943432,-42.07792148542359 L427.84097812611816,-43.03600162755022 L427.74243342610526,-44.00466619250633 L427.6405600032301,-44.98390201087197 L427.53528430211395,-45.97369548677369 L427.42653200561926,-46.97403258875409 L427.31422803747347,-47.98489884055308 L427.19829656497245,-49.006279311796796 L427.07866100176426,-50.03815860860748 L426.9552440107161,-51.08052086412063 L426.82796750686606,-52.133349728918155 L426.6967526604596,-53.19662836137822 L426.5615199000743,-54.27033941794076 L426.4221889158342,-55.354465043288144 L426.2786786627142,-56.44898686044287 L426.1309073639382,-57.5538859607821 L425.97879251447006,-58.66914289397866 L425.82225088460183,-59.79473765785092 L425.66119852363886,-60.930649688144086 L425.49555076368546,-62.07685784821903 L425.32522222353015,-63.23334041868035 L425.1501268126353,-64.4000750869139 L424.9701777352307,-65.57703893655457 L424.78528749451334,-66.76420843688393 L424.5953678969571,-67.96155943213516 L424.4003300567297,-69.16906713075502 L424.2000844002246,-70.38670609456244 L423.9945406707033,-71.61445022786475 L423.78360793305677,-72.85227276647737 L423.5671945786806,-74.1001462666986 L423.3452083304718,-75.35804259420115 L423.1175562479452,-76.62593291286541 L422.88414473247286,-77.90378767354578 L422.6448795326501,-79.19157660276555 L422.3996657497837,-80.48926869136636 L422.1484078435127,-81.79683218308192 L421.8910096375585,-83.11423456304895 L421.62737432560476,-84.44144254627791 L421.3574044773142,-85.77842206604772 L421.0810020444804,-87.12513826225057 L420.7980683673161,-88.4815554696887 L420.5085041808835,-89.84763720630548 L420.21220962166433,-91.22334616137717 L419.9090842342741,-92.60864418364697 L419.59902697832126,-94.00349226941519 L419.281936235415,-95.4078505505776 L418.95770981632194,-96.82167828261697 L418.6262449682704,-98.24493383256791 L418.2874383824149,-99.67757466691006 L417.9411862014489,-101.11955733944748 L417.5873840273768,-102.57083747913991 L417.2259269294467,-104.03136977788952 L416.856709452241,-105.50110797830494 L416.4796256239308,-106.98000486142459 L416.0945689646941,-108.46801223441595 L415.70143249530304,-109.96508091823048 L415.3001087458757,-111.47116073524923 L414.89048976479967,-112.9862004968954 L414.4724671278305,-114.51014799121279 L414.04593194735804,-116.04294997044727 L413.6107748818563,-117.58455213857985 L413.16688614550367,-119.13489913886863 L412.71415551798776,-120.69393454136055 L412.2524723544909,-122.26160083039024 L411.781725595856,-123.83783939208223 L411.30180377894374,-125.42259050182018 L410.81259504716826,-127.01579331174277 L410.3139871612309,-128.6173858382033 L409.8058675100382,-130.22730494925042 L409.2881231218143,-131.84548635210305 L408.760640675409,-133.47186458062683 L408.22330651180033,-135.10637298281952 L407.6760066457955,-136.7489437083055 L407.118626777931,-138.39950769584306 L406.55105230657625,-140.05799466083857 L405.9731683402378,-141.72433308288635 L405.38485971006924,-143.39845019332492 L404.7860109825873,-145.08027196281625 L404.1765064725985,-146.76972308894486 L403.5562302563319,-148.46672698385458 L402.92506618478814,-150.17120576190393 L402.2828978972947,-151.88308022737357 L401.62960883528496,-153.6022698621865 L400.96508225628526,-155.3286928136923 L400.28920124812436,-157.06226588247912 L399.6018487433642,-158.8029045102308 L398.90290753394555,-160.55052276764619 L398.19226028605976,-162.3050333424038 L397.4697895552482,-164.06634752717173 L396.7353778017188,-165.83437520769758 L395.9889074058964,-167.6090248509442 L395.2302606841976,-169.39020349329883 L394.45931990503885,-171.17781672884553 L393.6759673050683,-172.97176869772363 L392.8800851056401,-174.77196207454162 L392.07155552951366,-176.5782980568889 L391.25026081779083,-178.3906763539246 L390.4160832470898,-180.20899517505077 L389.56890514695374,-182.03315121868252 L388.70860891750266,-183.863039661102 L387.83507704731574,-185.69855414542852 L386.94819213156535,-187.53958677066876 L386.0478368903825,-189.3860280808926 L385.1338941874691,-191.23776705451087 L384.20624704895647,-193.0946910936606 L383.2647786825031,-194.95668601371926 L382.3093724966375,-196.8236360329401 L381.3399121203535,-198.69542376220213 L380.3562814229433,-200.57193019490725 L379.3583645340867,-202.45303469699584 L378.3460458641813,-204.33861499711412 L377.31921012492603,-206.22854717691706 L376.2777423501524,-208.12270566152156 L375.22152791690576,-210.02096321011084 L374.1504525667771,-211.92319090669594 L373.0644024274873,-213.8292581510346 L371.9632640347179,-215.73903264972415 L370.84692435420186,-217.65238040744896 L369.7152708040552,-219.5691657184226 L368.56819127737083,-221.48925115799057 L367.4055741650611,-223.4124975744235 L366.22730837894704,-225.33876408090916 L365.03328337511147,-227.267908047717 L363.82338917749297,-229.1997850945819 L362.5975164017418,-231.13424908327315 L361.35555627931996,-233.07115211038723 L360.0974006818594,-235.01034450033978 L358.82294214576876,-236.95167479858478 L357.5320738970939,-238.89498976504933 L356.2246898766231,-240.84013436780782 L354.90068476525335,-242.78695177697315 L353.5599540095994,-244.73528335883643 L352.2023938478505,-246.68496867025283 L350.8279013358828,-248.63584545326543 L349.43637437361514,-250.58774962999024 L348.0277117316126,-252.54051529775882 L346.6018130779346,-254.49397472452756 L345.1585790052348,-256.44795834454806 L343.697911058096,-258.40229475432517 L342.2197117606149,-260.35681070884556 L340.72388464422806,-262.31133111809476 L339.2103342757713,-264.2656790438734 L337.67896628579064,-266.21967569689485 L336.1296873970801,-268.1731404342001 L334.5624054534583,-270.1258907568761 L332.9770294487847,-272.0777423080822 L331.3734695562023,-274.02850887140323 L329.7516371576124,-275.97800236952645 L328.11144487338106,-277.9260328632463 L326.45280659227177,-279.8724085508051 L324.775637501599,-281.8169357675829 L323.079854117611,-283.75941898612496 L321.3653743160886,-285.69966081652996 L319.63211736316015,-287.6374620071993 L317.8800039463382,-289.57262144594404 L316.1089562057676,-291.50493616146554 L314.3188977656738,-293.4342013252237 L312.50975376603543,-295.36021025366955 L310.6814508944485,-297.28275441088135 L308.8339174181963,-299.20162341158965 L306.96708321652,-301.1166050246018 L305.08087981307926,-303.02748517663787 L303.17524040861315,-304.93404795656977 L301.25009991377783,-306.8360756200921 L299.30539498217894,-308.7333485948058 L297.34106404358323,-310.62564548573533 L295.3570473373069,-312.5127430812828 L293.35328694577214,-314.3944163596285 L291.3297268282466,-316.2704384955686 L289.28631285473097,-318.14058086782126 L287.2229928400296,-320.0046130667749 L285.139716577954,-321.8623029027228 L283.0364358756968,-323.7134164145542 L280.91310458834965,-325.55771787892684 L278.7696786535583,-327.3949698199284 L276.6061161263254,-329.22493301921986 L274.4223772139357,-331.04736652668356 L272.2184243110216,-332.86202767156334 L269.9942220347446,-334.66867207411724 L267.74973726009597,-336.4670536577832 L265.48493915531265,-338.25692466186104 L263.19979921739366,-340.0380356547244 L260.8942913077278,-341.8101355475558 L258.56839168780783,-343.572971608624 L256.2220790550362,-345.3262894781032 L253.85533457861763,-347.069833183436 L251.4681419355255,-348.80334515525277 L249.0604873465426,-350.5265662438479 L246.63235961235856,-352.2392357362255 L244.18375014973267,-353.94109137371 L241.7146530277073,-355.6318693701327 L239.22506500385666,-357.3113044306051 L236.7149855605851,-358.9791297708712 L234.1844169414453,-360.63507713725704 L231.6333641874809,-362.278876827217 L229.06183517359247,-363.9102577104772 L226.4698406448934,-365.5289472507979 L223.85739425308705,-367.1346715283343 L221.22451259281573,-368.72715526262925 L218.5712152380104,-370.3061218362172 L215.89752477820036,-371.87129331886644 L213.20346685480524,-373.42239049244483 L210.48907019737322,-374.95913287643134 L207.75436665978003,-376.4812387540628 L204.99939125635828,-377.98842519913563 L202.22418219797325,-379.48040810345 L199.428780928013,-380.9569022049169 L196.61323215828875,-382.41762111632727 L193.77758390486036,-383.86227735477576 L190.9218875237308,-385.2905823717677 L188.04619774645013,-386.7022465839874 L185.1505727155837,-388.0969794047505 L182.23507402004682,-389.4744892761374 L179.29976673030595,-390.8344837018068 L176.34471943341714,-392.17666928050346 L173.3700042679014,-393.5007517402576 L170.37569695845002,-394.80643597327844 L167.36187685044976,-396.09342607154554 L164.32862694429218,-397.3614253631115 L161.27603392950712,-398.6101364490979 L158.20418821865218,-399.83926124141095 L155.11318398098896,-401.04850100116306 L152.00311917591247,-402.2375563778118 L148.87409558613928,-403.4061274490127 L145.72621885061423,-404.5539137611981 L142.55959849717033,-405.6806143708688 L139.37434797487268,-406.78592788662087 L136.17058468608664,-407.8695525118899 L132.94843001822997,-408.9311860884271 L129.70800937519192,-409.97052614050824 L126.4494522084381,-410.9872699198674 L123.17289204774757,-411.98111445137135 L119.87846653160221,-412.9517565794236 L116.56631743720004,-413.8988930151057 L113.23659071008794,-414.82222038405325 L109.8894364933852,-415.72143527507245 L106.52500915660305,-416.5962342894924 L103.14346732404375,-417.44631409125407 L99.74497390274914,-418.2713714577414 L96.32969611000847,-419.07110333134807 L92.89780550039897,-419.84520687178275 L89.44947799233977,-420.59337950911436 L85.98489389416035,-421.31531899755316 L82.50423792966633,-422.01072346996705 L79.0076992631702,-422.6792914931372 L75.49547152400231,-423.32072212374453 L71.96775283045976,-423.93471496509204 L68.42474581320381,-424.5209702245561 L64.8666576380685,-425.07918877176945 L61.29370002828357,-425.60907219753057 L57.70608928608279,-426.11032287343926 L54.104046313701105,-426.58264401225335 L50.487796633724216,-427.0257397289673 L46.857570408791936,-427.4393151026062 L43.21360246062877,-427.8230762387353 L39.556132288401,-428.1767303326776 L35.88540408637152,-428.4999857334395 L32.20166676083784,-428.7925520083388 L28.505173946348545,-429.0541400083309 L24.796184021174064,-429.2844619340282 L21.074960122017885,-429.48323140240916 L17.34177015795867,-429.65016351421133 L13.596886823584947,-429.78497492200285 L9.840587611347955,-429.88738389892694 L6.073154823078745,-429.95711040811375 L2.2948755806626178,-429.9938761727535 L-1.493958164120151,-429.99740474682386 L-5.2930496206446085,-429.96742158646555 L-9.102097151360285,-429.90365412199884 L-12.92079426461891,-429.80583183057365 L-16.748829608420092,-429.6736863094459 L-20.58588696508093,-429.50695134987154 L-24.431645246869426,-429.305363011611 L-28.285778492585035,-429.0686596980353 L-32.14795586513827,-428.79658223182366 L-36.017841650111876,-428.48887393124625 L-39.8950952553463,-428.14528068701964 L-43.77937121154523,-427.7655510397275 L-47.67031917393944,-427.3494362577945 L-51.567583924994594,-426.89669041600524 L-55.47080537820721,-426.4070704745561 L-59.37961858299824,-425.88033635862746 L-63.29365373070206,-425.316251038469 L-67.21253616169349,-424.7145806099822 L-71.13588637365035,-424.0750943757899 L-75.06332003096786,-423.3975649267819 L-78.99444797535821,-422.6817682241197 L-82.9288762376304,-421.92748368169117 L-86.86620605067286,-421.1344942490012 L-90.80603386366089,-420.30258649448217 L-94.74795135749706,-419.43155068921243 L-98.69154546150062,-418.52118089102794 L-102.63639837137114,-417.5712750290101 L-106.58208756842083,-416.5816349883387 L-110.52818584011254,-415.55206669549074 L-114.47426130190986,-414.4823802037694 L-118.41987742045067,-413.3723897791499 L-122.36459303805795,-412.22191398642366 L-126.30796239862013,-411.03077577562095 L-130.24953517482885,-409.7988025687008 L-134.18885649681079,-408.52582634648485 L-138.12546698215155,-407.21168373582134 L-142.0589027673392,-405.85621609695676 L-145.98869554063978,-404.4592696110974 L-149.91437257640038,-403.02069536814633 L-153.8354567708178,-401.5403494545895 L-157.75146667917912,-400.01809304151215 L-161.66191655457422,-398.45379247273064 L-165.56631638810853,-396.8473193530136 L-169.46417195062492,-395.1985506363719 L-173.3549848359454,-393.50736871439796 L-177.23825250564238,-391.77366150463223 L-181.11346833536047,-389.9973225389328 L-184.98012166269635,-388.1782510518255 L-188.8376978366339,-386.3163520688196 L-192.6856782685815,-384.4115364946488 L-196.52354048498304,-382.4637212014327 L-200.3507581815412,-380.4728291167211 L-204.16680127904996,-378.4387893114036 L-207.9711359808494,-376.3615370874594 L-211.76322483191882,-374.24101406551665 L-215.54252677961225,-372.0771682722015 L-219.30849723604217,-369.86995422725124 L-223.06058814212918,-367.61933303036096 L-226.79824803332681,-365.3252724477374 L-230.5209221070123,-362.9877469983426 L-234.22805229158013,-360.6067380397832 L-237.919077317221,-358.1822338538334 L-241.59343278841027,-355.71422973155273 L-245.25055125809573,-353.2027280579811 L-248.88986230361522,-350.64773839636763 L-252.51079260432505,-348.04927757192024 L-256.112766020963,-345.40736975503495 L-259.6952036767476,-342.72204654397797 L-263.2575240402068,-339.9933470469973 L-266.7991430097599,-337.22131796382274 L-270.3194740000435,-334.40601366653055 L-273.81792802998586,-331.54749627974195 L-277.2939138126453,-328.6458357601162 L-280.74683784678854,-325.70110997512586 L-284.1761045102549,-322.71340478104827 L-287.58111615505464,-319.68281410018426 L-290.9612732042479,-316.6094399972354 L-294.3159742505876,-313.4933927548194 L-297.6446161569141,-310.3347909481038 L-300.94659415832393,-307.1337615185036 L-304.22130196610334,-303.8904398464173 L-307.4681318734182,-300.60496982297263 L-310.6864748627653,-297.2775039207446 L-313.8757207151839,-293.9082032634065 L-317.03525812122285,-290.4972376942845 L-320.16447479365837,-287.0447858437789 L-323.26275758195527,-283.5510351956241 L-326.3294925884829,-280.0161821519308 L-329.3640652864531,-276.44043209700897 L-332.3658606396054,-272.82399945989795 L-335.3342632236067,-269.16710777559894 L-338.2686573491742,-265.4699897449559 L-341.1684271869104,-261.732887293152 L-344.03295689383674,-257.95605162679055 L-346.86163074162226,-254.13974328951872 L-349.6538332464972,-250.28423221615606 L-352.4089493008396,-246.38979778529443 L-355.12636430641976,-242.4567288703369 L-357.805464309306,-238.48532388891766 L-360.44563613639514,-234.47589085070013 L-363.04626753357905,-230.42874740348037 L-365.6067473055195,-226.3442208775785 L-368.12646545701534,-222.2226483284836 L-370.6048133359596,-218.06437657769442 L-373.0411837778566,-213.86976225173908 L-375.43497125188793,-209.63917181932885 L-377.7855720085141,-205.37298162659997 L-380.0923842285904,-201.07157793041168 L-382.35480817396586,-196.735356929683 L-384.5722463395766,-192.36472479467747 L-386.74410360697476,-187.96009769426485 L-388.8697873993015,-183.52190182106887 L-390.94870783767044,-179.0505734144848 L-392.98027789893456,-174.5465587815359 L-394.96391357482196,-170.010314315516 L-396.89903403241027,-165.44230651239016 L-398.7850617759169,-160.84301198491076 L-400.62142280977906,-156.2129174744145 L-402.4075468029942,-151.55251986026502 L-404.14286725469606,-146.8623261669006 L-405.82682166093764,-142.14285356844894 L-407.45885168264874,-137.39462939088003 L-409.03840331474356,-132.61819111164652 L-410.5649270563406,-127.81408635679301 L-412.03787808206994,-122.98287289547778 L-413.4567164144263,-118.12511863190103 L-414.8209070971465,-113.24140159456054 L-416.1299203695656,-108.33230992284344 L-417.38323184192245,-103.39844185089078 L-418.58032267157773,-98.44040568871023 L-419.72067974010645,-93.45881980050366 L-420.8037958312275,-88.4543125801711 L-421.8291698095339,-83.42752242395453 L-422.79630679997933,-78.37909770020163 L-423.7047183680848,-73.30969671620501 L-424.5539227008239,-68.21998768207798 L-425.3434447881408,-63.11064867166126 L-426.0728166050642,-57.98236758038879 L-426.7415772943668,-52.83584208012564 L-427.34927334973014,-47.67177957091182 L-427.8954587993682,-42.4908971295993 L-428.3796953900618,-37.29392145535093 L-428.80155277155893,-32.08158881196465 L-429.16060868129125,-26.854644967000027 L-429.4564491293572,-21.613845127690265 L-429.6886685837252,-16.359953873577297 L-429.8568701556011,-11.093745085890227 L-429.9606657849138,-5.816001873600021 L-429.99967642586233,-0.5275164961502339 L-429.9735322324742,4.770909717176919 L-429.8818727441188,10.078466451263502 L-429.7243470709225,15.39433449257704 L-429.50061407902905,20.717685820017984 L-429.2103425756492,26.047683699205315 L-428.8532114938422,31.383482780244005 L-428.4289100769697,36.724229198987445 L-427.9371380627671,42.06906068179121 L-427.377605866966,47.417106653825435 L-426.7500347664159,52.76748835090431 L-426.05415708163514,58.11931893490644 L-425.28971635873626,63.47170361275679 L-424.45646755065894,68.82373975901339 L-423.55417719764785,74.17451704206461 L-422.582623606912,79.52311755394744 L-421.5415970314012,84.86861594379734 L-420.4308998476313,90.21007955495338 L-419.2503467324957,95.54656856571113 L-417.99976483899087,100.87713613375576 L-416.678993970797,106.20082854424685 L-415.28788675563345,111.51668536160919 L-413.82630881733235,116.82373958499134 L-412.29413894655073,122.12101780742859 L-410.69126927005783,127.40754037869523 L-409.01760541852116,132.68232157186188 L-407.27306669272843,137.94436975353642 L-405.4575862281617,143.19268755782483 L-403.5711111578615,148.42627206397466 L-401.6136027735021,153.6441149777226 L-399.58503668460685,158.8452028163311 L-397.48540297583065,164.02851709730683 L-395.31470636222735,169.1930345308161 L-393.0729663424402,174.33772721575457 L-390.76021734972926,179.46156283949043 L-388.3765089007631,184.56350488126162 L-385.9219057421017,189.6425128192104 L-383.39648799428545,194.69754234105721 L-380.80035129346675,199.72754555837386 L-378.13360693049367,204.7314712244674 L-375.3963819873761,209.70826495583808 L-372.588819471054,214.6568694572021 L-369.7110784443877,219.5762247500577 L-366.7633341542971,224.46526840476545 L-363.74577815696745,229.3229357761282 L-360.65861844003956,234.1481602424455 L-357.50207954171805,238.93987344800175 L-354.27640266669937,243.6970055489863 L-350.98184579886436,248.41848546278155 L-347.61868381062635,253.10324112062997 L-344.18720856888996,257.75019972359956 L-340.68772903751125,262.35828800185317 L-337.12057137619905,266.9264324771623 L-333.48607903576755,271.45355972863905 L-329.7846128496652,275.9385966616421 L-326.0165511217077,280.3804707798083 L-322.1822897099171,284.7781104601881 L-318.28224210641235,289.1304452314129 L-314.3168395132557,293.4364060548695 L-310.28653091417664,297.69492560882816 L-306.1917831421126,301.904938575462 L-302.033080942466,306.06538193072697 L-297.81092703201256,310.17519523703584 L-293.52584215339226,314.23332093866463 L-289.1783651250781,318.23870465986226 L-284.7690528867794,322.1902955055702 L-280.2984805401865,326.08704636471333 L-275.76724138497923,329.9279142159975 L-271.17594695002816,333.7118604361486 L-266.5252270197274,337.43785111051596 L-261.81572965536054,341.10485734599433 L-257.04812121144903,344.7118555861753 L-252.22308634699786,348.2578279286696 L-247.34132803157013,351.741762444523 L-242.40356754612884,355.16265349964567 L-237.41054447855814,358.5195020781918 L-232.36301671381318,361.811316107797 L-227.26176041862016,365.03711078660166 L-222.1075700206648,368.1959089119751 L-216.90125818218948,371.28674121086414 L-211.64365576796058,374.3086466716646 L-206.33561180751593,377.26067287754506 L-200.97799345163935,380.14187634112716 L-195.5716859230136,382.9513228404233 L-190.11759246095122,385.6880877559633 L-184.6166342602058,388.3512564089801 L-179.06975040373976,390.93992440059424 L-173.47789778944386,393.45319795187237 L-167.84205105071533,395.89019424467824 L-162.16320247086855,398.250041763202 L-156.44236189131345,400.53188063607035 L-150.68055661343936,402.73486297893817 L-144.87883129417662,404.8581532374438 L-139.03824783518056,406.9009285304261 L-133.15988526557152,408.8623789932987 L-127.24483961822135,410.74170812145815 L-121.29422379950911,412.5381331136245 L-115.30916745253403,414.2508852149908 L-109.29081681371693,415.87921006007326 L-103.2403345627784,417.4223680151383 L-97.15889966604338,418.8796345200895 L-91.04770721304425,420.25030042969365 L-84.9079682463682,421.53367235402885 L-78.74090958477595,422.72907299801625 L-72.54777363948385,423.8358414999305 L-66.32981822365588,424.8533337687452 L-60.08831635503361,425.78092282019566 L-53.824556051708996,426.6179991114257 L-47.53984012100761,427.3639708740888 L-41.235485941462834,428.01826444577273 L-34.91282523788973,428.58032459961174 L-28.573203849506793,429.0496148719569 L-22.217981491131198,429.4256178879641 L-15.848531507417475,429.70783568496677 L-9.466240620144225,429.89579003349354 L-3.072508668547805,429.9890227557928 L3.331251657306529,429.98709604172507 L9.743615090108106,429.8895927618809 L16.16314406583684,429.696116777784 L22.588389011239297,429.4062932490358 L29.017888638232122,429.0197689372591 L35.45017024523969,428.53621250669534 L41.883750025426096,427.9553148213112 L48.31713338181404,427.2767892382688 L54.748815249274,426.50037189761144 L61.17728042334937,425.6258220080202 L67.6010038958913,424.6529221284927 L74.0184511974964,423.58147844579304 L80.42807874666845,422.4113210475303 L86.82833420571642,421.14230419070986 L93.21765684331844,419.7743065656131 L99.59447790373271,418.30723155485003 L105.95722098257167,416.74100748744473 L112.30430240914855,415.07558788779005 L118.63413163529583,413.3109517193312 L124.94511163062529,411.44710362282365 L131.23563928415535,409.48407414901874 L137.50410581227675,407.4219199856166 L143.7488971729524,405.2607241783491 L149.9683944861097,403.00059634603343 L156.16097446014714,400.6416728894503 L162.32500982449307,398.1841171938909 L168.4588697681072,395.6281198252368 L174.56092038388064,392.9738987194092 L180.6295251188402,390.2216993650434 L186.6630452300447,387.3717949792503 L192.65984024612825,384.42448667629947 L198.61826843435313,381.380103629095 L204.53668727309855,378.2390032232883 L210.4134539296842,375.00157120388263 L216.24692574340895,371.66822181419354 L222.0354607137174,368.2393979270106 L227.77741799336476,364.7155711678293 L233.47115838647852,361.0972420300048 L239.11504485139602,357.3849399816882 L244.70744300814135,353.57922356441884 L250.24672165044714,349.6806804832141 L255.73125326216726,345.68992768803844 L261.1594145379532,341.60761144651553 L266.52958690806986,337.4344074077415 L271.8401570671958,333.17102065708286 L277.08951750708445,328.8181857618145 L282.27606705292965,324.37666680747856 L287.3982114032729,319.84725742485216 L292.4543636733442,315.2307808073624 L297.44294494161744,310.52808971888186 L302.36238479948446,305.7400664917317 L307.21112190384355,300.8676230148099 L311.98760453244137,295.9117007117308 L316.69029114183235,290.8732705088274 L321.3176509277281,285.7533327929644 L325.8681643876178,280.55291735899755 L330.3403238854401,275.273083346815 L334.7326342181391,269.91491916784724 L339.0436131839308,264.4795424209311 L343.27179215206434,258.96809979746524 L347.4157166339196,253.3817669757239 L351.4739468552149,247.72174850427962 L355.4450583291511,241.98927767441756 L359.3276424302816,236.1856163814716 L363.1203069689064,230.31205497499946 L366.8216767657822,224.36991209772316 L370.43039422694306,218.36053451315684 L373.9451199184156,212.28529692185876 L377.36453314062135,206.14560176622956 L380.687332502238,199.9428790238114 L383.912236493311,193.67858598901435 L387.03798405738667,187.35420704322095 L390.0633351624382,180.9712534132297 L392.98707137037104,174.53126291796238 L395.80799640485895,168.0357997034298 L398.524936717295,161.48645396588535 L401.13674205061494,154.88484166314797 L403.642286000754,148.2326042140714 L406.0404665755086,141.53140818610999 L408.33020675054786,134.7829449709971 L410.51045502234746,127.9889304484776 L412.58018595778896,121.15110463811824 L414.538400740184,114.27123133917229 L416.384127711475,107.35109775849567 L418.11642291035935,100.3925141265301 L419.73437060609086,93.39731330134062 L421.2370838277006,86.36735036073941 L422.62370488838457,79.30450218250932 L423.8934059048049,72.21066701273611 L425.0453893110446,65.08776402229952 L426.07888836695923,57.93773285153924 L426.9931676606684,50.7625331431391 L427.7875236049242,43.564144063281965 L428.4612849270983,36.34456381111104 L429.01381315252564,29.105809116562604 L429.44450308094434,21.849914726625 L429.75278325576653,14.578932880089074" class="thick" />
 </g>
 </g>
 </g>
 <g transform="scale(0.650 0.650) translate(1005.917 1296.744)">
-<g id="inner" class="spinner">
+<g id="inner" class="spinner" transform="rotate(0)">
 <circle cx="0" cy="0" r="420" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="420" class="thick" />
 <circle cx="0" cy="0" r="5" class="thick" />
@@ -10820,7 +10820,7 @@ text { font-family: "B612 Regular"; }
 </g>
 </g>
 <g transform="scale(0.650 0.650) translate(1931.860 1216.744)">
-<g id="back_outer" class="spinner">
+<g id="back_outer" class="spinner" transform="rotate(0)">
 <circle cx="0" cy="0" r="500" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="5" class="thick" />
 <circle cx="0" cy="0" r="420" class="thick" />
@@ -10829,7 +10829,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em">Log Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d3" startOffset="50%">
-<tspan dy="0em">2026-01-26</tspan>
+<tspan dy="0em">2026-01-28</tspan>
 </textPath></text>
 <path d="M420,0 L500,0" class="extra_thick" />
 <g>
@@ -12305,7 +12305,7 @@ text { font-family: "B612 Regular"; }
 </g>
 </g>
 <g transform="scale(0.650 0.650) translate(1435.944 430.000)">
-<g id="back_inner" class="spinner">
+<g id="back_inner" class="spinner" transform="rotate(0)">
 <circle cx="0" cy="0" r="420" fill="white" stroke="none" />
 <circle cx="0" cy="0" r="5" class="thick" />
 <circle cx="0" cy="0" r="420" class="thick" />

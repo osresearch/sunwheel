@@ -147,6 +147,7 @@ def make_haversine_spiral(R,
 	include_marker = False,
 	offset_angle = 90,
 	division = 0.1,
+	direction = +1,
 	divs = None,
 ):
 	g = draw.Group()
@@ -178,7 +179,7 @@ def make_haversine_spiral(R,
 			return offset + (divs - r_major) / divs * (R - offset - spacing)
 		def a_func(h):
 			r_minor = (h % division) / division
-			return r_minor*360
+			return r_minor*360 * direction
 
 	# highlight every other ring to make it easier to trace
 	if False:
@@ -247,7 +248,7 @@ def make_haversine_spiral(R,
 				gt.append(draw.Text("%d" % (angle), # + (deg_symbol if not log_scale else ""),
 					sz,
 					x_off if sides & 1 else +12,
-					-3 if log_scale else sz,
+					-3 if log_scale or direction == -1 else sz,
 					#class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
 					class_="angle",
 					text_anchor="end" if sides & 1 else "start",
@@ -372,8 +373,8 @@ def make_haversine_spiral(R,
 cut = 420
 outer_cut = 500
 def make_front():
-	outer = draw.Group(id="outer", class_="spinner")
-	inner = draw.Group(id="inner", class_="spinner")
+	outer = draw.Group(id="outer", class_="spinner", transform="rotate(0)")
+	inner = draw.Group(id="inner", class_="spinner", transform="rotate(0)")
 
 	# Cut lines and axle
 	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
@@ -478,7 +479,7 @@ def make_front():
 	outer.append(make_fractional_minutes(outer_cut-5, side=1, font_sz=10, include_red=True))
 	outer.append(draw.Circle(0, 0, outer_cut-5, class_="thin"))
 
-	outer.append(make_haversine_spiral(outer_cut-40, offset=cut, max_angle=35.7, sides=2, include_red=False, spacing=+30, division = inner_division))
+	outer.append(make_haversine_spiral(outer_cut-40, offset=cut, max_angle=35.7, sides=2, include_red=False, spacing=+30, division = inner_division, direction=-1))
 	#outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
 	#outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
 
@@ -489,8 +490,8 @@ def make_front():
 #### inner disk is the same size as the outer
 ####
 def make_back():
-	outer = draw.Group(id="back_outer", class_="spinner")
-	inner = draw.Group(id="back_inner", class_="spinner")
+	outer = draw.Group(id="back_outer", class_="spinner", transform="rotate(0)")
+	inner = draw.Group(id="back_inner", class_="spinner", transform="rotate(0)")
 	inner.append(draw.Circle(0,0, cut, fill="white", stroke="none"))
 	outer.append(draw.Circle(0,0, outer_cut, fill="white", stroke="none"))
 	inner.append(draw_axle())
