@@ -55,6 +55,7 @@ def make_log_cosine(R,
 	division = 1.0,
 	min_angle=0,
 	max_angle=60,
+	sz = 10,
 ):
 	g = draw.Group()
 
@@ -86,16 +87,16 @@ def make_log_cosine(R,
 		font_sz = None
 
 		if int(i) % (10*steps) == 0 and i > 10*steps:
-			font_sz = 15
+			font_sz = sz + 5
 			c = "extra_thick"
 			l = 25
 		elif int(i) % (5*steps) == 0:
-			font_sz = 10
+			font_sz = sz
 			c = "extra_thick"
 			l = 20
 		elif int(i) % (1*steps) == 0:
 			if i > 10*steps or i == 8*steps:
-				font_sz = 10
+				font_sz = sz
 			c = "thick"
 			l = 20
 		elif int(i) % (steps//2) == 0:
@@ -526,7 +527,8 @@ def make_back():
 	# outside log cosine for latitude
 	outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
 	outer.append(make_log_cosine(cut+5, division=log_scale_limit, max_angle=60))
-	#outer.append(make_log_cosine(cut+5, division=log_scale_limit, min_angle=60, max_angle=72))
+	#outer.append(make_log_cosine(cut+5, division=log_scale_limit, min_angle=60.1, max_angle=75.5, sz=8, side=2))
+
 	outer.append(make_log_cosine(outer_cut-5, division=log_scale_limit, side=1, include_marker=False))
 	#outer.append(make_fractional_minutes(outer_cut, side=1, font_sz=10))
 
