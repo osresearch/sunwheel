@@ -9,6 +9,8 @@ import moonrule
 import datetime
 import sys
 import re
+import cairosvg
+from PyPDF2 import PdfMerger
 
 year = 2026 # for equation of time
 pointer_angle = 0
@@ -2204,6 +2206,10 @@ def make_sunrule():
 	d = draw.Drawing(2000,1000, origin=(0,0))
 	d.append_css(css)
 	a3 = draw_a3()
+	
+	a4_pages =[]
+	for i in range(3):
+		a4_pages.append(draw_a4())
 
 	front = draw.Group(transform="translate(500 500)")
 	(front_inner,front_outer) = make_sun_front()
@@ -2224,6 +2230,25 @@ def make_sunrule():
 	append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 	a3.save_svg("rule-a3.svg")
 
+	# create a4 SVGs
+	append_a4(a4_pages, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=177, margin=25)
+	
+	# create a4 PDFs
+	a4_pdfs = []
+	for i in range(len(a4_pages)):
+		basename="rule-a4_%d" % i
+		svgpage=basename+ ".svg"
+		pdfpage=basename+ ".pdf"
+		a4_pages[i].save_svg(svgpage)
+		cairosvg.svg2pdf(url=svgpage, write_to=pdfpage)
+		a4_pdfs.append(pdfpage)
+
+	#merge PDFs
+	merger = PdfMerger()
+	for p in a4_pdfs:
+		merger.append(p)
+	merger.write("rule-a4.pdf")
+	merger.close()
 
 if __name__ == "__main__":
 	make_sunrule()
