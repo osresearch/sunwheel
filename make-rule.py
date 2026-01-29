@@ -417,79 +417,98 @@ def make_d_lines(outer_radius):
 	g = draw.Group(transform="rotate(+0)")
 	inner_step = 265
 
-	radius = lambda d: outer_radius - inner_step * (1-d)
+	r_func = lambda d: outer_radius - inner_step * (1-d)
 
 	# horizontal lines for the different values of d
 	for d in frange(0.1, 1.1, 0.1):
-		r = radius(d)
-		g.append(make_arcs(frange(-12, 12.01, 0.1), lambda t: (r, t*d*6), stroke_width=0.1))
+		r = r_func(d)
+		g.append(make_arcs(
+			frange(-12, 12.01, 0.1),
+			lambda t: (r, t*d*6),
+			class_="thin",
+		))
 
 		if d < 0.2 or d > 0.9:
 			continue
 
-		ta = radians(6.0 * d * 6)
-		tx = r * cos(ta)
-		ty = r * sin(ta)
+		for a in [0, -12, 12]:
+			if a == 0 and d > 0.8:
+				continue
+			ta = radians(d * a * 6)
+			tx = r * cos(ta)
+			ty = r * sin(ta)
 
-		# mark for the scales, following the 6 lines
-		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
-			fill="black",
-			stroke="none",
-			text_anchor="end",
-			transform="translate(%.3f %.3f) rotate(-90)" % (tx,ty),
-		))
-		g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
-			fill="black",
-			stroke="none",
-			text_anchor="start",
-			transform="translate(%.3f %.3f) rotate(-90)" % (tx,-ty),
-		))
+			g.append(draw.Text("%.0f" % (d*10), 10, 0, -2,
+				class_="angle",
+				text_anchor="end",
+				transform="translate(%.3f %.3f) rotate(-90)" % (tx,ty),
+			))
 
 	# quarter hour marks (only half way in)
 	for t in frange(-12,12.01,0.25):
 		g.append(make_arcs(frange(0.5, 1.01, 0.01),
-			lambda d: (radius(d), t*d*6),
+			lambda d: (r_func(d), t*d*6),
 			stroke_width=0.1))
 
 	# half hour marks (almost all the way in)
 	for t in frange(-12,12.1,0.5):
 		g.append(make_arcs(frange(0.2, 1.01, 0.01),
-			lambda d: (radius(d), t*d*6),
+			lambda d: (r_func(d), t*d*6),
 			stroke_width=0.2))
 
 	# full hour marks
+	def arc_func(t,pts, **kwargs):
+		 return make_arcs(pts, lambda d: (r_func(d), t*d*6), **kwargs)
+
 	for t in frange(-12,12.1,1):
 		stroke = "black"
 		width = 0.5
 
 		if t == 0:
 			width = 2
-		elif t == -6 or t == 6:
-			stroke = "red"
-			width = 1
-		g.append(make_arcs(frange(0.1, 1.01, 0.01), lambda d: (radius(d), t*d*6), stroke=stroke, stroke_width=width))
+#		elif t == -6 or t == 6:
+#			stroke = "red"
+#			width = 1
+		g.append(arc_func(t, frange(0.1, 1.01, 0.01),
+			stroke=stroke,
+			stroke_width=width,
+		))
 
 		if t == -12 or t == +12:
 			continue
 		d = 0.95
-		tr = radius(d)
-		ta = radians(t * d * 6)
-		tx = tr * cos(ta)
-		ty = tr * sin(ta)
-		ta = degrees(ta) * 1.8
-		g.append(draw.Text("%02d:00" % (t + 12), 8, 0, -2,
-			text_anchor="middle",
-			fill="black",
-			transform="translate(%.3f %3.f) rotate(%.3f)" % (tx,ty,ta),
+		sz = 9
+		g.append(draw.Text("%02d:00" % (t + 12),
+			sz,
+			path=arc_func(t-0.20, frange(0.8, 1.01, 0.01)),
+			text_anchor="end",
+			class_="angle",
+			dominant_baseline="middle",
 		))
-		g.append(draw.Text("%02d:00" % (12 - t), 8, 0, +7,
-			text_anchor="middle",
-			fill="red",
-			font_style="italic",
-			transform="translate(%.3f %3.f) rotate(%.3f)" % (tx,ty,ta),
+		g.append(draw.Text("%02d:00" % (12 - t),
+			sz,
+			path=arc_func(t+0.20, frange(0.8, 1.01, 0.01)),
+			text_anchor="end",
+			class_="red_angle",
+			dominant_baseline="middle",
+		))
+		if t == 0:
+			continue
+		g.append(draw.Text("%d%s" % ((t*15+360)%360, deg_symbol),
+			sz,
+			path=arc_func(t-0.20, frange(0.81, 0.9, 0.01)),
+			text_anchor="start",
+			class_="angle",
+			dominant_baseline="middle",
+		))
+		g.append(draw.Text("%d%s" % ((360-t*15)%360, deg_symbol),
+			sz,
+			path=arc_func(t+0.20, frange(0.81, 0.9, 0.01)),
+			text_anchor="start",
+			class_="red_angle",
+			dominant_baseline="middle",
 		))
 
-	#g.append(draw.Lines(radius, 0, radius-inner_step, 0, stroke="red", stroke_width=0.5));
 
 	return g
 
@@ -1281,30 +1300,6 @@ def make_ninety_minus(radius, show_labels=True):
 	return g
 
 
-# one hour split into 15 degrees
-# this is the increments and corrections table for the sun,
-# which moves at 15 degrees per hour
-def make_fifteen_degrees(radius):
-	g = draw.Group()
-	g.append(make_rule(radius, 360/(15*4), 360/(15*4*3), 360/(15*60),
-		fmt=lambda x: "%.0f°%.0f'" % (floor(x*15/360), floor(x*60*15/360) % 60),
-		side=3,
-		pos=(1.5,+14),
-		size=9,
-	))
-
-	# red numbers going reverse around the circle
-	g.append(make_labels(radius, 360/(15*4), 6, 366,
-		lambda x: "%.0f°%.0f'" % (floor((360-x)*15/360), floor((360-x)*60*15/360) % 60),
-		pos=(-2,-2),
-		size=8,
-		text_anchor="end",
-		fill="red",
-		font_style="italic",
-	))
-
-	return g
-	
 
 def eq_time_radius(d):
 	return -60 * sin((d-0)/365 * 2 * pi) - 20
@@ -2112,7 +2107,8 @@ def make_sun_front():
 	outer.append(make_fractional_minutes(cut, side=2, include_red=True, max_angle=60, font_sz=12, include_marker=True))
 	inner.append(make_fractional_minutes(cut, side=1, include_red=True, max_angle=60, font_sz=12, include_marker=True))
 
-	outer.append(make_fractional_minutes(cut+32, max_angle=15, include_red=True, include_marker=False, divisions=60, side=2))
+	# 15 degree wheel for converting minutes past the hour into GHA
+	outer.append(make_fractional_minutes(cut+32, max_angle=15, include_red=True, include_marker=False, divisions=40, side=2))
 	outer.append(make_fractional_minutes(outer_cut, include_red=True))
 
 	#inner.append(make_rule(400, 360/60, 360/120, 360/600))

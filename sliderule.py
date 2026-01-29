@@ -98,6 +98,7 @@ def make_fractional_minutes(
 		a = 360 * i / (max_angle*divisions)
 		sz = None
 		ta = None
+		txt = "%d" % (i // divisions)
 
 		if i % (10*divisions) == 0:
 			sz = font_sz + 2
@@ -109,9 +110,21 @@ def make_fractional_minutes(
 			ta = 0
 			c = "thick"
 			l = 20
-		elif i % (divisions//2) == 0:
-			c = "thin"
+		elif divisions == 40 and i % (divisions // 2) == 0:
+			c = "thick" if divisions == 40 else "thin" 
 			l = 15
+			sz = font_sz - 2
+			txt = "%.1f" % (i / divisions)
+			ta = 0
+		elif i % (divisions//2) == 0:
+			c = "thin" 
+			l = 15
+		elif divisions == 40 and i % (divisions // 10) == 0:
+			c = "thin"
+			l = 12
+		elif divisions == 40 and i % (divisions // 20) == 0:
+			c = "thin"
+			l = 8
 		elif divisions == 60 and i % (divisions // 6) == 0:
 			c = "thin"
 			l = 12
@@ -145,7 +158,7 @@ def make_fractional_minutes(
 			xp2 = xp1
 			yp2 = -2
 		g.append(draw.Text(
-			"%d" % (i // divisions),
+			txt,
 			sz,
 			#+12 if side & 2 else -12,
 			#(sz-1),
@@ -160,7 +173,7 @@ def make_fractional_minutes(
 		if not include_red:
 			continue
 		g.append(draw.Text(
-			"%d" % (i // divisions),
+			txt,
 			sz,
 			#+12 if side & 2 else -12,
 			#(font_sz-2) if side & 2 else -2,
