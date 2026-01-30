@@ -9060,6 +9060,9 @@ function drag(evt)
 {
 	if (!dragging || !drag_target)
 		return;
+	if(evt.preventDefault)
+		evt.preventDefault();
+
 	if (evt.buttons == 0)
 	{
 		// we have somehow lost the button; maybe the mouse left the window
@@ -9067,8 +9070,8 @@ function drag(evt)
 		return drag_end(evt);
 	}
 
-	var x = evt.clientX;
-	var y = evt.clientY;
+	var x = evt.touches ? evt.touches[0].clientX : evt.clientX;
+	var y = evt.touches ? evt.touches[0].clientY : evt.clientY;
 	var a = Math.atan2(y - drag_cy, x - drag_cx) * 180 / Math.PI;
 	if (drag_angle_start == null)
 		drag_angle_start = a;
