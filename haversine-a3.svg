@@ -12,8 +12,14 @@
         font-style: italic;
         src: url(fonts/B612-Italic.ttf);
 }
-text { font-family: "B612 Regular"; }
-.italic { font-family: "B612 Italic"; }
+text {
+	font-family: "B612 Regular";
+	pointer-events: none;
+}
+.italic {
+	font-family: "B612 Italic";
+	pointer-events: none;
+}
 
 .spinner {
 	-webkit-transition: all 2s;
@@ -64,7 +70,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em">Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d1" startOffset="50%">
-<tspan dy="0em">2026-01-28</tspan>
+<tspan dy="0em">2026-01-30</tspan>
 </textPath></text>
 <g transform="translate(420.000)">
 <path d="M0,0 L15,5 L25,5 L25,-5 L15,-5 Z" fill="black" stroke="none" transform="rotate(0.000)" />
@@ -10829,7 +10835,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em">Log Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d3" startOffset="50%">
-<tspan dy="0em">2026-01-28</tspan>
+<tspan dy="0em">2026-01-30</tspan>
 </textPath></text>
 <path d="M420,0 L500,0" class="extra_thick" />
 <g>

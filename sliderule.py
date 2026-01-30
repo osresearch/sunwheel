@@ -21,8 +21,14 @@ css = """
         font-style: italic;
         src: url(fonts/B612-Italic.ttf);
 }
-text { font-family: "B612 Regular"; }
-.italic { font-family: "B612 Italic"; }
+text {
+	font-family: "B612 Regular";
+	pointer-events: none;
+}
+.italic {
+	font-family: "B612 Italic";
+	pointer-events: none;
+}
 
 .spinner {
 	-webkit-transition: all 2s;
@@ -210,8 +216,20 @@ def append(d, g, x, y, s):
 # Pointer with hidden half so it spins around the center
 def make_pointer(id="pointer"):
 	pointer = draw.Group(id=id, class_="spinner", transform="rotate(0)")
+	pointer.append(draw.Lines(
+		0,0,
+		0,-40,
+		500, -20,
+		500, +20,
+		0,+40,
+		0,0,
+		fill="#ffffff01",
+		stroke="#00008080",
+		stroke_width=1,
+	))
 	pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
-	pointer.append(draw.Line(0,0, -500, 0, fill="none", stroke="none", stroke_width=2))
+	pointer.append(draw.Line(500,0, -500, 0, fill="none", stroke="none", stroke_width=10))
+	pointer.append(draw.Circle(0,0, 500, fill="none", stroke="#ffffff01", stroke_width=1))
 	return pointer
 
 def draw_axle():
@@ -247,3 +265,88 @@ def append_a3(a3,
 	append(a3, in2, a3_width - margin - outer_cut - d1, inner_cut + margin, a3_scaling)
 
 
+def append_dragging(d):
+	d.append_javascript("""
+var dragging = false;
+var drag_target = null;
+var drag_cx;
+var drag_cy;
+var drag_angle_start = null;
+function drag_init(ev) {
+	var svg = ev.target;
+	dragging = false;
+	for(var el of svg.getElementsByClassName("spinner"))
+	{
+		console.log(el);
+		el.addEventListener('mousedown', drag_start);
+		el.addEventListener('mousemove', drag)
+		el.addEventListener('mouseup', drag_end);
+
+		el.addEventListener('touchstart', drag_start);
+		el.addEventListener('touchmove', drag)
+		el.addEventListener('touchend', drag_end);
+		el.addEventListener('touchcancel', drag_end);
+	}
+}
+function drag_start(evt)
+{
+	// find the parent that is the spinner
+	drag_target = evt.target
+	while(drag_target && !drag_target.classList.contains("spinner"))
+	{
+		drag_target = drag_target.parentElement;
+	}
+	if (!drag_target)
+		return;
+	dragging = true;
+
+	var rect = drag_target.getClientRects()[0];
+	drag_cx = rect.x + rect.width/2;
+	drag_cy = rect.y + rect.height/2;
+	if (!drag_target.angle)
+		drag_target.angle = 0;
+	drag_angle_start = null;
+	console.log("drag start", evt, drag_target, drag_cx, drag_cy);
+	drag_target.classList.remove("spinner")
+}
+function drag_end(evt)
+{
+	if (drag_target)
+	{
+		drag_target.classList.add("spinner")
+		drag_target = null;
+	}
+
+	if (!dragging)
+		return
+
+	console.log("drag end", evt);
+	dragging = false;
+}
+function drag(evt)
+{
+	if (!dragging || !drag_target)
+		return;
+	if (evt.buttons == 0)
+	{
+		// we have somehow lost the button; maybe the mouse left the window
+		// was released and then came back in
+		return drag_end(evt);
+	}
+
+	var x = evt.clientX;
+	var y = evt.clientY;
+	var a = Math.atan2(y - drag_cy, x - drag_cx) * 180 / Math.PI;
+	if (drag_angle_start == null)
+		drag_angle_start = a;
+	var da = a - drag_angle_start;
+	//console.log("drag", evt, evt.layerX, evt.layerY, a, drag_a, a - drag_a);
+	if (da < -180)
+		da += 360;
+	if (da > +180)
+		da -= 360;
+	drag_target.angle += da;
+	drag_angle_start = a;
+	drag_target.style.transform = "rotate(" + drag_target.angle.toFixed(3) + "deg)";
+}
+""")

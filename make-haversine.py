@@ -44,7 +44,7 @@ output_file = "haversine.svg"
 output_a3_file = "haversine-a3.svg"
 
 
-d = draw.Drawing(2000,1000, origin=(0,0))
+d = draw.Drawing(2000,1000, origin=(0,0), onload="drag_init(evt)")
 d.append_css(css)
 a3 = draw_a3()
 
@@ -560,6 +560,7 @@ back.append(back_outer)
 back.append(back_inner)
 back.append(make_pointer("back_pointer"))
 
+append_dragging(d)
 d.append(front)
 d.append(back)
 d.save_svg(output_file)

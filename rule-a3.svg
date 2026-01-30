@@ -12,8 +12,14 @@
         font-style: italic;
         src: url(fonts/B612-Italic.ttf);
 }
-text { font-family: "B612 Regular"; }
-.italic { font-family: "B612 Italic"; }
+text {
+	font-family: "B612 Regular";
+	pointer-events: none;
+}
+.italic {
+	font-family: "B612 Italic";
+	pointer-events: none;
+}
 
 .spinner {
 	-webkit-transition: all 2s;

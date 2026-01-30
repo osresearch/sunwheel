@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="2000" height="1000" viewBox="0 0 2000 1000">
+     width="2000" height="1000" viewBox="0 0 2000 1000" onload="drag_init(evt)">
 <style>/*<![CDATA[*/
 @font-face {
         font-family: "B612 Regular";
@@ -12,8 +12,14 @@
         font-style: italic;
         src: url(fonts/B612-Italic.ttf);
 }
-text { font-family: "B612 Regular"; }
-.italic { font-family: "B612 Italic"; }
+text {
+	font-family: "B612 Regular";
+	pointer-events: none;
+}
+.italic {
+	font-family: "B612 Italic";
+	pointer-events: none;
+}
 
 .spinner {
 	-webkit-transition: all 2s;
@@ -64,7 +70,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em">Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d1" startOffset="50%">
-<tspan dy="0em">2026-01-28</tspan>
+<tspan dy="0em">2026-01-30</tspan>
 </textPath></text>
 <g transform="translate(420.000)">
 <path d="M0,0 L15,5 L25,5 L25,-5 L15,-5 Z" fill="black" stroke="none" transform="rotate(0.000)" />
@@ -10817,8 +10823,10 @@ text { font-family: "B612 Regular"; }
 <text x="120" y="-2" font-size="20" text-anchor="end" transform="rotate(-25)" fill="red">Hav(90-Z)</text>
 </g>
 <g id="pointer" class="spinner" transform="rotate(0)">
+<path d="M0,0 L0,-40 L500,-20 L500,20 L0,40 L0,0" fill="#ffffff01" stroke="#00008080" stroke-width="1" />
 <path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" />
-<path d="M0,0 L-500,0" fill="none" stroke="none" stroke-width="2" />
+<path d="M500,0 L-500,0" fill="none" stroke="none" stroke-width="10" />
+<circle cx="0" cy="0" r="500" fill="none" stroke="#ffffff01" stroke-width="1" />
 </g>
 </g>
 <g transform="translate(1500 500)">
@@ -10831,7 +10839,7 @@ text { font-family: "B612 Regular"; }
 <tspan dy="0em">Log Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d3" startOffset="50%">
-<tspan dy="0em">2026-01-28</tspan>
+<tspan dy="0em">2026-01-30</tspan>
 </textPath></text>
 <path d="M420,0 L500,0" class="extra_thick" />
 <g>
@@ -21204,8 +21212,94 @@ text { font-family: "B612 Regular"; }
 </g>
 </g>
 <g id="back_pointer" class="spinner" transform="rotate(0)">
+<path d="M0,0 L0,-40 L500,-20 L500,20 L0,40 L0,0" fill="#ffffff01" stroke="#00008080" stroke-width="1" />
 <path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" />
-<path d="M0,0 L-500,0" fill="none" stroke="none" stroke-width="2" />
+<path d="M500,0 L-500,0" fill="none" stroke="none" stroke-width="10" />
+<circle cx="0" cy="0" r="500" fill="none" stroke="#ffffff01" stroke-width="1" />
 </g>
 </g>
+<script>/*<![CDATA[*/
+var dragging = false;
+var drag_target = null;
+var drag_cx;
+var drag_cy;
+var drag_angle_start = null;
+function drag_init(ev) {
+	var svg = ev.target;
+	dragging = false;
+	for(var el of svg.getElementsByClassName("spinner"))
+	{
+		console.log(el);
+		el.addEventListener('mousedown', drag_start);
+		el.addEventListener('mousemove', drag)
+		el.addEventListener('mouseup', drag_end);
+
+		el.addEventListener('touchstart', drag_start);
+		el.addEventListener('touchmove', drag)
+		el.addEventListener('touchend', drag_end);
+		el.addEventListener('touchcancel', drag_end);
+	}
+}
+function drag_start(evt)
+{
+	// find the parent that is the spinner
+	drag_target = evt.target
+	while(drag_target && !drag_target.classList.contains("spinner"))
+	{
+		drag_target = drag_target.parentElement;
+	}
+	if (!drag_target)
+		return;
+	dragging = true;
+
+	var rect = drag_target.getClientRects()[0];
+	drag_cx = rect.x + rect.width/2;
+	drag_cy = rect.y + rect.height/2;
+	if (!drag_target.angle)
+		drag_target.angle = 0;
+	drag_angle_start = null;
+	console.log("drag start", evt, drag_target, drag_cx, drag_cy);
+	drag_target.classList.remove("spinner")
+}
+function drag_end(evt)
+{
+	if (drag_target)
+	{
+		drag_target.classList.add("spinner")
+		drag_target = null;
+	}
+
+	if (!dragging)
+		return
+
+	console.log("drag end", evt);
+	dragging = false;
+}
+function drag(evt)
+{
+	if (!dragging || !drag_target)
+		return;
+	if (evt.buttons == 0)
+	{
+		// we have somehow lost the button; maybe the mouse left the window
+		// was released and then came back in
+		return drag_end(evt);
+	}
+
+	var x = evt.clientX;
+	var y = evt.clientY;
+	var a = Math.atan2(y - drag_cy, x - drag_cx) * 180 / Math.PI;
+	if (drag_angle_start == null)
+		drag_angle_start = a;
+	var da = a - drag_angle_start;
+	//console.log("drag", evt, evt.layerX, evt.layerY, a, drag_a, a - drag_a);
+	if (da < -180)
+		da += 360;
+	if (da > +180)
+		da -= 360;
+	drag_target.angle += da;
+	drag_angle_start = a;
+	drag_target.style.transform = "rotate(" + drag_target.angle.toFixed(3) + "deg)";
+}
+/*]]>*/</script>
 </svg>
