@@ -5580,6 +5580,7 @@ text {
 <path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" />
 <path d="M500,0 L-500,0" fill="none" stroke="none" stroke-width="10" />
 <circle cx="0" cy="0" r="500" fill="none" stroke="#ffffff01" stroke-width="1" />
+<circle cx="0" cy="0" r="40" fill="#ffffff01" stroke="blue" stroke-width="1" class="recenter" id="pointer_recenter" />
 </g>
 </g>
 <g transform="translate(1500 500)">
@@ -8970,6 +8971,7 @@ text {
 <path d="M0,0 L500,0" fill="none" stroke="blue" stroke-width="2" />
 <path d="M500,0 L-500,0" fill="none" stroke="none" stroke-width="10" />
 <circle cx="0" cy="0" r="500" fill="none" stroke="#ffffff01" stroke-width="1" />
+<circle cx="0" cy="0" r="40" fill="#ffffff01" stroke="blue" stroke-width="1" class="recenter" id="pointer_recenter" />
 </g>
 </g>
 <script>/*<![CDATA[*/
@@ -8981,9 +8983,10 @@ var drag_angle_start = null;
 function drag_init(ev) {
 	var svg = ev.target;
 	dragging = false;
-	for(var el of svg.getElementsByClassName("spinner"))
+	for(el of svg.getElementsByClassName("spinner"))
 	{
 		console.log(el);
+		el.angle = 0
 		el.addEventListener('mousedown', drag_start);
 		el.addEventListener('mousemove', drag)
 		el.addEventListener('mouseup', drag_end);
@@ -8993,6 +8996,30 @@ function drag_init(ev) {
 		el.addEventListener('touchend', drag_end);
 		el.addEventListener('touchcancel', drag_end);
 	}
+
+	for(el of svg.getElementsByClassName("recenter"))
+	{
+		el.addEventListener('mousedown', recenter);
+	}
+}
+function rotate(el, angle)
+{
+	el.angle = angle;
+	el.style.transform = "rotate(" + el.angle.toFixed(3) + "deg)";
+}
+function recenter(evt)
+{
+	console.log("recenter", evt.target);
+	var prefix = evt.target.id.startsWith("back_") ? "back_" : "";
+		
+	var pointer = document.getElementById(prefix+"pointer");
+	var inner = document.getElementById(prefix+"inner");
+	var outer = document.getElementById(prefix+"outer");
+
+	rotate(inner, inner.angle - pointer.angle);
+	rotate(outer, outer.angle - pointer.angle);
+	rotate(pointer, 0);
+
 }
 function drag_start(evt)
 {
@@ -9051,9 +9078,8 @@ function drag(evt)
 		da += 360;
 	if (da > +180)
 		da -= 360;
-	drag_target.angle += da;
 	drag_angle_start = a;
-	drag_target.style.transform = "rotate(" + drag_target.angle.toFixed(3) + "deg)";
+	rotate(drag_target, drag_target.angle + da);
 }
 /*]]>*/</script>
 </svg>

@@ -230,6 +230,7 @@ def make_pointer(id="pointer"):
 	pointer.append(draw.Line(0,0, 500, 0, fill="none", stroke="blue", stroke_width=2))
 	pointer.append(draw.Line(500,0, -500, 0, fill="none", stroke="none", stroke_width=10))
 	pointer.append(draw.Circle(0,0, 500, fill="none", stroke="#ffffff01", stroke_width=1))
+	pointer.append(draw.Circle(0,0, 40, fill="#ffffff01", stroke="blue", stroke_width=1, class_="recenter", id_=id+"_recenter"));
 	return pointer
 
 def draw_axle():
@@ -275,9 +276,10 @@ var drag_angle_start = null;
 function drag_init(ev) {
 	var svg = ev.target;
 	dragging = false;
-	for(var el of svg.getElementsByClassName("spinner"))
+	for(el of svg.getElementsByClassName("spinner"))
 	{
 		console.log(el);
+		el.angle = 0
 		el.addEventListener('mousedown', drag_start);
 		el.addEventListener('mousemove', drag)
 		el.addEventListener('mouseup', drag_end);
@@ -287,6 +289,30 @@ function drag_init(ev) {
 		el.addEventListener('touchend', drag_end);
 		el.addEventListener('touchcancel', drag_end);
 	}
+
+	for(el of svg.getElementsByClassName("recenter"))
+	{
+		el.addEventListener('mousedown', recenter);
+	}
+}
+function rotate(el, angle)
+{
+	el.angle = angle;
+	el.style.transform = "rotate(" + el.angle.toFixed(3) + "deg)";
+}
+function recenter(evt)
+{
+	console.log("recenter", evt.target);
+	var prefix = evt.target.id.startsWith("back_") ? "back_" : "";
+		
+	var pointer = document.getElementById(prefix+"pointer");
+	var inner = document.getElementById(prefix+"inner");
+	var outer = document.getElementById(prefix+"outer");
+
+	rotate(inner, inner.angle - pointer.angle);
+	rotate(outer, outer.angle - pointer.angle);
+	rotate(pointer, 0);
+
 }
 function drag_start(evt)
 {
@@ -345,8 +371,7 @@ function drag(evt)
 		da += 360;
 	if (da > +180)
 		da -= 360;
-	drag_target.angle += da;
 	drag_angle_start = a;
-	drag_target.style.transform = "rotate(" + drag_target.angle.toFixed(3) + "deg)";
+	rotate(drag_target, drag_target.angle + da);
 }
 """)
