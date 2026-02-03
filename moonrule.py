@@ -198,6 +198,21 @@ def make_lunar_parallax(R, offset=200):
 	def r_func(hp,alt): return offset + (R - offset) * (hp - hp_min) / hp_range
 	def a_func(hp,alt): return (cos(radians(alt))) * hp * 6 
 
+	mid_angle = -0.2724 * (hp_min+hp_max)/2 * 6
+	g.append(text_circle("Lunar semi-diameter", 10,
+		offset-40,
+		start=mid_angle-30,
+		end=mid_angle+30,
+		text_anchor="middle",
+		class_="red_angle",
+	))
+	g.append(draw.Text("SD augmentation", 10,
+		0, -8,
+		class_="red_angle",
+		text_anchor="start",
+		transform="translate(%d %d) rotate(%.2f)" % (offset, -0, 8),
+	))
+
 	for hp in frange(hp_min, hp_max + 0.01, 0.5):
 		pts = []
 		# todo: include latitude offset hp * sin2(lat) / 298.3?
@@ -249,10 +264,11 @@ def make_lunar_parallax(R, offset=200):
 				class_=c
 			))
 
+			# red since the red numbers are used
 			if True: #hp % 5 == 0:
 				g.append(draw.Text("%d" % (hp), 8,
 					offset-20, 5,
-					class_="angle",
+					class_="red_angle",
 					text_anchor="end",
 					transform="rotate(%.3f)" % (a-1),
 				))
@@ -308,10 +324,11 @@ def make_lunar_parallax(R, offset=200):
 			-y - 10,
 			x+0,
 			text_anchor="start",
-			class_="angle",
+			class_="red_angle",
 			transform="rotate(-90)",
 		))
 	g.append(draw.Lines(*pts, class_="thin"))
+
 
 	return g
 
