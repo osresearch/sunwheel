@@ -147,7 +147,7 @@ def correct_ld(old, hs, hm, hp):
 	dz = compute_lha(hm, hs, old)
 	rs = refraction(hs) / 60
 	rm = refraction(hm) / 60
-	(ld,_) = compute_hczn(hm + hp * cos(radians(hm))/60 + rm, hs + rs, dz)
+	(ld,_) = compute_hczn(hm + hp * cos(radians(hm))/60 - rm, hs - rs, dz)
 	return ld
 	
 
@@ -213,8 +213,10 @@ if __name__ == "__main__":
 	import ephem
 	from datetime import datetime
 	html = False
+	decimal = False
 	degsym = "&deg;" if html else ' '
 
+	# TODO: use skyfield instead of ephem
 	sun = ephem.Sun()
 
 	year = datetime.today().year
@@ -237,6 +239,8 @@ if __name__ == "__main__":
 			ha = degrees(sun.ha)
 
 			# compute the change to the next hour
+			# TODO: should compute the change over the whole day
+			# and divide by 24
 			sun.compute("%04d/%02d/%02d 13:00:00" % (year, mon+1, day+1))
 			d = degrees(sun.dec) - decl
 
@@ -249,7 +253,10 @@ if __name__ == "__main__":
 			ha = "% 3d:%02d" % (ha_min, ha_sec * 60)
 
 			#descr = "%s %+4.1f' %4.1f %s" % (degfmt(decl), d * 60, sd*60, ha)
-			descr = "%s %+4.1f %s" % (degfmt(decl, html=html), d * 60, ha)
+			if decimal:
+				descr = "%+7.3f %+3d %s" % (decl, d * 6000, ha)
+			else:
+				descr = "%s %+3d %s" % (degfmt(decl, html=html), d * 6000, ha)
 
 			if descr.startswith(prev_dec):
 				descr = '  " ' + descr[4:]
@@ -302,13 +309,17 @@ table.alternate td { text-align: end; padding: 0 8px; white-space:pre; }
 				if html:
 					print(f"<td><tt>{month[day] if day < len(month) else ''}</tt></td>")
 				elif len(month) <= day:
-					print("%-23s" % (' |'), end='')
+					if decimal:
+						print("%-21s" % (' |'), end='')
+					else:
+						print("%-22s" % (' |'), end='')
 				else:
 					print(' | ' + month[day], end='')
+
 			if html:
-				print("</tr>")
+				print(f"<td>{day+1}</td></tr>")
 			else:
-				print('')
+				print("| %2d" % (day+1))
 
 
 		if html:
