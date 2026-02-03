@@ -2217,7 +2217,7 @@ def make_sunrule():
 	(back_inner,back_outer) = moonrule.make_moon_back()
 	back.append(back_outer)
 	back.append(back_inner)
-	back.append(make_pointer())
+	back.append(make_pointer("back_pointer"))
 	append_dragging(d)
 	d.append(back)
 	d.save_svg(output_file)
