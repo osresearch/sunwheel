@@ -120,10 +120,11 @@ def make_log_cosine(R,
 
 		if not font_sz:
 			continue
+		x_off = 16
 		g.append(draw.Text(
 			"%d" % (i // steps),
 			font_sz,
-			+16 if side & 2 else -16,
+			+x_off if side & 2 else -x_off,
 			(font_sz-2) if side & 2 else -2,
 			class_="angle" if side & 2 else "red_angle",
 			text_anchor="start" if side & 2 else "end",
@@ -231,6 +232,7 @@ def make_haversine_spiral(R,
 				c = "extra_thick"
 			elif angle < 5:
 				sz = font_sz - 3
+				x_off = -15
 			elif angle < 140 and int(angle) % 5 == 0:
 				c = "extra_thick"
 				l = 30
@@ -249,7 +251,7 @@ def make_haversine_spiral(R,
 			if sz:
 				gt.append(draw.Text("%d" % (angle), # + (deg_symbol if not log_scale else ""),
 					sz,
-					x_off if sides & 1 else +12,
+					x_off if sides & 1 else -x_off,
 					-3 if log_scale or direction == -1 else sz,
 					#class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
 					class_=color_prefix + "angle",
@@ -486,6 +488,19 @@ def make_front():
 	#outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
 	#outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
 
+	inner.append(text_circle("Linear Haversine", 20,
+		inner_offset-25,
+		-90-80, -90+80,
+		class_="angle",
+		text_anchor="middle",
+	))
+	inner.append(text_circle("hav(A)+hav(B)", 15,
+		inner_offset-25,
+		+90+45, +90-45,
+		class_="angle",
+		text_anchor="middle",
+	))
+
 
 	return (inner,outer)
 
@@ -555,6 +570,31 @@ def make_back():
 		cut+35, 2, +45, text_anchor="start", class_="angle",
 	))
 
+	inner.append(draw.Text("360-Z", 20,
+		inner_offset+0, 25,
+		text_anchor="end",
+		transform="rotate(+13)",
+		class_="red_angle",
+	))
+	inner.append(draw.Text("Z", 20,
+		inner_offset+0, -2,
+		text_anchor="end",
+		transform="rotate(+13)",
+		class_="angle",
+	))
+
+	inner.append(text_circle("Logarithmic Haversine", 20,
+		inner_offset-20,
+		-90-80, -90+80,
+		class_="red_angle",
+		text_anchor="middle",
+	))
+	inner.append(text_circle("hav(C)cos(a)cos(b)", 15,
+		inner_offset-20,
+		+90+45, +90-45,
+		class_="red_angle",
+		text_anchor="middle",
+	))
 	return (inner,outer)
 
 
