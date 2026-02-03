@@ -141,7 +141,7 @@ print("DECL", fmt_deg(noon_decl), "%.2f" % (decl_d))
 #      00:00 27.68 26.96 26.84  -7.1  56.7 -179.4 -309.4 -309.7 +14.401 47.25 50.89
 print("UTC   Hs    Ho    Hc     err   Zn   GHA    DR_LHA  LHA   Decl    T1    T2")
 for h in range(0,24):
-	for m in [0,15,30,45]:
+	for m in range(0,60): #[0,15,30,45]:
 		d = day + datetime.timedelta(hours=h, minutes=m)
 
 		# the exact height that you should see
@@ -172,7 +172,6 @@ for h in range(0,24):
 
 		transfer = ahaversine(haversine(dr_lha) * cos(radians(dr_lat)) * cos(radians(decl)))
 		hc = 90 - ahaversine(haversine(transfer) + haversine(dr_lat - decl))
-		print(dr_lat - decl)
 		transfer2 = ahaversine(haversine(90-decl) - haversine(dr_lat - hc))
 
 		print("%02d:%02d" % (h,m),
