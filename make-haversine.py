@@ -150,6 +150,7 @@ def make_haversine_spiral(R,
 	division = 0.1,
 	direction = +1,
 	divs = None,
+	color_prefix = "",
 ):
 	g = draw.Group()
 	pts = []
@@ -251,7 +252,7 @@ def make_haversine_spiral(R,
 					x_off if sides & 1 else +12,
 					-3 if log_scale or direction == -1 else sz,
 					#class_="red_angle" if log_scale and int(angle) % 15 == 0 else "angle",
-					class_="angle",
+					class_=color_prefix + "angle",
 					text_anchor="end" if sides & 1 else "start",
 				))
 			if sz and include_red:
@@ -477,12 +478,14 @@ def make_front():
 	# as well as converting minutes to decimal degrees
 	outer.append(draw.Line(cut, 0, outer_cut, 0, class_="extra_thick"))
 
-	outer.append(make_fractional_minutes(outer_cut-5, side=1, font_sz=10, include_red=True))
 	outer.append(draw.Circle(0, 0, outer_cut-5, class_="thin"))
 
-	outer.append(make_haversine_spiral(outer_cut-40, offset=cut, max_angle=35.7, sides=2, include_red=False, spacing=+30, division = inner_division, direction=-1))
+	one_loop = 35.7
+	outer.append(make_haversine_spiral(outer_cut-40, offset=cut, max_angle=one_loop, sides=2, include_red=False, spacing=+30, division = inner_division, direction=+1, color_prefix="red_"))
+	outer.append(make_haversine_spiral(outer_cut+25, offset=outer_cut, max_angle=one_loop, sides=1, include_red=False, spacing=+30, division = inner_division, direction=-1, color_prefix=""))
 	#outer.append(make_fractional_minutes(cut, side=2, font_sz=10, max_angle=60, include_red=True, include_marker=True))
 	#outer.append(draw.Circle(0, 0, (outer_cut+cut)/2, class_="thin"))
+
 
 	return (inner,outer)
 
@@ -545,6 +548,13 @@ def make_back():
 		outer.append(text_circle("Latitude" + right_arrow3, 15,
 			cut + 20, a-45, a, text_anchor="end", fill="black"))
 
+	outer.append(text_circle(left_arrow3 + "Hs Dec Hc", 12,
+		cut+35, -45, -2, text_anchor="end", class_="red_angle",
+	))
+	outer.append(text_circle("Lat Hm" + right_arrow3, 12,
+		cut+35, 2, +45, text_anchor="start", class_="angle",
+	))
+
 	return (inner,outer)
 
 
@@ -566,4 +576,5 @@ d.append(back)
 d.save_svg(output_file)
 
 append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
+a3.append(draw.Image(1500, -800, 1000, 1000, path="spherical-triangle.svg", embed=True, transform="rotate(90) scale(0.45)"))
 a3.save_svg("haversine-a3.svg")
