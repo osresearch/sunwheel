@@ -198,8 +198,9 @@ def make_lunar_parallax(R, offset=200):
 	def r_func(hp,alt): return offset + (R - offset) * (hp - hp_min) / hp_range
 	def a_func(hp,alt): return (cos(radians(alt))) * hp * 6 
 
-	mid_angle = -0.2724 * (hp_min+hp_max)/2 * 6
-	g.append(text_circle("Lunar semi-diameter", 10,
+	sd_coeff = 0.2724
+	mid_angle = -sd_coeff * (hp_min+hp_max)/2 * 6
+	if False: g.append(text_circle("Lunar semi-diameter", 10,
 		offset-40,
 		start=mid_angle-30,
 		end=mid_angle+30,
@@ -207,21 +208,23 @@ def make_lunar_parallax(R, offset=200):
 		class_="red_angle",
 	))
 	g.append(draw.Text("SD augmentation", 10,
-		0, -8,
+		0, +10,
 		class_="red_angle",
 		text_anchor="start",
-		transform="translate(%d %d) rotate(%.2f)" % (offset, -0, 8),
+		transform="translate(%d %d) rotate(%.2f)" % (offset, -0, -8),
 	))
 
 	for hp in frange(hp_min, hp_max + 0.01, 0.5):
-		pts = []
 		# todo: include latitude offset hp * sin2(lat) / 298.3?
 		# this seems very small so we'll ignore it
-		for lat in []: # frange(0,90,1):
+		for lat in []: # frange(0,91,30):
 			a = hp * sin(radians(lat))**2 / 298.3
 			r = r_func(hp,lat)
-			pts += compute_xy(r,a*6)
-		#g.append(draw.Lines(*pts, class_="extra_thick"))
+			g.append(draw.Lines(
+				*compute_xy(r-2,a*6),
+				*compute_xy(r+2,a*6),
+				class_="thin",
+			))
 
 		pts = []
 
@@ -251,7 +254,7 @@ def make_lunar_parallax(R, offset=200):
 			continue
 
 		# mark the semi diameters for the differen HP values
-		for sd in [ -0.2724 * hp ]: #, +0.2724 * hp ]:
+		for sd in []: #[ -sd_coeff* hp ]: #, +0.2724 * hp ]:
 			a = sd * 6
 			g.append(draw.Lines(
 				*compute_xy(R-20, a),
@@ -274,14 +277,17 @@ def make_lunar_parallax(R, offset=200):
 				))
 				
 
+	sd_alt = degrees(acos(sd_coeff))
 
-	for alt in [0,2,4,6,7,8,9] + frange(10, alt_max+1, 1):
+	for alt in [0,2,4,6,7,8,9,sd_alt] + frange(10, alt_max+1, 1):
 		pts = []
 		for hp in frange(hp_min, hp_max + 0.01, 0.1):
 			a = a_func(hp,alt)
 			r = r_func(hp,alt)
 			pts += compute_xy(r, a)
-		if int(alt % 10) == 0:
+		if alt == sd_alt:
+			c = "red_thick"
+		elif int(alt % 10) == 0:
 			c = "extra_thick"
 		elif int(alt % 5) == 0:
 			c = "thick"
@@ -289,6 +295,14 @@ def make_lunar_parallax(R, offset=200):
 			c = "thin"
 		path = draw.Lines(*pts, class_=c)
 		g.append(path)
+
+		if alt == sd_alt:
+			g.append(draw.Text("Lunar semi-diameter", 10,
+				path=path,
+				text_anchor="middle",
+				class_="red_angle",
+				transform="translate(0 3)",
+			))
 
 		if int(alt % 10) != 0 or alt == 0:
 			continue
@@ -315,13 +329,13 @@ def make_lunar_parallax(R, offset=200):
 	pts = []
 	for alt in range(0,90+1):
 		sd_aug = 0.3 * sin(radians(alt))
-		(x,y) = compute_xy(offset + alt*1.0, sd_aug*6)
+		(x,y) = compute_xy(offset + alt*0.9, -sd_aug*6)
 		pts += (x,y)
 		if alt % 10 != 0:
 			continue
 		g.append(draw.Lines(x, y-5, x, y+5, class_="thin"))
 		g.append(draw.Text("%d" % (alt), 8,
-			-y - 10,
+			-y + 5,
 			x+0,
 			text_anchor="start",
 			class_="red_angle",
