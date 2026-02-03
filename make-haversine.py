@@ -62,15 +62,17 @@ def make_log_cosine(R,
 	g.append(draw.Circle(0, 0, R, class_="thin"))
 
 	# 
-	steps = 100
-	ranges = []
-	if min_angle < 40:
-		ranges += frange(3*steps,10*steps, steps//2)
-		ranges += frange(10*steps, min(16,max_angle)*steps, steps//4)
-		ranges += frange(16*steps, min(40,max_angle)*steps, steps//10)
-	ranges += frange(max(min_angle,40)*steps,max_angle*steps, steps//20)
-	for i in ranges:
-		lc = log(cos(radians(i/steps)))
+	angles = []
+	angles += frange(min_angle, min(10, max_angle), 1/2)
+	angles += frange(10, min(20, max_angle), 1/4)
+	angles += frange(20, min(30, max_angle), 1/12)
+	angles += frange(30, min(50, max_angle), 1/24)
+	angles += frange(50, min(60, max_angle), 1/60)
+	for angle in angles:
+		lc = log(cos(radians(angle)))
+		(a_frac,a_deg) = modf(angle)
+		a_frac = int(a_frac*60 + 0.5)
+
 		whole = int(lc / division)
 		frac = -((-lc) % division)
 		#(frac,whole) = modf(lc)
@@ -86,25 +88,28 @@ def make_log_cosine(R,
 
 		font_sz = None
 
-		if int(i) % (10*steps) == 0 and i > 10*steps:
+		if a_frac == 0 and a_deg % 10 == 0: #int(i) % (10*steps) == 0 and i > 10*steps:
 			font_sz = sz + 5
 			c = "extra_thick"
 			l = 25
-		elif int(i) % (5*steps) == 0:
+		elif a_frac == 0 and a_deg % 5 == 0: # int(i) % (5*steps) == 0:
 			font_sz = sz
 			c = "extra_thick"
 			l = 20
-		elif int(i) % (1*steps) == 0:
-			if i > 10*steps or i == 8*steps:
+		elif a_frac == 0: # int(i) % (1*steps) == 0:
+			if a_deg > 10 or a_deg == 8:
 				font_sz = sz
 			c = "thick"
 			l = 20
-		elif int(i) % (steps//2) == 0:
+		elif a_frac == 30: # int(i) % (steps//2) == 0:
 			c = "thin"
-			l = 20 if i > 16*steps else 10
-		elif int(i) % (steps//10) == 0:
+			l = 20 if a_deg > 16 else 10
+		elif a_frac % 10 == 0: #int(i) % (steps//10) == 0:
 			c = "thin"
-			l = 12
+			l = 15
+		elif a_frac % 5 == 0: #int(i) % (steps//10) == 0:
+			c = "thin"
+			l = 10
 		else:
 			c = "extra_thin"
 			l = 8
@@ -122,7 +127,7 @@ def make_log_cosine(R,
 			continue
 		x_off = 16
 		g.append(draw.Text(
-			"%d" % (i // steps),
+			"%d" % (a_deg),
 			font_sz,
 			+x_off if side & 2 else -x_off,
 			(font_sz-2) if side & 2 else -2,
@@ -200,11 +205,22 @@ def make_haversine_spiral(R,
 			)
 
 	angles = []
-	angles += frange(min_angle,min(140,max_angle)+0.01, 0.05)
-	angles += frange(140, min(150,max_angle)+0.01, 0.1)
-	angles += frange(150, min(165,max_angle)+0.01, 0.25)
-	angles += frange(165, min(170,max_angle)+0.01, 0.5)
-	angles += frange(170, min(180,max_angle)+0.01, 1)
+	if log_scale:
+		angles += frange(min_angle,min(60,max_angle)+0.01, 1/60)
+		angles += frange(60, min(125,max_angle)+0.01, 1/24)
+		angles += frange(125, min(150,max_angle)+0.01, 0.125)
+		angles += frange(150, min(165,max_angle)+0.01, 0.25)
+		angles += frange(165, min(170,max_angle)+0.01, 0.5)
+		angles += frange(170, min(180,max_angle)+0.01, 1)
+	else:
+		# they are very compressed at the start and end of the
+		# spiral, but have more range in the middle
+		angles += frange(min_angle,min(5,max_angle)+0.01, 1/4)
+		angles += frange(5, min(15,max_angle)+0.01, 1/12)
+		angles += frange(15, min(25,max_angle)+0.01, 1/24)
+		angles += frange(25, min(100,max_angle)+0.01, 1/60)
+		angles += frange(100, min(140,max_angle)+0.01, 1/24)
+
 	for angle in angles: #frange(min_angle,max_angle+0.01,0.05):
 		h = haversine(angle)
 		if log_scale:
@@ -216,7 +232,7 @@ def make_haversine_spiral(R,
 
 		(frac,whole) = modf(angle)
 		gt = draw.Group(transform="rotate(%.3f) translate(%.3f 0)" % (a, r))
-		frac = int(frac*100 + 0.5)
+		frac = int(frac*60 + 0.5)
 		l2 = 0
 
 		if frac == 0:
@@ -274,12 +290,15 @@ def make_haversine_spiral(R,
 					class_="angle",
 					text_anchor="end",
 				))
-		elif frac == 50:
+		elif frac == 30:
 			l = 15
 			l2 = 5
 			c = "thin"
 		elif frac % 10 == 0:
 			l = 10
+			c = "thin"
+		elif frac % 5 == 0:
+			l = 8
 			c = "thin"
 		else:
 			l = 6
