@@ -235,13 +235,13 @@ def make_height_of_eye(radius,angle):
 	return g
 
 
-def make_arcs(pts, func, fill="none", stroke="black", stroke_width=1, **style):
+def make_arcs(pts, func, **style):
 	points = []
 	for t in pts:
 		(r,a) = func(t)
 		points += compute_xy(r,a)
 
-	return draw.Lines(*points, fill=fill, stroke=stroke, stroke_width=stroke_width, **style)
+	return draw.Lines(*points, **style)
 
 # Combined refraction, semidiameter and parallax table
 # from https://www.thenauticalalmanac.com/Increments_and_Corrections/Altitude_Correction_Tables.pdf
@@ -257,26 +257,37 @@ def make_refraction(radius, angle):
 	sd_2 = 15.9
 	g = draw.Group(transform="rotate(%.3f)" % (angle))
 	majors = frange(3,20,1) + frange(20,45,5) + frange(50,90.1,10)
-	minors1 = frange(3,20,0.5) + frange(20,40,1) + frange(30,90.1,5)
-	minors2 = frange(3,10,0.1) + frange(10,20,0.25) + frange(20,40,0.5) + frange(40,60,1) + frange(60,90,2.5)
+	minors1 = frange(3,20,0.5) + frange(20,30,1) + frange(30,50,2.5)
+	minors2 = frange(3,6,0.1) \
+		+ frange(6,10,0.25) \
+		+ frange(10,15,0.5) \
+		+ frange(15,30,1) \
+		+ frange(30,50,2.5) \
+		+ frange(50,90.1,5)
 
 	t_scale = lambda t: radius - 50 - t * 4.5
+	t_func = lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6)
 
 	t_max = 40
 	pressure = 1010
 
-	for h_a in majors:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6), stroke_width=0.4))
-	for h_a in minors1:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6), stroke_width=0.2))
-	for h_a in minors2:
-		g.append(make_arcs(frange(-10,t_max+0.1,1), lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6), stroke_width=0.1))
+	for class_,heights in {
+		"extra_thin": minors2,
+		"thin": minors1,
+		"thick": majors,
+	}.items():
+		for h_a in heights:
+			g.append(make_arcs(
+				frange(-10,t_max+0.1,1),
+				lambda t: (t_scale(t), refraction(h_a,pressure,t)*-6),
+				class_=class_
+			))
 
 	for t in [-10,-5,0,5,10,15,20,25,30,35,40]:
 		r = t_scale(t)
 		g.append(make_arcs(minors2,
 			lambda a: (r, refraction(a,pressure,t)*-6),
-			stroke_width= 0.8 if (t % 10 == 0) else 0.1,
+			class_="thick" if t % 10 == 0 else "thin",
 		))
 
 		if t % 10 != 0:
@@ -302,62 +313,8 @@ def make_refraction(radius, angle):
 		text_anchor="start",
 	))
 
-	labels = [
-		[0, "Stars----"],
-		[-sd_1*6, "Oct-Mar" ],
-		[-sd_2*6, "Apr-Sep\n(Lower)" ],
-
-		[sd_1*6, "Oct-Mar\n(Upper)" ],
-		[sd_2*6, "Apr-Sep" ],
-	]
-
-#	g.append(make_tick_labels(
-#		radius-25,
-#		[
-#			[+sd_1*6-4, "Upper"],
-#			[-sd_1*6-2, "Lower"],
-#		],
-#		text_anchor="center",
-#		size=8,
-#	))
-
-	#g.append(make_ticks(radius, [_[0] for _ in labels], 8, stroke="red"))
-#	g.append(make_tick_labels(radius, labels,
-#		pos=(-9,2),
-#		text_anchor="end",
-#		length=8,
-#		stroke="red",
-#	))
-	#g.append(make_ticks(radius-30, [sd_1*6], 8, stroke="red"))
 	return g
 
-# Parallax table from https://thenauticalalmanac.com/DRIPS.pdf
-# what's the formula?
-def make_parallax(radius):
-	ticks = [
-		#[-0.14*60, "0"],
-		#[0.13*60, "25"],
-		#[0.12*60, "35"],
-		[-0.11*60, "40"],
-		#[0.10*60, "45"],
-		[-0.09*60, "50"],
-		#[0.08*60, "55"],
-		[-0.07*60, "60"],
-		#[0.06*60, "65"],
-		[-0.05*60, "70"],
-		#[0.04*60, "75"],
-		[-0.03*60, "80"],
-		#[0.01*60, "85"],
-		[-0.00*60, "90"],
-	]
-	angle = -0.14 * 60 # align with the zero on the height of eye
-	g = draw.Group(transform="rotate(%.3f)" % (-angle))
-	g.append(make_ticks(radius, [_[0] for _ in ticks], 8, stroke_width=0.3))
-	g.append(make_tick_labels(radius, ticks,
-		text_anchor="end",
-		pos=(-10,+3),
-	))
-	return g
 
 # Sun semi diameter for upper or lower
 # from https://thenauticalalmanac.com/DRIPS.pdf
@@ -448,30 +405,31 @@ def make_d_lines(outer_radius):
 	for t in frange(-12,12.01,0.25):
 		g.append(make_arcs(frange(0.5, 1.01, 0.01),
 			lambda d: (r_func(d), t*d*6),
-			stroke_width=0.1))
+			class_="extra_thin",
+		))
 
 	# half hour marks (almost all the way in)
 	for t in frange(-12,12.1,0.5):
 		g.append(make_arcs(frange(0.2, 1.01, 0.01),
 			lambda d: (r_func(d), t*d*6),
-			stroke_width=0.2))
+			class_="thin",
+		))
 
 	# full hour marks
 	def arc_func(t,pts, **kwargs):
 		 return make_arcs(pts, lambda d: (r_func(d), t*d*6), **kwargs)
 
 	for t in frange(-12,12.1,1):
-		stroke = "black"
-		width = 0.5
+		c = "thick"
 
 		if t == 0:
+			c = "extra_thick"
 			width = 2
 #		elif t == -6 or t == 6:
 #			stroke = "red"
 #			width = 1
 		g.append(arc_func(t, frange(0.1, 1.01, 0.01),
-			stroke=stroke,
-			stroke_width=width,
+			class_=c,
 		))
 
 		if t == -12 or t == +12:

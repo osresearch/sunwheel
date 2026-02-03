@@ -45,6 +45,11 @@ text {
 	stroke: black;
 	stroke-width: 1;
 }
+.red_thick {
+	fill: none;
+	stroke: red;
+	stroke-width: 1;
+}
 .thin {
 	fill: none;
 	stroke: black;
@@ -52,8 +57,8 @@ text {
 }
 .extra_thin {
 	fill: none;
-	stroke: gray;
-	stroke-width: 0.3;
+	stroke: #666;
+	stroke-width: 0.4;
 }
 .angle { 
 	fill: black;
