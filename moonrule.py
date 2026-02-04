@@ -228,54 +228,37 @@ def make_lunar_parallax(R, offset=200):
 
 		pts = []
 
+		(frac,whole) = modf(hp)
+		frac = int(frac*100 + 0.5)
+
 		for alt in frange(0, alt_max+0.01, 0.1):
 			a = a_func(hp,alt)
 			r = r_func(hp,alt)
 			pts += compute_xy(r, a)
 
-			if modf(hp)[0] == 0 and \
-			alt == alt_max and hp != hp_max:
-				g.append(draw.Text("%d" % (hp), 12,
-					#*compute_xy(r,a),
-					0, +8,
-					class_="angle",
-					transform="rotate(%.3f) translate(%.3f %.3f) rotate(-90)" % (a, r, 0),
-				))
+			if frac != 0 or hp == hp_max:
+				continue
+			if alt == alt_max:
+				sz = 12
+			elif alt in [35,45,55,65,75]:
+				sz = 9
+			else:
+				continue
+			g.append(draw.Text("%d" % (hp), sz,
+				#*compute_xy(r,a),
+				0, +8,
+				class_="angle",
+				transform="rotate(%.3f) translate(%.3f %.3f) rotate(-90)" % (a, r, 0),
+			))
 		if hp % 5 == 0:
 			c = "thick"
-		elif hp % 1 == 0:
+		elif frac == 0:
 			c = "thin"
 		else:
 			c = "extra_thin"
 
 		g.append(draw.Lines(*pts, class_=c))
 
-		if hp % 1:
-			continue
-
-		# mark the semi diameters for the differen HP values
-		for sd in []: #[ -sd_coeff* hp ]: #, +0.2724 * hp ]:
-			a = sd * 6
-			g.append(draw.Lines(
-				*compute_xy(R-20, a),
-				*compute_xy(R, a),
-				class_=c
-			))
-			g.append(draw.Lines(
-				*compute_xy(offset-20, a),
-				*compute_xy(offset, a),
-				class_=c
-			))
-
-			# red since the red numbers are used
-			if True: #hp % 5 == 0:
-				g.append(draw.Text("%d" % (hp), 8,
-					offset-20, 5,
-					class_="red_angle",
-					text_anchor="end",
-					transform="rotate(%.3f)" % (a-1),
-				))
-				
 
 	sd_alt = degrees(acos(sd_coeff))
 
@@ -365,6 +348,8 @@ def make_moon_front():
 
 	inner.append(draw_marker("", cut, 180))
 
+	inner.append(draw.Image(0, 0, 1000, 1000, path="spherical-triangle.svg", embed=True))
+
 
 	# computing the lunar increments
 	# do we still want this?
@@ -408,6 +393,7 @@ def make_moon_back():
 	#outer.append(make_fractional_ccl(cut+25))
 	#outer.append(make_fractional_ccl2(cut, outer_cut - cut))
 
+	inner.append(draw.Image(-500, -500, 1000, 1000, path="lunar-triangle.svg", embed=True, transform="scale(0.8)"))
 	return (inner,outer)
 
 

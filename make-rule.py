@@ -285,9 +285,13 @@ def make_refraction(radius, angle):
 
 	for t in [-10,-5,0,5,10,15,20,25,30,35,40]:
 		r = t_scale(t)
+		c = "thin"
+		if t == 10: c = "red_thick"
+		elif t % 10 == 0: c = "thick"
+
 		g.append(make_arcs(minors2,
 			lambda a: (r, refraction(a,pressure,t)*-6),
-			class_="thick" if t % 10 == 0 else "thin",
+			class_=c,
 		))
 
 		if t % 10 != 0:
@@ -425,9 +429,8 @@ def make_d_lines(outer_radius):
 		if t == 0:
 			c = "extra_thick"
 			width = 2
-#		elif t == -6 or t == 6:
-#			stroke = "red"
-#			width = 1
+		elif t == -6 or t == 6:
+			c = "red_thick"
 		g.append(arc_func(t, frange(0.1, 1.01, 0.01),
 			class_=c,
 		))
@@ -2092,6 +2095,7 @@ def make_sun_front():
 
 	img_sz = cut*2
 	inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=True))
+
 	return (inner,outer)
 
 ####
