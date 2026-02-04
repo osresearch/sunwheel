@@ -479,13 +479,13 @@ def make_front():
 		text_anchor="start",
 	))
 
-	inner.append(draw.Text("Hav(Z)", 20,
-		inner_offset+0, 25,
+	inner.append(draw.Text("Z", 20,
+		inner_offset-5, 25,
 		text_anchor="end",
 		transform="rotate(-25)",
 	))
-	inner.append(draw.Text("Hav(90-Z)", 20,
-		inner_offset+0, -2,
+	inner.append(draw.Text("90-Z", 20,
+		inner_offset-5, -2,
 		text_anchor="end",
 		transform="rotate(-25)",
 		fill="red",
@@ -518,6 +518,13 @@ def make_front():
 		+90+45, +90-45,
 		class_="angle",
 		text_anchor="middle",
+	))
+
+	outer.append(text_circle("-Hav(Lat-Hc) -Hav(Hm-Hs)" + right_arrow3, 10,
+		cut+35, 8, 45, text_anchor="start", class_="red_angle",
+	))
+	outer.append(text_circle(left_arrow3 + "+Hav(Lat-Dec) +Hav(Hm'-Hs')", 10,
+		cut+40, -45, -8, text_anchor="end", class_="angle",
 	))
 
 
@@ -582,11 +589,11 @@ def make_back():
 		outer.append(text_circle("Latitude" + right_arrow3, 15,
 			cut + 20, a-45, a, text_anchor="end", fill="black"))
 
-	outer.append(text_circle(left_arrow3 + "Hs Dec Hc", 12,
-		cut+35, -45, -2, text_anchor="end", class_="red_angle",
+	outer.append(text_circle(left_arrow3 + "Hs Hc Dec", 12,
+		cut+32, -45, -2, text_anchor="end", class_="red_angle",
 	))
 	outer.append(text_circle("Lat Hm" + right_arrow3, 12,
-		cut+35, 2, +45, text_anchor="start", class_="angle",
+		cut+38, 2, +45, text_anchor="start", class_="angle",
 	))
 
 	inner.append(draw.Text("360-Z", 20,
@@ -635,5 +642,5 @@ d.append(back)
 d.save_svg(output_file)
 
 append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
-a3.append(draw.Image(1500, -800, 1000, 1000, path="spherical-triangle.svg", embed=True, transform="rotate(90) scale(0.45)"))
+#a3.append(draw.Image(1500, -800, 1000, 1000, path="spherical-triangle.svg", embed=True, transform="rotate(90) scale(0.45)"))
 a3.save_svg("haversine-a3.svg")
