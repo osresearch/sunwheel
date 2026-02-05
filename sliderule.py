@@ -10,6 +10,10 @@ right_arrow3 = right_arrow+right_arrow+right_arrow
 left_arrow = "⮜"
 left_arrow3 = left_arrow+left_arrow+left_arrow
 
+dpi = 96
+a3_width = 420 * dpi / 25.4
+a3_height = 297 * dpi / 25.4
+
 css = """
 @font-face {
         font-family: "B612 Regular";
@@ -258,17 +262,17 @@ def append_a3(a3,
 	margin = 10,
 ):
 	a3_scaling = outer_diameter / 1000 * dpi / 25.4
-	a3_width = (420 * dpi / 25.4) / a3_scaling
-	a3_height = (297 * dpi / 25.4) / a3_scaling
+	a3_scaled_width = a3_width / a3_scaling
+	a3_scaled_height = a3_height / a3_scaling
 
 	# inner is slightly smaller, so tweak its position to just fit
-	mid_h = a3_height - outer_cut - inner_cut - 2 * margin
+	mid_h = a3_scaled_height - outer_cut - inner_cut - 2 * margin
 	d1 = sqrt((outer_cut + inner_cut + margin)**2 - mid_h**2)
 
 	append(a3, out1, outer_cut+margin, outer_cut+margin, a3_scaling)
-	append(a3, in1, outer_cut+margin+d1, a3_height - inner_cut - margin, a3_scaling)
-	append(a3, out2, a3_width - margin - outer_cut, a3_height - margin - outer_cut, a3_scaling)
-	append(a3, in2, a3_width - margin - outer_cut - d1, inner_cut + margin, a3_scaling)
+	append(a3, in1, outer_cut+margin+d1, a3_scaled_height - inner_cut - margin, a3_scaling)
+	append(a3, out2, a3_scaled_width - margin - outer_cut, a3_scaled_height - margin - outer_cut, a3_scaling)
+	append(a3, in2, a3_scaled_width - margin - outer_cut - d1, inner_cut + margin, a3_scaling)
 
 
 def append_dragging(d):
