@@ -2185,6 +2185,7 @@ def make_sunrule():
 	d.save_svg(output_file)
 
 	append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
+	a3.append(draw.Image(0,0, a3_width, a3_height, path="rule-instructions.svg", embed=True))
 	a3.save_svg("rule-a3.svg")
 
 

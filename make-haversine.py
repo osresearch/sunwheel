@@ -520,10 +520,10 @@ def make_front():
 		text_anchor="middle",
 	))
 
-	outer.append(text_circle("-Hav(Lat-Hc) -Hav(Hm-Hs)" + right_arrow3, 10,
+	outer.append(text_circle("---" + right_arrow3, 10,
 		cut+35, 8, 45, text_anchor="start", class_="red_angle",
 	))
-	outer.append(text_circle(left_arrow3 + "+Hav(Lat-Dec) +Hav(Hm'-Hs')", 10,
+	outer.append(text_circle(left_arrow3 + "+++", 10,
 		cut+40, -45, -8, text_anchor="end", class_="angle",
 	))
 
@@ -589,10 +589,10 @@ def make_back():
 		outer.append(text_circle("Latitude" + right_arrow3, 15,
 			cut + 20, a-45, a, text_anchor="end", fill="black"))
 
-	outer.append(text_circle(left_arrow3 + "Hs Hc Dec", 12,
+	outer.append(text_circle(left_arrow3 + "Hs/Hc/Dec", 12,
 		cut+32, -45, -2, text_anchor="end", class_="red_angle",
 	))
-	outer.append(text_circle("Lat Hm" + right_arrow3, 12,
+	outer.append(text_circle("Lat/Hm" + right_arrow3, 12,
 		cut+38, 2, +45, text_anchor="start", class_="angle",
 	))
 
@@ -643,4 +643,6 @@ d.save_svg(output_file)
 
 append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 #a3.append(draw.Image(1500, -800, 1000, 1000, path="spherical-triangle.svg", embed=True, transform="rotate(90) scale(0.45)"))
+
+a3.append(draw.Image(0,0, a3_width, a3_height, path="haversine-instructions.svg", embed=True))
 a3.save_svg("haversine-a3.svg")

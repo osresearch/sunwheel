@@ -88,7 +88,7 @@ def make_moon(R):
 # so a multiplication nomograph can be used to compute the
 # time based on the distance between the moon and some other object.
 # this scale helps with computing that time.
-def make_lunar_dist(R, offset = 150):
+def make_lunar_time(R, offset = 150):
 	g = draw.Group()
 	min_d = 25
 	max_d = 35
@@ -98,7 +98,7 @@ def make_lunar_dist(R, offset = 150):
 
 	g2 = draw.Group(id_="time-rings")
 
-	for d in range(min_d,max_d+1):
+	for d in frange(min_d,30,1) + frange(30,max_d+1,0.5):
 		pts = []
 		pts2 = []
 		for m in range(0, 60*60+1, 1):
@@ -108,25 +108,32 @@ def make_lunar_dist(R, offset = 150):
 			pts2 += compute_xy(r, -a)
 
 			if False and m % (60*10) == 0 and d % 2 == 0:
-				g2.append(draw.Text("%d" % (d), 11,
+				g2.append(draw.Text("%d" % (d), 10,
 					*compute_xy(r, a),
 					class_="red_angle",
 				))
 					
 		if d == 30:
 			c = "extra_thick"
-		else:
+		elif d % 1 == 0:
 			c = "thin"
+		else:
+			c = "extra_thin"
 		g2.append(draw.Lines(*pts,
 			class_=c,
 			id_="time-ring-%02d" % (d),
 		))
 
-		if d != max_d:
-			g2.append(draw.Text("%d" % (d), 11,
+		if d == max_d or d % 1 != 0:
+			continue
+		for m in frange(0,60,20) + [60.7]:
+			if d == max_d - 1: continue
+			g2.append(draw.Text("%d" % (d),
+				11 if m == 0 else 8,
 				0, 7,
 				class_="angle",
-				transform="translate(%.3f %.3f) rotate(-90)" % (r_func(d,0), 0),
+				text_anchor="start" if m < 60 else "end",
+				transform="rotate(%.3f) translate(%.3f %.3f) rotate(-90)" % (a_func(d,m*60), r_func(d,m*60), 0),
 			))
 		#g.append(draw.Lines(*pts2, class_=c))
 	g.append(g2)
@@ -153,12 +160,12 @@ def make_lunar_dist(R, offset = 150):
 			id_="time-line-%02d" % (m),
 		))
 
-		if m % (60*1) != 0 or m == 0 or m == 60*60:
+		if m % (60*1) != 0 or m == 60*60:
 			continue
 
 		# add some labels
-		for label_d in [max_d-4, min_d-2]:
-			if label_d == min_d - 2 and m % (60*5) != 0:
+		for label_d in [max_d-4, min_d-4]:
+			if label_d == min_d - 4 and m % (60*5) != 0:
 				continue
 
 			pts = []
@@ -166,7 +173,7 @@ def make_lunar_dist(R, offset = 150):
 				pts += compute_xy(r_func(label_d+d, m+3), a_func(label_d+d, m+3))
 			path = draw.Lines(*pts)
 			g2.append(draw.Text("%02d" % (m // (60)),
-				11,
+				10,
 				path=path,
 				text_anchor="end",
 				dominant_baseline="hanging",
@@ -240,7 +247,7 @@ def make_lunar_parallax(R, offset=200):
 				continue
 			if alt == alt_max:
 				sz = 12
-			elif alt in [35,45,55,65,75]:
+			elif alt in [15,35,45,55,65,75]:
 				sz = 9
 			else:
 				continue
@@ -383,7 +390,7 @@ def make_moon_back():
 	inner_offset = 100
 	#inner.append(draw.Circle(0, 0, inner_offset, fill="black"))
 	inner.append(make_lunar_parallax(cut, offset = cut - 120))
-	inner.append(make_lunar_dist(cut-130, offset = cut - 300))
+	inner.append(make_lunar_time(cut-130, offset = cut - 300))
 	inner.append(draw_marker("0", cut, 180))
 	#inner.append(make_fractional_minutes(cut, side=1, max_angle=60, divisions=10, font_sz=10, include_marker=True))
 	outer.append(make_fractional_minutes(cut, side=2, max_angle=60, divisions=10, font_sz=12, include_red=True, include_marker=True))
