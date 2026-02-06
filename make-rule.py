@@ -2094,7 +2094,7 @@ def make_sun_front():
 	outer.append(draw.Circle(0,0, outer_cut, fill="none", stroke="black", stroke_width=1))
 
 	img_sz = cut*2
-	inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=True))
+	inner.append(draw.Image(-img_sz/2, -img_sz/2, img_sz, img_sz, path="latitude.svg", embed=False))
 
 	return (inner,outer)
 
@@ -2185,7 +2185,7 @@ def make_sunrule():
 	d.save_svg(output_file)
 
 	append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
-	a3.append(draw.Image(0,0, a3_width, a3_height, path="rule-instructions.svg", embed=True))
+	a3.append(draw.Use('instructions', 0,0, href="rule-instructions.svg#layer1", embed=False, transform="scale(%.3f)" % (dpi/25.4)))
 	a3.save_svg("rule-a3.svg")
 
 

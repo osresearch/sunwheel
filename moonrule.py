@@ -355,7 +355,7 @@ def make_moon_front():
 
 	inner.append(draw_marker("", cut, 180))
 
-	inner.append(draw.Image(0, 0, 1000, 1000, path="spherical-triangle.svg", embed=True))
+	inner.append(draw.use(0, 0, 1000, 1000, path="spherical-triangle.svg", embed=True))
 
 
 	# computing the lunar increments
@@ -400,7 +400,7 @@ def make_moon_back():
 	#outer.append(make_fractional_ccl(cut+25))
 	#outer.append(make_fractional_ccl2(cut, outer_cut - cut))
 
-	inner.append(draw.Image(-500, -500, 1000, 1000, path="lunar-triangle.svg", embed=True, transform="scale(0.8)"))
+	inner.append(draw.Use('lunar-triangle', -80, -85, href="lunar-triangle.svg#layer1", embed=False, transform="scale(5)"))
 	return (inner,outer)
 
 

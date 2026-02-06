@@ -20,12 +20,6 @@ text {
 	font-family: "B612 Italic";
 	pointer-events: none;
 }
-
-.spinner {
-	-webkit-transition: all 2s;
-	-moz-transition: all 2s;
-	transition: all 2s;
-}
 .extra_thick {
 	fill: none;
 	stroke: black;
@@ -58,6 +52,12 @@ text {
 	fill: red;
 	font-family: "B612 Italic";
 }
+
+.spinner {
+	-webkit-transition: all 2s;
+	-moz-transition: all 2s;
+	transition: all 2s;
+}
 /*]]>*/</style>
 <defs>
 <path d="M-100.0,-1.2246467991473532e-14 A100,100,0,0,1,100.0,0.0" id="d0" />
@@ -83,7 +83,7 @@ text {
 <tspan dy="0em">Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d1" startOffset="50%">
-<tspan dy="0em">2026-02-05</tspan>
+<tspan dy="0em">2026-02-06</tspan>
 </textPath></text>
 <g transform="translate(420.000)">
 <path d="M0,0 L15,5 L25,5 L25,-5 L15,-5 Z" fill="black" stroke="none" transform="rotate(0.000)" />
@@ -22763,7 +22763,7 @@ text {
 <tspan dy="0em">Log Haversine</tspan>
 </textPath></text>
 <text font-size="15" text-anchor="middle"><textPath xlink:href="#d7" startOffset="50%">
-<tspan dy="0em">2026-02-05</tspan>
+<tspan dy="0em">2026-02-06</tspan>
 </textPath></text>
 <path d="M420,0 L500,0" class="extra_thick" />
 <g>

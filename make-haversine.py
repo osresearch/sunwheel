@@ -644,5 +644,5 @@ d.save_svg(output_file)
 append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 #a3.append(draw.Image(1500, -800, 1000, 1000, path="spherical-triangle.svg", embed=True, transform="rotate(90) scale(0.45)"))
 
-a3.append(draw.Image(0,0, a3_width, a3_height, path="haversine-instructions.svg", embed=True))
+a3.append(draw.Image(0,0, a3_width*10, a3_height*10, path="haversine-instructions.svg", transform="scale(0.1)"))
 a3.save_svg("haversine-a3.svg")
