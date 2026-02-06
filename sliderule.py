@@ -3,6 +3,7 @@
 from math import sqrt, sin, cos, tan, atan2, ceil, radians, degrees, asin, acos, log, pi, e, atan, floor, fabs, modf
 import drawsvg as draw
 from almanac import haversine, ahaversine, frange, refraction, equation_of_time, julian, declination, declination_perp, compute_xy, height_of_eye, horizon_distance, stereographic_project
+import re
 
 deg_symbol = "°"
 right_arrow = "➤"
@@ -14,7 +15,7 @@ dpi = 96
 a3_width = 420 * dpi / 25.4
 a3_height = 297 * dpi / 25.4
 
-css = """
+base_css = """
 @font-face {
         font-family: "B612 Regular";
         font-style: normal;
@@ -32,12 +33,6 @@ text {
 .italic {
 	font-family: "B612 Italic";
 	pointer-events: none;
-}
-
-.spinner {
-	-webkit-transition: all 2s;
-	-moz-transition: all 2s;
-	transition: all 2s;
 }
 .extra_thick {
 	fill: none;
@@ -72,6 +67,15 @@ text {
 	font-family: "B612 Italic";
 }
 """
+
+css = base_css + """
+.spinner {
+	-webkit-transition: all 2s;
+	-moz-transition: all 2s;
+	transition: all 2s;
+}
+"""
+
 
 def draw_marker(label, radius, angle):
 	g = draw.Group(transform="translate(%.3f)" % (radius))
@@ -247,7 +251,10 @@ def draw_axle():
 
 def draw_a3():
 	a3 = draw.Drawing("420mm", "297mm", origin=(0,0))
-	a3.append_css(css)
+
+	# have to remove the pointer events class from the a3 svg css
+	a3_css = re.sub("pointer-events: none;", "", base_css)
+	a3.append_css(a3_css)
 	return a3
 
 def append_a3(a3,
