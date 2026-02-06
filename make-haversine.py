@@ -282,7 +282,7 @@ def make_haversine_spiral(R,
 					text_anchor="end",
 				))
 
-			major_r = int(h/division)
+			major_r = fabs(int(h/division))
 			if sz and include_red and major_r != 0:
 				gt.append(draw.Text("+%d" % (major_r),
 					font_sz-2,
@@ -644,5 +644,5 @@ d.save_svg(output_file)
 append_a3(a3, outer_cut, cut, front_outer, front_inner, back_outer, back_inner, outer_diameter=172)
 #a3.append(draw.Image(1500, -800, 1000, 1000, path="spherical-triangle.svg", embed=True, transform="rotate(90) scale(0.45)"))
 
-a3.append(draw.Image(0,0, a3_width*10, a3_height*10, path="haversine-instructions.svg", transform="scale(0.1)"))
+a3.append(draw.Use("instructions", 0,0, href="haversine-instructions.svg#layer1", transform="scale(%.3f)" % (dpi/25.4)))
 a3.save_svg("haversine-a3.svg")

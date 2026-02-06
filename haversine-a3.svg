@@ -25552,7 +25552,7 @@ text {
 <g transform="rotate(-114.220) translate(156.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">8</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">352</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-7</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+7</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-116.378) translate(156.250 0)">
@@ -25735,7 +25735,7 @@ text {
 <g transform="rotate(-236.336) translate(156.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">9</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">351</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-7</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+7</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-238.254) translate(156.250 0)">
@@ -25918,7 +25918,7 @@ text {
 <g transform="rotate(-345.523) translate(156.250 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">10</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">350</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-7</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+7</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-347.248) translate(156.250 0)">
@@ -26101,7 +26101,7 @@ text {
 <g transform="rotate(-84.244) translate(192.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">11</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">349</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-6</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+6</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-85.812) translate(192.500 0)">
@@ -26284,7 +26284,7 @@ text {
 <g transform="rotate(-174.319) translate(192.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">12</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">348</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-6</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+6</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-175.755) translate(192.500 0)">
@@ -26467,7 +26467,7 @@ text {
 <g transform="rotate(-257.129) translate(192.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">13</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">347</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-6</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+6</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-258.454) translate(192.500 0)">
@@ -26650,7 +26650,7 @@ text {
 <g transform="rotate(-333.749) translate(192.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">14</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">346</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-6</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+6</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-334.978) translate(192.500 0)">
@@ -26833,7 +26833,7 @@ text {
 <g transform="rotate(-45.028) translate(228.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">15</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">345</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-5</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+5</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-46.175) translate(228.750 0)">
@@ -27016,7 +27016,7 @@ text {
 <g transform="rotate(-111.655) translate(228.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">16</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">344</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-5</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+5</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-112.729) translate(228.750 0)">
@@ -27199,7 +27199,7 @@ text {
 <g transform="rotate(-174.190) translate(228.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">17</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">343</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-5</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+5</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-175.200) translate(228.750 0)">
@@ -27382,7 +27382,7 @@ text {
 <g transform="rotate(-233.098) translate(228.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">18</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">342</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-5</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+5</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-234.051) translate(228.750 0)">
@@ -27565,7 +27565,7 @@ text {
 <g transform="rotate(-288.769) translate(228.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">19</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">341</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-5</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+5</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-289.671) translate(228.750 0)">
@@ -27748,7 +27748,7 @@ text {
 <g transform="rotate(-341.532) translate(228.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">20</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">340</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-5</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+5</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-342.388) translate(228.750 0)">
@@ -27931,7 +27931,7 @@ text {
 <g transform="rotate(-31.668) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">21</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">339</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-32.483) translate(265.000 0)">
@@ -28114,7 +28114,7 @@ text {
 <g transform="rotate(-79.420) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">22</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">338</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-80.197) translate(265.000 0)">
@@ -28297,7 +28297,7 @@ text {
 <g transform="rotate(-124.997) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">23</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">337</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-125.739) translate(265.000 0)">
@@ -28480,7 +28480,7 @@ text {
 <g transform="rotate(-168.582) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">24</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">336</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-169.292) translate(265.000 0)">
@@ -28663,7 +28663,7 @@ text {
 <g transform="rotate(-210.336) translate(265.000 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">25</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">335</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-211.017) translate(265.000 0)">
@@ -28846,7 +28846,7 @@ text {
 <g transform="rotate(-250.399) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">26</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">334</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-251.054) translate(265.000 0)">
@@ -29029,7 +29029,7 @@ text {
 <g transform="rotate(-288.899) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">27</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">333</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-289.528) translate(265.000 0)">
@@ -29212,7 +29212,7 @@ text {
 <g transform="rotate(-325.946) translate(265.000 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">28</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">332</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-4</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+4</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-326.552) translate(265.000 0)">
@@ -29395,7 +29395,7 @@ text {
 <g transform="rotate(-1.640) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">29</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">331</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-2.224) translate(301.250 0)">
@@ -29578,7 +29578,7 @@ text {
 <g transform="rotate(-36.073) translate(301.250 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">30</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">330</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-36.636) translate(301.250 0)">
@@ -29761,7 +29761,7 @@ text {
 <g transform="rotate(-69.323) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">31</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">329</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-69.868) translate(301.250 0)">
@@ -29944,7 +29944,7 @@ text {
 <g transform="rotate(-101.466) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">32</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">328</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-101.992) translate(301.250 0)">
@@ -30127,7 +30127,7 @@ text {
 <g transform="rotate(-132.566) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">33</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">327</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-133.076) translate(301.250 0)">
@@ -30310,7 +30310,7 @@ text {
 <g transform="rotate(-162.686) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">34</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">326</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-163.180) translate(301.250 0)">
@@ -30493,7 +30493,7 @@ text {
 <g transform="rotate(-191.880) translate(301.250 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">35</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">325</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-192.359) translate(301.250 0)">
@@ -30676,7 +30676,7 @@ text {
 <g transform="rotate(-220.199) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">36</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">324</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-220.664) translate(301.250 0)">
@@ -30859,7 +30859,7 @@ text {
 <g transform="rotate(-247.689) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">37</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">323</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-248.141) translate(301.250 0)">
@@ -31042,7 +31042,7 @@ text {
 <g transform="rotate(-274.394) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">38</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">322</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-274.832) translate(301.250 0)">
@@ -31225,7 +31225,7 @@ text {
 <g transform="rotate(-300.351) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">39</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">321</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-300.778) translate(301.250 0)">
@@ -31408,7 +31408,7 @@ text {
 <g transform="rotate(-325.599) translate(301.250 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">40</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">320</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-326.014) translate(301.250 0)">
@@ -31591,7 +31591,7 @@ text {
 <g transform="rotate(-350.170) translate(301.250 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">41</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">319</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-3</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+3</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-350.574) translate(301.250 0)">
@@ -31774,7 +31774,7 @@ text {
 <g transform="rotate(-14.096) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">42</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">318</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-14.490) translate(337.500 0)">
@@ -31957,7 +31957,7 @@ text {
 <g transform="rotate(-37.406) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">43</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">317</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-37.790) translate(337.500 0)">
@@ -32140,7 +32140,7 @@ text {
 <g transform="rotate(-60.127) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">44</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">316</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-60.501) translate(337.500 0)">
@@ -32323,7 +32323,7 @@ text {
 <g transform="rotate(-82.284) translate(337.500 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">45</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">315</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-82.649) translate(337.500 0)">
@@ -32506,7 +32506,7 @@ text {
 <g transform="rotate(-103.901) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">46</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">314</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-104.257) translate(337.500 0)">
@@ -32689,7 +32689,7 @@ text {
 <g transform="rotate(-125.000) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">47</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">313</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-125.347) translate(337.500 0)">
@@ -32872,7 +32872,7 @@ text {
 <g transform="rotate(-145.601) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">48</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">312</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-145.940) translate(337.500 0)">
@@ -33055,7 +33055,7 @@ text {
 <g transform="rotate(-165.724) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">49</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">311</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-166.055) translate(337.500 0)">
@@ -33238,7 +33238,7 @@ text {
 <g transform="rotate(-185.386) translate(337.500 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">50</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">310</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-185.710) translate(337.500 0)">
@@ -33421,7 +33421,7 @@ text {
 <g transform="rotate(-204.606) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">51</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">309</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-204.923) translate(337.500 0)">
@@ -33604,7 +33604,7 @@ text {
 <g transform="rotate(-223.399) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">52</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">308</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-223.709) translate(337.500 0)">
@@ -33787,7 +33787,7 @@ text {
 <g transform="rotate(-241.780) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">53</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">307</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-242.083) translate(337.500 0)">
@@ -33970,7 +33970,7 @@ text {
 <g transform="rotate(-259.764) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">54</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">306</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-260.061) translate(337.500 0)">
@@ -34153,7 +34153,7 @@ text {
 <g transform="rotate(-277.364) translate(337.500 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">55</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">305</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-277.654) translate(337.500 0)">
@@ -34336,7 +34336,7 @@ text {
 <g transform="rotate(-294.593) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">56</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">304</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-294.877) translate(337.500 0)">
@@ -34519,7 +34519,7 @@ text {
 <g transform="rotate(-311.463) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">57</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">303</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-311.741) translate(337.500 0)">
@@ -34702,7 +34702,7 @@ text {
 <g transform="rotate(-327.986) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">58</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">302</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-328.258) translate(337.500 0)">
@@ -34885,7 +34885,7 @@ text {
 <g transform="rotate(-344.172) translate(337.500 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">59</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">301</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-2</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+2</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-344.439) translate(337.500 0)">
@@ -35068,13 +35068,13 @@ text {
 <g transform="rotate(-0.031) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">60</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">300</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-0.031) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">60</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">300</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-0.685) translate(373.750 0)">
@@ -35149,7 +35149,7 @@ text {
 <g transform="rotate(-15.575) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">61</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">299</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-16.216) translate(373.750 0)">
@@ -35224,7 +35224,7 @@ text {
 <g transform="rotate(-30.811) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">62</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">298</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-31.439) translate(373.750 0)">
@@ -35299,7 +35299,7 @@ text {
 <g transform="rotate(-45.749) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">63</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">297</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-46.365) translate(373.750 0)">
@@ -35374,7 +35374,7 @@ text {
 <g transform="rotate(-60.397) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">64</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">296</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-61.001) translate(373.750 0)">
@@ -35449,7 +35449,7 @@ text {
 <g transform="rotate(-74.763) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">65</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">295</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-75.356) translate(373.750 0)">
@@ -35524,7 +35524,7 @@ text {
 <g transform="rotate(-88.856) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">66</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">294</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-89.437) translate(373.750 0)">
@@ -35599,7 +35599,7 @@ text {
 <g transform="rotate(-102.681) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">67</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">293</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-103.252) translate(373.750 0)">
@@ -35674,7 +35674,7 @@ text {
 <g transform="rotate(-116.247) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">68</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">292</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-116.807) translate(373.750 0)">
@@ -35749,7 +35749,7 @@ text {
 <g transform="rotate(-129.560) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">69</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">291</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-130.110) translate(373.750 0)">
@@ -35824,7 +35824,7 @@ text {
 <g transform="rotate(-142.627) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">70</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">290</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-143.166) translate(373.750 0)">
@@ -35899,7 +35899,7 @@ text {
 <g transform="rotate(-155.453) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">71</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">289</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-155.982) translate(373.750 0)">
@@ -35974,7 +35974,7 @@ text {
 <g transform="rotate(-168.044) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">72</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">288</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-168.564) translate(373.750 0)">
@@ -36049,7 +36049,7 @@ text {
 <g transform="rotate(-180.406) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">73</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">287</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-180.917) translate(373.750 0)">
@@ -36124,7 +36124,7 @@ text {
 <g transform="rotate(-192.545) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">74</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">286</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-193.046) translate(373.750 0)">
@@ -36199,7 +36199,7 @@ text {
 <g transform="rotate(-204.466) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">75</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">285</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-204.958) translate(373.750 0)">
@@ -36274,7 +36274,7 @@ text {
 <g transform="rotate(-216.173) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">76</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">284</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-216.656) translate(373.750 0)">
@@ -36349,7 +36349,7 @@ text {
 <g transform="rotate(-227.671) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">77</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">283</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-228.145) translate(373.750 0)">
@@ -36424,7 +36424,7 @@ text {
 <g transform="rotate(-238.965) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">78</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">282</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-239.431) translate(373.750 0)">
@@ -36499,7 +36499,7 @@ text {
 <g transform="rotate(-250.059) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">79</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">281</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-250.517) translate(373.750 0)">
@@ -36574,7 +36574,7 @@ text {
 <g transform="rotate(-260.958) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">80</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">280</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-261.408) translate(373.750 0)">
@@ -36649,7 +36649,7 @@ text {
 <g transform="rotate(-271.665) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">81</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">279</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-272.108) translate(373.750 0)">
@@ -36724,7 +36724,7 @@ text {
 <g transform="rotate(-282.185) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">82</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">278</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-282.620) translate(373.750 0)">
@@ -36799,7 +36799,7 @@ text {
 <g transform="rotate(-292.521) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">83</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">277</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-292.948) translate(373.750 0)">
@@ -36874,7 +36874,7 @@ text {
 <g transform="rotate(-302.677) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">84</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">276</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-303.097) translate(373.750 0)">
@@ -36949,7 +36949,7 @@ text {
 <g transform="rotate(-312.656) translate(373.750 0)">
 <text x="-7" y="-3" font-size="14" class="angle" text-anchor="end">85</text>
 <text x="-7" y="14" font-size="14" class="red_angle" text-anchor="end">275</text>
-<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-7" y="24" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-30,0 L8,0" class="extra_thick" />
 </g>
 <g transform="rotate(-313.068) translate(373.750 0)">
@@ -37024,7 +37024,7 @@ text {
 <g transform="rotate(-322.462) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">86</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">274</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-322.867) translate(373.750 0)">
@@ -37099,7 +37099,7 @@ text {
 <g transform="rotate(-332.098) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">87</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">273</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-332.496) translate(373.750 0)">
@@ -37174,7 +37174,7 @@ text {
 <g transform="rotate(-341.567) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">88</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">272</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-341.958) translate(373.750 0)">
@@ -37249,7 +37249,7 @@ text {
 <g transform="rotate(-350.872) translate(373.750 0)">
 <text x="-10" y="-3" font-size="10" class="angle" text-anchor="end">89</text>
 <text x="-10" y="10" font-size="10" class="red_angle" text-anchor="end">271</text>
-<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+-1</text>
+<text x="-10" y="20" font-size="8" class="angle" text-anchor="end">+1</text>
 <path d="M-25,0 L5,0" class="thick" />
 </g>
 <g transform="rotate(-351.256) translate(373.750 0)">
@@ -40829,5 +40829,5 @@ text {
 </textPath></text>
 </g>
 </g>
-<image x="0" y="0" width="15874.015748031497" height="11225.196850393702" xlink:href="haversine-instructions.svg" transform="scale(0.1)" />
+<use xlink:href="#instructions" x="0" y="0" href="haversine-instructions.svg#layer1" transform="scale(3.780)" />
 </svg>

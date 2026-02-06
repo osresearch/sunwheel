@@ -1,9 +1,10 @@
 all: haversine-a3.png rule-a3.png
 INKSCAPE ?= $(HOME)/bin/inkscape-1.4
+DPI ?= 600
 
 %.png: %.svg
 	$(INKSCAPE) \
-		--export-dpi 600 \
+		--export-dpi $(DPI) \
 		-o $@ \
 		$<
 
